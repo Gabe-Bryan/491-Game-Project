@@ -13,8 +13,8 @@ ASSET_MANAGER.downloadAll(() => {
 	new AnimationBuilder(); // <- just to build the sprites & animations into ANIMANAGER
 
 
-	gameEngine.addEntity(new Player(null, 10, 10)); // you don't need to pass gameEngine it can be accessed from anywhere bc it's a global const 
-	gameEngine.addEntity(new Grass(null));
+	gameEngine.addEntity(new Player(10, 10)); // you don't need to pass gameEngine it can be accessed from anywhere bc it's a global const 
+	gameEngine.addEntity(new Grass());
 	let testMap = new GameMap(10, 10, "testmap.png", {
 		'#00ff00':'grass',
 		'#000000':'stone',
