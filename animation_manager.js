@@ -147,7 +147,7 @@ class AnimationManager {
 
         if (fSequence.length !== fTiming.length) {
             // Willy-Wonka-Wack-Attack: GOOD DAY SIR!
-            throw new Error(`fSequence.length = ${fSequence.length} but fTiming.length = ${fTiming.length}!`);
+            throw new Error(`fSequence.length = ${fSequence.length} but fTiming.length = ${fTiming.length} ... GOOD DAY SIR!`);
         }
         if (this.animations.has(id)) {
             console.log(`addAnimation: animations.${id} has been overridden!`);
