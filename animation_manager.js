@@ -1,3 +1,8 @@
+/**
+ * @author Christopher Henderson
+ */
+
+
 // Global Stuff
 const DEBUG = 0; // <--is broken, I bet it was you! shame on you 🤨
 
