@@ -132,17 +132,18 @@ const dynmStaticColHandler = (dynmEntity, staticEntity, prevX, prevY) =>{
     //console.log("yOff: " + yOff);
 
     //Old position
-    let oldBB = {type: dynmEntity.collider.type, isSolid: dynmEntity.collider.isSolid, corner: {x: prevX - xOff, y: prevY - yOff}, width: dynmEntity.collider.width, height: dynmEntity.collider.height};
+    let oldBB = {corner: {x: prevX - xOff, y: prevY - yOff}, width: dynmEntity.collider.width, height: dynmEntity.collider.height};
     
     let sAffected = boxBoxCol(oldBB, staticEntity.collider, (results) => {return results});
-    if(dynmEntity.sidesAffected != undefined){
+    /*if(dynmEntity.sidesAffected != undefined){
         dynmEntity.sidesAffected = {up: sAffected.up  || dynmEntity.sidesAffected.up, 
             down: sAffected.down || dynmEntity.sidesAffected.down, 
             left: sAffected.left || dynmEntity.sidesAffected.left, 
             right: sAffected.right || dynmEntity.sidesAffected.right};
     }else{
         dynmEntity.sidesAffected = sAffected;
-    }
+    }*/
+    dynmEntity.sidesAffected = sAffected;
     //console.log(dynmEntity.sidesAffected);
     if(dynmEntity.sidesAffected.up) {//collision on bottom side
         dynmEntity.y = (staticEntity.collider.corner.y + yOff) - dynmEntity.collider.height - COLLISION_GAP;

@@ -64,7 +64,6 @@ class Player {
         this.phys2d.velocity.y *= Player.MAX_VEL * gameEngine.clockTick;
 
         this.updateState();
-        
 
         let prevX = this.x;
         let prevY = this.y;
@@ -81,7 +80,7 @@ class Player {
      * @param {*} prevY y value before velocity was applied
      */
     collisionChecker(prevX, prevY) {
-        this.colliding = false;//
+        this.colliding = false;//.sort((e1, e2) => -(distance(e1, this) - distance(e2, this)))
         gameEngine.entities.forEach(entity => {
             if(entity.collider != undefined && entity.collider.type === "box" && entity != this){
                 //Check to see if player is colliding with entity
@@ -91,6 +90,8 @@ class Player {
                 if(colliding && entity.phys2d && entity.phys2d.static && entity.tag == "environment"){
                     dynmStaticColHandler(this, entity, prevX, prevY);//Handle collision
                     this.updateCollider();
+                    //prevX = this.x;
+                    //prevY = this.y;
                 }
             }
         });
