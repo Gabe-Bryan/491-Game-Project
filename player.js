@@ -1,5 +1,5 @@
 class Player {
-    static MAX_VEL = 100; //Pixels per second (I think -Gabe)
+    static MAX_VEL = 600; //Pixels per second (I think -Gabe)
     constructor(x, y) {
         Object.assign(this, {x, y});
         //this.engine = gameEngine;
