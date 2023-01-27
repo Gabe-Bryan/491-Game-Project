@@ -129,7 +129,7 @@ const lineCircleCol = (line, circle, callback = (collisions) => {return collisio
 const dynmStaticColHandler = (dynmEntity, staticEntity, prevX, prevY) =>{
     let xOff = (dynmEntity.x - dynmEntity.collider.corner.x);
     let yOff = (dynmEntity.y - dynmEntity.collider.corner.y);
-    console.log("yOff: " + yOff);
+    //console.log("yOff: " + yOff);
 
     //Old position
     let oldBB = {type: dynmEntity.collider.type, isSolid: dynmEntity.collider.isSolid, corner: {x: prevX - xOff, y: prevY - yOff}, width: dynmEntity.collider.width, height: dynmEntity.collider.height};
@@ -143,7 +143,7 @@ const dynmStaticColHandler = (dynmEntity, staticEntity, prevX, prevY) =>{
     }else{
         dynmEntity.sidesAffected = sAffected;
     }
-    console.log(dynmEntity.sidesAffected);
+    //console.log(dynmEntity.sidesAffected);
     if(dynmEntity.sidesAffected.up) {//collision on bottom side
         dynmEntity.y = (staticEntity.collider.corner.y + yOff) - dynmEntity.collider.height - COLLISION_GAP;
         dynmEntity.phys2d.velocity.y = 0;

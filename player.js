@@ -2,8 +2,6 @@ class Player {
     static MAX_VEL = 600; //Pixels per second (I think -Gabe)
     constructor(x, y) {
         Object.assign(this, {x, y});
-        //this.engine = gameEngine;
-        //this.anima = ANIMANAGER;
 
         this.state = 0;     // 0:idle, 1:walking
         this.facing = 1;    // 0:north, 1:south, 2:east, 3:west
@@ -83,7 +81,7 @@ class Player {
      * @param {*} prevY y value before velocity was applied
      */
     collisionChecker(prevX, prevY) {
-        this.colliding = false;
+        this.colliding = false;//
         gameEngine.entities.forEach(entity => {
             if(entity.collider != undefined && entity.collider.type === "box" && entity != this){
                 //Check to see if player is colliding with entity
@@ -99,11 +97,10 @@ class Player {
     }
 
     updateCollider(){
-        this.collider = {type: "box", corner: {x: this.x, y: (this.y + 32)}, width: 64, height: 64};
+        this.collider = {type: "box", corner: {x: this.x, y: (this.y + 28)}, width: 56, height: 56};
     }
 
     drawCollider(ctx) {
-        console.log("Hello there");
         ctx.beginPath();
         ctx.moveTo(this.collider.corner.x, this.collider.corner.y);
         ctx.lineWidth = 5;
