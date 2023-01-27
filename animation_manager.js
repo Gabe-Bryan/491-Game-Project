@@ -163,7 +163,7 @@ class AnimationManager {
 
 
 class SpriteSet {
-
+    /** Don't use this, call a SpriteSet constructor in the AnimationManager class instead. */
     constructor(id, spriteSheet, sx_s, sy_s, sWidth_s, sHeight_s, x_offset_s, y_offset_s) {
         Object.assign(this, {id, spriteSheet, sx_s, sy_s, sWidth_s, sHeight_s, x_offset_s, y_offset_s});
         this.count = sx_s.length;
@@ -175,8 +175,11 @@ class SpriteSet {
         }
 
     }
-    // this, {id, spriteSheet, sx_s[], sy_s[], sWidth_s[], sHeight_s[], x_offset_s[], y_offset_s[]}
+    
+    /** Horizontally mirrors (flip over x-axis) all the sprites in this set. */
     mirrorHorz() {this.spriteSet = this.spriteSet.map(x => this.horzFlipImg(x));}
+
+    /** Vertically mirrors (flip over y-axis) all the sprites in this set. */
     mirrorVert() {this.spriteSet = this.spriteSet.map(x => this.vertFlipImg(x));}
 
     toImageBitmap(og_image, sx, sy, sWidth, sHeight) {

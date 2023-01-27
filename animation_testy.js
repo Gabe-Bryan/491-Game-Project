@@ -21,7 +21,9 @@ function aniBuild() {
     RENDER.addSpriteSheet('LINK', ASSETLOAD.getAsset('link3.png'));
 
     RENDER.addSpriteRow('southRun', 'LINK', 19, 2, 16, 24, 8, 1);
+    
     RENDER.getSpriteSet('southRun').mirrorVert();
+
     RENDER.addAnimation('aniSouthRun', 'southRun', 8, 0.10);
     RENDER.getAnimation('aniSouthRun').setAnimaSpeed(75);
 
@@ -32,6 +34,7 @@ function aniBuild() {
     RENDER.addAnimation('aniNorthRun', 'northRun', 8, 0.15);
 
     RENDER.addSpriteRow('eastRun', 'LINK', 19, 58, 17, 24, 8, 1);
+    RENDER.getSpriteSet('eastRun').mirrorHorz();
     RENDER.addAnimation('aniEastRun', 'eastRun', 8, 0.15);
 
     RENDER.addSpriteRow('southWalk', 'LINK', 156, 2, 16, 24, 6, 1);
@@ -72,7 +75,7 @@ class Testy{
         let s = this.scale
         // RENDER.getAnimation('aniNorthRun').animate(ENGINE.clockTick, ctx, 10*s, 10*s, s, s);
         // RENDER.getAnimation('aniSouthRun').animate(ENGINE.clockTick, ctx, 10*s, 40*s, s, s);
-        // RENDER.getAnimation('aniEastRun').animate(ENGINE.clockTick, ctx, 10*s, 80*s, s, s);
+        RENDER.getAnimation('aniEastRun').animate(ENGINE.clockTick, ctx, 10*s, 60*s, s, s);
         // RENDER.getAnimation('aniSouthWalk').animate(ENGINE.clockTick, ctx, 40*s, 40*s, s, s);
         RENDER.getAnimation('aniFall').animate(ENGINE.clockTick, ctx, 250, 250, s, s);
         RENDER.getAnimation('aniSouthRun').animate(ENGINE.clockTick, ctx, 80, 80, s);
