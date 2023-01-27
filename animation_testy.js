@@ -21,7 +21,11 @@ function aniBuild() {
     RENDER.addSpriteSheet('LINK', ASSETLOAD.getAsset('link3.png'));
 
     RENDER.addSpriteRow('southRun', 'LINK', 19, 2, 16, 24, 8, 1);
+    RENDER.getSpriteSet('southRun').mirrorVert();
     RENDER.addAnimation('aniSouthRun', 'southRun', 8, 0.10);
+    RENDER.getAnimation('aniSouthRun').setAnimaSpeed(75);
+
+
     RENDER.addAnimation('aniSouthWalk', 'southRun', 8, 0.4);
 
     RENDER.addSpriteRow('northRun', 'LINK', 19, 110, 16, 24, 8, 1);
@@ -43,8 +47,8 @@ function aniBuild() {
             [0, 0, 0, 2, 4, 4]
     );
 
-    RENDER.addAnimation('aniFall', 'falling', 7, [2,0.2,0.2,0.2,0.2,0.2,3]);
-
+    RENDER.addAnimation('aniFall', 'falling', 7, [1,0.2,0.2,0.2,0.2,0.2,1]);
+    RENDER.getAnimation('aniFall').reverseAnima();
 
     RENDER.addSpriteRow('test2', 'LINK', 308, 171, 16, 19, 4, 1);
     RENDER.addAnimation('aniTest2', 'test2', 4, 0.2);
@@ -57,7 +61,7 @@ function aniBuild() {
 
 class Testy{
     constructor() {
-        this.scale = 3
+        this.scale = 6
     }
 
     update() {
@@ -66,11 +70,14 @@ class Testy{
 
     draw(ctx) {
         let s = this.scale
-        RENDER.getAnimation('aniNorthRun').animate(ENGINE.clockTick, ctx, 10*s, 10*s, s, s);
-        RENDER.getAnimation('aniSouthRun').animate(ENGINE.clockTick, ctx, 10*s, 40*s, s, s);
-        RENDER.getAnimation('aniEastRun').animate(ENGINE.clockTick, ctx, 10*s, 80*s, s, s);
-        RENDER.getAnimation('aniSouthWalk').animate(ENGINE.clockTick, ctx, 40*s, 40*s, s, s);
-        RENDER.getAnimation('aniFall').animate(ENGINE.clockTick, ctx, 80*s, 40*s, s, s);
-        RENDER.getAnimation('aniSouthWalk').animate(ENGINE.clockTick, ctx, 80*s, 10*s, s, s);
+        // RENDER.getAnimation('aniNorthRun').animate(ENGINE.clockTick, ctx, 10*s, 10*s, s, s);
+        // RENDER.getAnimation('aniSouthRun').animate(ENGINE.clockTick, ctx, 10*s, 40*s, s, s);
+        // RENDER.getAnimation('aniEastRun').animate(ENGINE.clockTick, ctx, 10*s, 80*s, s, s);
+        // RENDER.getAnimation('aniSouthWalk').animate(ENGINE.clockTick, ctx, 40*s, 40*s, s, s);
+        RENDER.getAnimation('aniFall').animate(ENGINE.clockTick, ctx, 250, 250, s, s);
+        RENDER.getAnimation('aniSouthRun').animate(ENGINE.clockTick, ctx, 80, 80, s);
+        //RENDER.getSpriteSet('southRun').drawSprite(ctx, 0, 100, 100,5)
     }
+
+    //drawSprite(ctx, sKey, dx, dy, xScale = 1, yScale = xScale) {
 }
