@@ -28,8 +28,10 @@ class GameDisplay {
         // this.drawItemBorder(); // remove this
         this.drawText();
         this.drawBomb(166, 0);
+      //  this.drawLifeText();
         this.drawHearts(this.heartX, this.heartY);
-        this.drawKey(272, 10);
+        this.drawKey(274, 14);
+        this.drawLifeText();
     };
 
 
@@ -43,7 +45,7 @@ class GameDisplay {
 
         this.ctx.beginPath(); 
         this.ctx.moveTo(sx, sy);
-        this.ctx.lineTo(dx. dy);
+        this.ctx.lineTo(dx, dy);
         this.ctx.stroke();
         this.ctx.closePath();
     };
@@ -68,11 +70,12 @@ class GameDisplay {
     };
 
     drawLifeText = () => {
-        this.drawLine(780, 33, 810, 33);
+        this.ctx.font = "32px brush script mt, Cursive";
+        this.drawLine(600, 33, 640, 33, undefined, 10 );
         this.ctx.beginPath();
-        this.ctx.fillText("LIFE", 820, 40);
+        this.ctx.fillText("LIFE", 650, 40);
         this.ctx.closePath();
-        this.drawLine(870, 33, 900, 33);
+        this.drawLine(730, 33, 770, 33, undefined, 10);
     };
 
     drawText = () => {
@@ -126,8 +129,9 @@ class GameDisplay {
         for (let i = 0; i < this.heartCount; i++) {
             if (i > 9) {
                 this.drawHeart(this.heartX + (i - 10) * 22, this.heartY + 22);
+            } else {
+                this.drawHeart(this.heartX + i * 22, this.heartY);
             }
-            this.drawHeart(this.heartX + i * 22, this.heartY);
         }
     };
 
