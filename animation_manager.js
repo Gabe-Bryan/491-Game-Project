@@ -163,21 +163,68 @@ class AnimationManager {
 
 
 class SpriteSet {
-
+    /** Don't use this, call a SpriteSet constructor in the AnimationManager class instead. */
     constructor(id, spriteSheet, sx_s, sy_s, sWidth_s, sHeight_s, x_offset_s, y_offset_s) {
         Object.assign(this, {id, spriteSheet, sx_s, sy_s, sWidth_s, sHeight_s, x_offset_s, y_offset_s});
+        this.count = sx_s.length;
+
+        this.spriteSet = Array(this.count); // array of ImageBitmaps objects, stores each sprite individually
+        
+        for (let i = 0; i < this.count; i++) {
+            this.spriteSet[i] = this.toImageBitmap(spriteSheet, this.sx_s[i], this.sy_s[i], this.sWidth_s[i], this.sHeight_s[i])
+        }
+
+    }
+    
+    /** Horizontally mirrors (flip over x-axis) all the sprites in this set. */
+    mirrorHorz() {this.spriteSet = this.spriteSet.map(x => this.horzFlipImg(x));}
+
+    /** Vertically mirrors (flip over y-axis) all the sprites in this set. */
+    mirrorVert() {this.spriteSet = this.spriteSet.map(x => this.vertFlipImg(x));}
+
+    toImageBitmap(og_image, sx, sy, sWidth, sHeight) {
+        let canvas = new OffscreenCanvas(sWidth, sHeight);
+        let ctx = canvas.getContext('2d');
+        ctx.drawImage(og_image, sx, sy, sWidth, sHeight, 0, 0, sWidth, sHeight);
+        return canvas.transferToImageBitmap();
+    }
+
+    horzFlipImg(og_image, sx, sy, sWidth, sHeight) {
+        // if no specifiers, draws the full image
+        if (!sx) {sx = 0; sy=0; sWidth=og_image.width; sHeight=og_image.height;}
+        let canvas = new OffscreenCanvas(sWidth, sHeight);
+        let ctx = canvas.getContext('2d');
+        ctx.scale(-1, 1);
+        ctx.drawImage(og_image, sx, sy, sWidth, sHeight, -sWidth, 0, sWidth, sHeight);
+        return canvas.transferToImageBitmap();
+    }
+    
+    vertFlipImg(og_image, sx, sy, sWidth, sHeight) {
+        // if no specifiers, draws the full image
+        if (!sx) {sx = 0; sy=0; sWidth=og_image.width; sHeight=og_image.height;}
+        let canvas = new OffscreenCanvas(sWidth, sHeight);
+        let ctx = canvas.getContext('2d');
+        ctx.scale(1, -1);
+        ctx.drawImage(og_image, sx, sy, sWidth, sHeight, 0, -sHeight, sWidth, sHeight);
+        return canvas.transferToImageBitmap();
+    }
+
+    
+
+
+    clone(clones_id) {
+        clone = new SpriteSet(clones_id, this.spriteSheet, this.sx_s, sy_s, this.sWidth_s, this.sHeight_s, this.x_offset_s, this.y_offset_s);
+        this.spriteSets.set(clones_id, clone);
+        return(clone);
     }
 
     drawSprite(ctx, sKey, dx, dy, xScale = 1, yScale = xScale) {
-        // console.log(`skey: ${sKey}, dx: ${dx}, dy ${dy}, xScale: ${xScale}, yScale: ${yScale}`);
-        // console.log(`sx_s: ${this.sx_s}, sy_s[sKey]: ${this.sy_s}`);
-        let sx = this.sx_s[sKey];
-        let sy = this.sy_s[sKey];
+        if (sKey >= this.count) return;
+
         let sWidth = this.sWidth_s[sKey];
         let sHeight = this.sHeight_s[sKey];
         let dWidth  = sWidth * xScale;
         let dHeight = sHeight * yScale;
-
 
         dx += this.x_offset_s[sKey] * xScale;
         dy += this.y_offset_s[sKey] * yScale;
@@ -187,7 +234,7 @@ class SpriteSet {
             sHeight:${sHeight}  dWidth:${dWidth}  dHeight:${dHeight}`)
         }
 
-        ctx.drawImage(this.spriteSheet, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+        ctx.drawImage(this.spriteSet[sKey], 0, 0, sWidth, sHeight, dx, dy, dWidth, dHeight);
 
         if (DEBUG >= 1) {
             ctx.lineWidth = 1;
@@ -262,62 +309,63 @@ class Animation {
     }
 
     init() {
-        this.adj_fTiming = [...this.fTiming];
-        this.adj_fSequence = [...this.fSequence];
-        this.adj_x_offset = this.x_offset;
-        this.adj_y_offset = this.y_offset;
-
+        this.fTiming_mod = [...this.fTiming];
+        this.fSequence_mod = [...this.fSequence];
+        this.x_offset_mod = this.x_offset;
+        this.y_offset_mod = this.y_offset;
+        
+        this.tempo = 1;
         this.elapsedTime = 0;
         this.currFrame = 0;
-        this.nextFrameAt = this.fTiming[0];
-        this.loop = true;
-    }
-
-    getFrameDimensions(log = false) {
-        return spriteSet.getSpriteDimensions(currFrame, log);
+        this.nextFrameAt = this.fTiming_mod[0] * this.tempo;
+        this.looping = true;
     }
 
     reset() {
         this.elapsedTime = 0;
         this.currFrame = 0;
-        this.nextFrameAt = this.adj_fTiming[0];
+        this.nextFrameAt = this.fTiming_mod[0] * this.tempo;
     }
 
-    setLooping(isLooping) {
-        this.looping = isLooping;
+    clone(clones_id, cloneModded = true) {
+        if(cloneModded)
+            return new Animation(clones_id, this.spriteSet, this.fSequence_mod, this.fTiming_mod, this.x_offset_mod, this.y_offset_mod);
+        else
+            return new Animation(clones_id, this.spriteSet, this.fSequence, this.fTiming, this.x_offset, this.y_offset);  
+    }
+
+    getFrameDimensions(log = false) {
+        return spriteSet.getSpriteDimensions(this.currFrame, log);
+    }
+
+    setLooping(looping) {
+        this.looping = looping;
     }
 
     setAnimaSpeed(animationSpeed) {
-        this.adj_fTiming = [...this.fTiming];
-        this.adj_fTiming.map(x => x * 100 / animationSpeed); // linear speed adjustment
+        this.tempo = 100 / animationSpeed;
     }
 
-    calcFrame() { // TODO Make code clean again 
-        if (this.elapsedTime < this.nextFrameAt) {
-            return this.adj_fSequence[this.currFrame];
-        }
-        else if (this.currFrame < this.fCount - 1) {
-            this.currFrame++;
-            this.nextFrameAt += this.adj_fTiming[this.currFrame];
-            return this.fSequence[this.currFrame];
-        }
-        else { // if currFrame is the last frame
-            if (this.loop) {
-                this.elapsedTime = 0;
-                this.currFrame = 0;
-                this.nextFrameAt = this.adj_fTiming[this.currFrame];
-                return this.fSequence[this.currFrame];
-            }
-            else { // no loop == repeat the last frame of animation
-                return this.fSequence[this.currFrame];
-            }
-        }
+    reverseAnima() {
+        this.fTiming_mod.reverse();
+        this.fSequence_mod.reverse();
+    }
 
+    calcFrame() {
+        if (this.elapsedTime >= this.nextFrameAt) {
+            if (this.currFrame < this.fCount-1) {
+                this.currFrame++;
+                this.nextFrameAt += this.fTiming_mod[this.currFrame] * this.tempo;
+            }
+            else if (this.looping) this.reset();
+         // else just keep returning the last frame
+        }
+        return this.fSequence_mod[this.currFrame];
     }
     
     animate(tick, ctx, dx, dy, xScale = 1, yScale = xScale) {
         let frameNum = this.calcFrame();
-        this.spriteSet.drawSprite(ctx, frameNum, dx + this.x_offset, dy + this.y_offset, xScale, yScale)
+        this.spriteSet.drawSprite(ctx, frameNum, dx + this.x_offset_mod, dy + this.y_offset_mod, xScale, yScale)
 
         if (DEBUG >= 1) {
             ctx.lineWidth = 1;
@@ -327,7 +375,7 @@ class Animation {
 
             ctx.fillText('f:'+this.fSequence[this.currFrame], dx+25, dy-5); // animation frame number
 
-            let dur = Math.floor(this.adj_fTiming[this.currFrame] * 1000);
+            let dur = Math.floor(this.fTiming_mod[this.currFrame] * 1000);
             ctx.fillText('ms:'+dur, dx+50, dy-5); // animation frame duration in milliseconds
         }
 
