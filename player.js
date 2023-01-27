@@ -1,5 +1,5 @@
 class Player {
-    static MAX_VEL = 1;
+    static MAX_VEL = 600; //Pixels per second (I think -Gabe)
     constructor(x, y) {
         Object.assign(this, {x, y});
 
@@ -48,7 +48,8 @@ class Player {
     }
 
     update() {
-        let prevFacing = this.facing
+        let prevFacing = this.facing;
+        this.sidesAffected = undefined;
         
         if (gameEngine.keys["w"])      [this.facing, this.state, this.phys2d.velocity.y] = [0, 1, -Player.MAX_VEL];
         else if (gameEngine.keys["s"]) [this.facing, this.state, this.phys2d.velocity.y] = [1, 1, Player.MAX_VEL];
@@ -59,6 +60,8 @@ class Player {
         else                            this.phys2d.velocity.x = 0;
 
         this.phys2d.velocity = normalizeVector(this.phys2d.velocity);
+        this.phys2d.velocity.x *= Player.MAX_VEL * gameEngine.clockTick;
+        this.phys2d.velocity.y *= Player.MAX_VEL * gameEngine.clockTick;
 
         this.updateState();
         
@@ -78,59 +81,59 @@ class Player {
      * @param {*} prevY y value before velocity was applied
      */
     collisionChecker(prevX, prevY) {
-        this.colliding = false;
+        this.colliding = false;//
         gameEngine.entities.forEach(entity => {
             if(entity.collider != undefined && entity.collider.type === "box" && entity != this){
                 //Check to see if player is colliding with entity
                 let colliding = checkCollision(this, entity);
-                this.colliding = colliding;//store for later purposes
+                this.colliding = colliding || this.colliding;//store for later purposes
                 //check to see if the collision entity is solid and the type of entity we are looking for
                 if(colliding && entity.phys2d && entity.phys2d.static && entity.tag == "environment"){
                     dynmStaticColHandler(this, entity, prevX, prevY);//Handle collision
+                    this.updateCollider();
                 }
             }
         });
     }
 
     updateCollider(){
-        this.collider = {type: "box", corner: {x: this.x, y: this.y}, width: 64, height: 64};
+        this.collider = {type: "box", corner: {x: this.x, y: (this.y + 28)}, width: 56, height: 56};
     }
 
     drawCollider(ctx) {
         ctx.beginPath();
-        ctx.moveTo(this.x, this.y);
+        ctx.moveTo(this.collider.corner.x, this.collider.corner.y);
         ctx.lineWidth = 5;
         ctx.strokeStyle = this.sidesAffected.down ? "green" : "red";
-        ctx.lineTo(this.x + this.collider.width, this.y);
+        ctx.lineTo(this.collider.corner.x + this.collider.width, this.collider.corner.y);
         ctx.stroke();
         ctx.closePath();
         
-        
         ctx.beginPath();
-        ctx.moveTo(this.x + this.collider.width, this.y);
+        ctx.moveTo(this.collider.corner.x + this.collider.width, this.collider.corner.y);
         ctx.strokeStyle = this.sidesAffected.left ? "green" : "red";
-        ctx.lineTo(this.x + this.collider.width, this.y + this.collider.height);
+        ctx.lineTo(this.collider.corner.x + this.collider.width, this.collider.corner.y + this.collider.height);
         ctx.stroke();
         ctx.closePath();
 
         
         ctx.beginPath();
-        ctx.moveTo(this.x + this.collider.width, this.y + this.collider.height);
+        ctx.moveTo(this.collider.corner.x + this.collider.width, this.collider.corner.y + this.collider.height);
         ctx.strokeStyle = this.sidesAffected.up ? "green" : "red";
-        ctx.lineTo(this.x, this.y + this.collider.height);
+        ctx.lineTo(this.collider.corner.x, this.collider.corner.y + this.collider.height);
         ctx.stroke();
         ctx.closePath();
         
         ctx.beginPath();
-        ctx.moveTo(this.x, this.y + this.collider.height);
+        ctx.moveTo(this.collider.corner.x, this.collider.corner.y + this.collider.height);
         ctx.strokeStyle = this.sidesAffected.right ? "green" : "red";
-        ctx.lineTo(this.x, this.y);
+        ctx.lineTo(this.collider.corner.x, this.collider.corner.y);
         ctx.stroke();
         ctx.closePath();
     }
 
     draw(ctx, scale) {
         this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
-        if(this.colliding) this.drawCollider(ctx);
+        if(this.colliding && this.sidesAffected) this.drawCollider(ctx);
     };
 }
