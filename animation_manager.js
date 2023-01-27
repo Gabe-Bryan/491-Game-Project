@@ -13,6 +13,10 @@ class AnimationManager {
     getSpriteSet(id) {return this.spriteSets.get(id);}
     getAnimation(id) {return this.animations.get(id);}
 
+    setSpriteSheet(id, spiteSheet_obj) {this.spriteSheets.set(id, spiteSheet_obj);}
+    setSpriteSet(id, spiteSet_obj) {this.spriteSets.set(id, spiteSet_obj);}
+    setAnimation(id, animation_obj) {this.animations.set(id, animation_obj);}
+
     /**
      * Adds a SpriteSheet to the collection
      * @param {string} id 
@@ -47,6 +51,8 @@ class AnimationManager {
         if (typeof spriteSheet === 'string') spriteSheet = this.spriteSheets.get(spriteSheet); // we need the object
 
         if (typeof gaps === 'number') gaps = Array(count).fill(gaps);
+        else gaps.push(0); // padds a 0 at the end bc 1 less gap than count
+
         let xstart = x_orig;
         let x_origs = Array(count);
         for (let i = 0; i < count; i ++) {
@@ -209,12 +215,14 @@ class SpriteSet {
         return canvas.transferToImageBitmap();
     }
 
-    
-
-
-    clone(clones_id) {
-        clone = new SpriteSet(clones_id, this.spriteSheet, this.sx_s, sy_s, this.sWidth_s, this.sHeight_s, this.x_offset_s, this.y_offset_s);
-        this.spriteSets.set(clones_id, clone);
+    /**
+     * Clones this Sprite Set and puts clone in spriteSets map
+     * @param {string} clones_id unique id for the cloned SpiteSet
+     * @returns the cloned SpiteSet
+     */
+    clone(clones_id, animaManger) {
+        let clone = new SpriteSet(clones_id, this.spriteSheet, this.sx_s, this.sy_s, this.sWidth_s, this.sHeight_s, this.x_offset_s, this.y_offset_s);
+        animaManger.setSpriteSet(clones_id, clone);
         return(clone);
     }
 
@@ -327,12 +335,14 @@ class Animation {
         this.nextFrameAt = this.fTiming_mod[0] * this.tempo;
     }
 
+    /*
     clone(clones_id, cloneModded = true) {
         if(cloneModded)
             return new Animation(clones_id, this.spriteSet, this.fSequence_mod, this.fTiming_mod, this.x_offset_mod, this.y_offset_mod);
         else
             return new Animation(clones_id, this.spriteSet, this.fSequence, this.fTiming, this.x_offset, this.y_offset);  
     }
+    */
 
     getFrameDimensions(log = false) {
         return spriteSet.getSpriteDimensions(this.currFrame, log);
