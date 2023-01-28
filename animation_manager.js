@@ -1,8 +1,3 @@
-/**
- * @author Christopher Henderson
- */
-
-
 // Global Stuff
 const DEBUG = 0; // <--is broken, I bet it was you! shame on you 🤨
 
@@ -22,10 +17,6 @@ class AnimationManager {
     setSpriteSet(id, spiteSet_obj) { this.spriteSets.set(id, spiteSet_obj); }
     setAnimation(id, animation_obj) { this.animations.set(id, animation_obj); }
 
-    setSpriteSheet(id, spiteSheet_obj) {this.spriteSheets.set(id, spiteSheet_obj);}
-    setSpriteSet(id, spiteSet_obj) {this.spriteSets.set(id, spiteSet_obj);}
-    setAnimation(id, animation_obj) {this.animations.set(id, animation_obj);}
-
     /**
      * Adds a SpriteSheet to the collection
      * @param {string} id 
@@ -34,7 +25,6 @@ class AnimationManager {
     addSpriteSheet(id, spriteSheet) {
         // TODO: check for stuff
         this.spriteSheets.set(id, spriteSheet);
-        return this.getSpriteSheet(id);
         return this.getSpriteSheet(id);
     }
 
@@ -51,9 +41,7 @@ class AnimationManager {
      * @param {number} y_offset Optional : offsets the sprite's y position when drawn
      */
     addSpriteSingle(id, spriteSheet, x_orig, y_orig, width, height, x_offset = 0, y_offset = 0) {
-    addSpriteSingle(id, spriteSheet, x_orig, y_orig, width, height, x_offset = 0, y_offset = 0) {
         if (typeof spriteSheet === 'string') spriteSheet = this.spriteSheets.get(spriteSheet); // we need the object
-
 
         if (this.spriteSets.has(id)) console.log(`addSpriteSet: spriteSets.${id} has been overridden!`);
         this.spriteSets.set(id, new SpriteSet(id, spriteSheet, [x_orig], [y_orig], [width], [height], [x_offset], [y_offset]));
@@ -98,14 +86,11 @@ class AnimationManager {
     addSpriteSet(id, spriteSheet, x_origs, x_ends, y_origs, y_ends, x_offsets = 0, y_offsets = 0) {
         if (typeof spriteSheet === 'string') spriteSheet = this.spriteSheets.get(spriteSheet); // we need the object
 
-        if (typeof spriteSheet === 'string') spriteSheet = this.spriteSheets.get(spriteSheet); // we need the object
-
         // we need to determine the number of sprites in the set 
         if (x_origs instanceof Array) var sprtCount = x_origs.length;
         else if (y_origs instanceof Array) var sprtCount = x_origs.length;
         else if (widths instanceof Array) var sprtCount = widths.length;
         else if (heights instanceof Array) var sprtCount = heights.length;
-        else var sprtCount = 1;
         else var sprtCount = 1;
 
         let widths = [];
@@ -160,15 +145,12 @@ class AnimationManager {
         if (typeof fSequence === 'number') {
             let count = fSequence;
             fSequence = Array(count);
-            let count = fSequence;
-            fSequence = Array(count);
             for (let i = 0; i < count; i++) fSequence[i] = i;
         }
         if (typeof fTiming === 'number') fTiming = Array(fSequence.length).fill(fTiming);
 
         if (fSequence.length !== fTiming.length) {
             // Willy-Wonka-Wack-Attack: GOOD DAY SIR!
-            throw new Error(`fSequence.length = ${fSequence.length} but fTiming.length = ${fTiming.length} ... GOOD DAY SIR!`);
             throw new Error(`fSequence.length = ${fSequence.length} but fTiming.length = ${fTiming.length} ... GOOD DAY SIR!`);
         }
         if (this.animations.has(id)) {
@@ -229,7 +211,6 @@ class Sprite { // AH! I caught you 😠
 
 class SpriteSet {
     /** Don't use this, call a SpriteSet constructor in the AnimationManager class instead. */
-    /** Don't use this, call a SpriteSet constructor in the AnimationManager class instead. */
     constructor(id, spriteSheet, sx_s, sy_s, sWidth_s, sHeight_s, x_offset_s, y_offset_s) {
         Object.assign(this, { id, spriteSheet, sx_s, sy_s, sWidth_s, sHeight_s, x_offset_s, y_offset_s });
         this.count = sx_s.length;
@@ -272,8 +253,6 @@ class SpriteSet {
     }
 
     drawSprite(ctx, sKey, dx, dy, xScale = 1, yScale = xScale) {
-        if (sKey >= this.count) return;
-
         if (sKey >= this.count) return;
 
         let sWidth = this.sWidth_s[sKey];
@@ -364,8 +343,6 @@ class Animation {
         this.currFrame = 0;
         this.nextFrameAt = this.fTiming_mod[0] * this.tempo;
         this.looping = true;
-        this.nextFrameAt = this.fTiming_mod[0] * this.tempo;
-        this.looping = true;
     }
 
     reset() {
@@ -385,30 +362,13 @@ class Animation {
 
     getFrameDimensions(log = false) {
         return spriteSet.getSpriteDimensions(this.currFrame, log);
-        this.nextFrameAt = this.fTiming_mod[0] * this.tempo;
     }
 
-    /*
-    clone(clones_id, cloneModded = true) {
-        if(cloneModded)
-            return new Animation(clones_id, this.spriteSet, this.fSequence_mod, this.fTiming_mod, this.x_offset_mod, this.y_offset_mod);
-        else
-            return new Animation(clones_id, this.spriteSet, this.fSequence, this.fTiming, this.x_offset, this.y_offset);  
-    }
-    */
-
-    getFrameDimensions(log = false) {
-        return spriteSet.getSpriteDimensions(this.currFrame, log);
-    }
-
-    setLooping(looping) {
-        this.looping = looping;
     setLooping(looping) {
         this.looping = looping;
     }
 
     setAnimaSpeed(animationSpeed) {
-        this.tempo = 100 / animationSpeed;
         this.tempo = 100 / animationSpeed;
     }
 
@@ -427,12 +387,10 @@ class Animation {
             // else just keep returning the last frame
         }
         return this.fSequence_mod[this.currFrame];
-        return this.fSequence_mod[this.currFrame];
     }
 
     animate(tick, ctx, dx, dy, xScale = 1, yScale = xScale) {
         let frameNum = this.calcFrame();
-        this.spriteSet.drawSprite(ctx, frameNum, dx + this.x_offset_mod, dy + this.y_offset_mod, xScale, yScale)
         this.spriteSet.drawSprite(ctx, frameNum, dx + this.x_offset_mod, dy + this.y_offset_mod, xScale, yScale)
 
         if (DEBUG >= 1) {
