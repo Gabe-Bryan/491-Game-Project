@@ -22,7 +22,7 @@ function aniBuild() {
 
     RENDER.addSpriteRow('southRun', 'LINK', 19, 2, 16, 24, 8, 1);
     
-    RENDER.getSpriteSet('southRun').mirrorVert();
+    RENDER.getSpriteSet('southRun').mirrorSet_Vert();
 
     RENDER.addAnimation('aniSouthRun', 'southRun', 8, 0.10);
     RENDER.getAnimation('aniSouthRun').setAnimaSpeed(75);
@@ -34,7 +34,7 @@ function aniBuild() {
     RENDER.addAnimation('aniNorthRun', 'northRun', 8, 0.15);
 
     RENDER.addSpriteRow('eastRun', 'LINK', 19, 58, 17, 24, 8, 1);
-    RENDER.getSpriteSet('eastRun').mirrorHorz();
+    RENDER.getSpriteSet('eastRun').mirrorSet_Horz();
     RENDER.addAnimation('aniEastRun', 'eastRun', 8, 0.15);
 
     RENDER.addSpriteRow('southWalk', 'LINK', 156, 2, 16, 24, 6, 1);
