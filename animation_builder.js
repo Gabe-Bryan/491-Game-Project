@@ -32,7 +32,7 @@ class AnimationBuilder {
         ANIMANAGER.addSpriteRow('SET_link_south', 'LINK', 90, 11, 16, 24,  9, [16, 11,  9,  7, 10, 10,  7, 10]);
         ANIMANAGER.addSpriteRow('SET_link_north', 'LINK',  3, 94, 16, 24,  9, [11, 11,  8, 11,  7,  9,  8,  8]);
         ANIMANAGER.addSpriteRow('SET_link_east' , 'LINK',  4, 55, 17, 24,  9, [10,  9, 10,  6,  8,  9,  4,  4]);
-        ANIMANAGER.getSpriteSet('SET_link_east').clone('SET_link_west', ANIMANAGER).mirrorHorz();
+        ANIMANAGER.getSpriteSet('SET_link_east').clone('SET_link_west', ANIMANAGER).mirrorSet_Horz();
 
         //ANIMANAGER.addSpriteRow('SET_link_Idle_SNEW', 'LINKold', 0, 104, 16, 24, 8, 1);
 
