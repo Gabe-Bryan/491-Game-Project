@@ -1,6 +1,7 @@
 class AnimationBuilder {
     constructor() {
         ANIMANAGER.addSpriteSheet('OW_TILES', ASSET_MANAGER.getAsset('overworld_tiles.png'));
+        ANIMANAGER.addSpriteSheet('OW_TILES', ASSET_MANAGER.getAsset('overworld_tiles.png'));
 
         ANIMANAGER.addSpriteSet('env_grasses', 'OW_TILES',
                         [253, 270, 287, 304, 725],
