@@ -11,28 +11,30 @@ class GameMap {
         this.cellHeightInPx = cellHeightInTiles * pxTileHeight;
         
         // setup empty array for holding map tiles in
-        this.currCellTileMap = [];
-        for (let h = 0; h < cellHeightInTiles; h++) {
-            this.currCellTileMap.push([]);
-            for (let w = 0; w < cellWidthInTiles; w++) {
-                this.currCellTileMap[h].push([]);
-            }
-        }
+        this.initializeMapCell();
     }
 
     screenEdgeTransition(player) {
         if (player.x < 0) {
+            gameEngine.scene.clearScene();
             player.x = this.cellWidthInPx - 64;
             this.loadMapCell(this.currCellX - 1, this.currCellY);
+            this.addMapEntitiesToEngine(gameEngine);
         } else if (player.x > this.cellWidthInPx) {
+            gameEngine.scene.clearScene();
             player.x = 0;
             this.loadMapCell(this.currCellX + 1, this.currCellY);
+            this.addMapEntitiesToEngine(gameEngine);
         } else if (player.y < 0) {
+            gameEngine.scene.clearScene();
             player.y = this.cellHeightInPx - 64;
             this.loadMapCell(this.currCellX, this.currCellY - 1);
+            this.addMapEntitiesToEngine(gameEngine);
         } else if (player.y > this.cellHeightInPx) {
+            gameEngine.scene.clearScene();
             player.y = 0;
             this.loadMapCell(this.currCellX, this.currCellY + 1);
+            this.addMapEntitiesToEngine(gameEngine);
         }
     }
 
@@ -46,6 +48,9 @@ class GameMap {
     }
 
     loadMapCell(mapCellX, mapCellY) {
+        //reset all of the map tiles
+        this.initializeMapCell();
+
         [this.currCellX, this.currCellY] = [mapCellX, mapCellY];
         const mapImageCanvas = document.createElement("canvas");
         mapImageCanvas.width = this.cellWidthInTiles;
@@ -86,10 +91,20 @@ class GameMap {
         }
     }
 
+    initializeMapCell(){
+        this.currCellTileMap = [];
+        for (let h = 0; h < this.cellHeightInTiles; h++) {
+            this.currCellTileMap.push([]);
+            for (let w = 0; w < this.cellWidthInTiles; w++) {
+                this.currCellTileMap[h].push([]);
+            }
+        }
+    }
+
     addMapEntitiesToEngine(engine) {
         for (let y = 0; y < this.currCellTileMap.length; y++) {
             for (let x = 0; x < this.currCellTileMap[y].length; x++) {
-                 gameEngine.addEntity(this.currCellTileMap[y][x][0]);
+                 gameEngine.scene.addEnvEntity(this.currCellTileMap[y][x][0]);
              }
         }
     }

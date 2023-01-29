@@ -8,6 +8,7 @@ class GameEngine {
 
         // Everything that will be updated and drawn each frame
         this.entities = [];
+        this.scene = new SceneManager();
 
         // Information on the input
         this.click = null;
@@ -86,7 +87,10 @@ class GameEngine {
         // Clear the whole canvas with transparent color (rgba(0, 0, 0, 0))
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-        // Draw latest things first
+        // Draw the scene first
+        this.scene.draw(this.ctx, 4);
+
+        // Draw latest things in non-scene entities first
         for (let i = this.entities.length - 1; i >= 0; i--) {
             this.entities[i].draw(this.ctx, 4, this);
         }
@@ -108,6 +112,8 @@ class GameEngine {
                 this.entities.splice(i, 1);
             }
         }
+
+        this.scene.update();
     };
 
     loop() {

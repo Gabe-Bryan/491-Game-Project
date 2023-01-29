@@ -28,6 +28,7 @@ ASSET_MANAGER.downloadAll(() => {
 	testMap.loadMapCell(roomIndexX, roomIndexY);
 	
 	testMap.addMapEntitiesToEngine(gameEngine);
+	gameEngine.currMap = testMap;
 
 	gameEngine.init(ctx);
 

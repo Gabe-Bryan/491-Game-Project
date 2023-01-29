@@ -72,6 +72,8 @@ class Player {
         this.y += this.phys2d.velocity.y;
         this.updateCollider();
         this.collisionChecker(prevX, prevY);
+
+        gameEngine.currMap.screenEdgeTransition(this);
     };
 
     /**
@@ -81,7 +83,7 @@ class Player {
      */
     collisionChecker(prevX, prevY) {
         this.colliding = false;//.sort((e1, e2) => -(distance(e1, this) - distance(e2, this)))
-        gameEngine.entities.forEach(entity => {
+        gameEngine.scene.env_entities.forEach(entity => {
             if(entity.collider != undefined && entity.collider.type === "box" && entity != this){
                 //Check to see if player is colliding with entity
                 let colliding = checkCollision(this, entity);
