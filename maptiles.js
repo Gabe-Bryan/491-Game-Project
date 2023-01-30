@@ -11,7 +11,7 @@ class Grass {
     };
 
     draw(ctx, scale) {
-        this.tiles.drawSprite(ctx, 0, this.xLoc, this.yLoc, scale);
+        this.tiles.drawSprite(ctx, 1, this.xLoc, this.yLoc, scale);
     };
 }
 
