@@ -228,8 +228,8 @@ class Sprite { // AH! I caught you 😠
         this.image = ofscn_canvas.transferToImageBitmap();
     }
 
-    draw(ctx, dx, dy, dWidth, dHeight) {
-        ctx.drawImage(this.image, this.sx, this.sy, this.sWidth, this.sHeight, dx, dy, dWidth, dHeight);
+    draw(ctx, dx, dy, dWidth, dHeight, xScale = 1, yScale = xScale) {
+        ctx.drawImage(this.image, this.sx, this.sy, this.sWidth, this.sHeight, dx, dy, dWidth * xScale, dHeight * yScale);
     }
 }
 
