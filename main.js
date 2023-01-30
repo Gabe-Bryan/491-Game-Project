@@ -10,14 +10,11 @@ ASSET_MANAGER.downloadAll(() => {
 	const ctx = canvas.getContext("2d");
 	ctx.imageSmoothingEnabled = false;
 
-
 	new AnimationBuilder(); // <- just to build the sprites & animations into ANIMANAGER
-
 
 	gameEngine.addEntity(new Player(canvas.width/2 - 144, canvas.height/2 - 32)); 
 	gameEngine.addEntity(new Knight(canvas.width/4, canvas.height/2));
-	gameEngine.addEntity(new Bunny(canvas.width-500, canvas.height/3));
-	
+
 	let roomWidth = 20;
 	let roomHeight = 16;
 	let testMap = new GameMap("prototype_map.png", roomWidth, roomHeight, 16*SCALE, 16*SCALE, {
@@ -30,7 +27,7 @@ ASSET_MANAGER.downloadAll(() => {
 	let roomIndexX = 2;
 	let roomIndexY = 2;
 	testMap.loadMapCell(roomIndexX, roomIndexY);
-	
+	setInterval(bun, bt)
 	testMap.addMapEntitiesToEngine(gameEngine);
 	gameEngine.currMap = testMap;
 
@@ -38,3 +35,153 @@ ASSET_MANAGER.downloadAll(() => {
 
 	gameEngine.start();
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// nothing to see here, go back up
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// no really, its dark down here, you wouldn't like it.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// very well, BEHOLD!
+
+
+
+    //-----------------------------------\\
+   // * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ * ~ \\
+  // ~※~ ⁘ ~ B U N N Y   F A R M ~ ⁘ ~※~ \\
+ // ~※~ ⁕ 🐇 ⁘⁕⁘ 🐇  ⁘⁕⁘ 🐇 ⁘⁕⁘ 🐇⁕ ~※~ \\
+//-------------------------------------------\\
+var bt = 20000; var bc = 0;
+function bun() {
+	bt *= 0.95;
+	console.log(`bunny, time:${bt}`);
+	if (bc < 25000) {
+		gameEngine.addEntity(new Bunny(200 + (Math.random()*560), 200 + (Math.random()*368)));
+		bc++;
+	}
+	
+}

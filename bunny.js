@@ -6,10 +6,10 @@ class Bunny {
         this.facing = 1; // 0:north, 1:south,   2:east, 3:west
         this.attackHitCollector = [];
 
-        this.currButton = 0;
+        this.currButton = Math.floor(Math.random() * 4);
         this.elapsedTime = 0;
+        this.bt = 0;
         this.nextChange = 1;
-
         this.animations = [];
         this.setupAnimations();
 
@@ -39,23 +39,31 @@ class Bunny {
         ]
     }
 
-
     updateState() {
         if (this.phys2d.velocity.x != 0 || this.phys2d.velocity.y != 0) this.state = 1;
         else this.state = 0;
     }
 
-    update() {
-        let prevFacing = this.facing;
-        this.sidesAffected = undefined;
+    bunnyTime() {
+        gameEngine.addEntity(new Bunny(130 + Math.random()*600), 130 + Math.random()*500);
+    }
 
+    update() {
         this.elapsedTime += gameEngine.clockTick;
 
         if (this.elapsedTime > this.nextChange) {
-            this.elapsedTime = 0;
-            this.nextChange = Math.random() * 1.65;
+            this.nextChange += 0.2 + Math.random() * 1.82;
             this.currButton = Math.floor(Math.random() * 4);
         }
+
+        if (gameEngine.keys["b"]) {
+            this.bt++;
+            if (this.bt > 300) {
+                this.bt = 0;
+                gameEngine.addEntity(new Bunny(200 + (Math.random()*560), 200 + (Math.random()*368)));
+            }           
+        }
+
 
         if (this.x > 960) this.currButton = 3;
         if (this.x < 10) this.currButton = 2;
@@ -71,15 +79,11 @@ class Bunny {
         else if (this.currButton === 3) [this.facing, this.state, this.phys2d.velocity.x] = [3, 1, -Player.MAX_VEL];
         else                            this.phys2d.velocity.x = 0;
 
-        // if(gameEngine.keys["j"] && this.state != 2) {this.state = 2; console.log('attacking...');}
-
-        // if(this.state == 2) this.processAttack();
-
         this.phys2d.velocity = normalizeVector(this.phys2d.velocity);
         this.phys2d.velocity.x *= Player.MAX_VEL * gameEngine.clockTick;
         this.phys2d.velocity.y *= Player.MAX_VEL * gameEngine.clockTick;
 
-        // if(this.state != 2) this.updateState();
+        if(this.state != 2) this.updateState();
 
         let prevX = this.x;
         let prevY = this.y;
@@ -88,9 +92,9 @@ class Bunny {
         this.y += this.phys2d.velocity.y;
         this.updateCollider();
         this.collisionChecker(prevX, prevY);
-
-        // gameEngine.currMap.screenEdgeTransition(this);
     };
+
+
 
     /**
      * Called once per tick after adjusting player position
@@ -153,6 +157,6 @@ class Bunny {
 
     draw(ctx, scale) {
         this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
-        if(this.colliding && this.sidesAffected) this.drawCollider(ctx);
+        // if(this.colliding && this.sidesAffected) this.drawCollider(ctx);
     }
 }
