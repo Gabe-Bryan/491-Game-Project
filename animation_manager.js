@@ -71,6 +71,31 @@ class AnimationManager {
         this.spriteSets.set(id, new SpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_offsets, y_offsets));
     }
 
+    addSpriteColumn(id, spriteSheet, x_orig, y_orig, width, height, count, gaps, x_offset = 0, y_offsets = 0) {
+        if (typeof spriteSheet === 'string') spriteSheet = this.spriteSheets.get(spriteSheet); // we need the object
+
+        if (typeof gaps === 'number') gaps = Array(count).fill(gaps);
+        else gaps.push(0); // padds a 0 at the end bc 1 less gap than count
+
+        let ystart = y_orig;
+        let y_origs = Array(count);
+        
+        for (let i = 0; i < count; i++) {
+            y_origs[i] = ystart; ystart += height + gaps[i];
+        }
+        let x_origs = Array(count).fill(x_orig);
+        let widths = Array(count).fill(width);
+        let heights = Array(count).fill(height);
+
+        if (typeof y_offsets === 'number')
+            y_offsets = Array(count).fill(y_offsets); // x_offsets are all the same
+
+        let x_offsets = Array(count).fill(x_offset); // y_offsets are all the same 
+
+        if (this.spriteSets.has(id)) console.log(`addSpriteSet: spriteSets.${id} has been overridden!`);
+        this.spriteSets.set(id, new SpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_offsets, y_offsets));
+    }
+
     /**
      * Adds a SpriteSet to the collection
      * 
@@ -88,7 +113,7 @@ class AnimationManager {
 
         // we need to determine the number of sprites in the set 
         if (x_origs instanceof Array) var sprtCount = x_origs.length;
-        else if (y_origs instanceof Array) var sprtCount = x_origs.length;
+        else if (y_origs instanceof Array) var sprtCount = y_origs.length;
         else if (widths instanceof Array) var sprtCount = widths.length;
         else if (heights instanceof Array) var sprtCount = heights.length;
         else var sprtCount = 1;
@@ -100,7 +125,7 @@ class AnimationManager {
         if (typeof y_origs === 'number') y_origs = Array(sprtCount).fill(y_origs); // y origins are all the same
 
         if (typeof x_ends === 'number') { // widths are all the same
-            x_ends = Array(sprtCount).fill(widths);
+            x_ends = Array(sprtCount).fill(x_ends);
         }
         if (typeof x_ends === 'object') { // calculate widths
             for (let i = 0; i < sprtCount; i++)
@@ -331,6 +356,7 @@ class Animation {
         this.fCount = this.fSequence.length;
         this.init();
     }
+    
 
     init() {
         this.fTiming_mod = [...this.fTiming];

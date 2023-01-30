@@ -2,7 +2,9 @@ const gameEngine = new GameEngine();
 const ASSET_MANAGER = new AssetManager("./assets/");
 const ANIMANAGER = new AnimationManager();
 
-ASSET_MANAGER.queueDownload("testmap.png", "testmap_multiroom.png", "link.png", "overworld_tiles.png", "collision_testmap.png")
+ASSET_MANAGER.queueDownload(
+	"testmap.png", "testmap_multiroom.png", "link.png", "overworld_tiles.png", 
+	"collision_testmap.png", "enemies.png")
 
 ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");
@@ -13,7 +15,8 @@ ASSET_MANAGER.downloadAll(() => {
 	new AnimationBuilder(); // <- just to build the sprites & animations into ANIMANAGER
 
 
-	gameEngine.addEntity(new Player(canvas.width/2 - 32, canvas.height/2 - 32)); 
+	gameEngine.addEntity(new Player(canvas.width/2 - 32, canvas.height/2 - 32));
+	gameEngine.addEntity(new Knight(canvas.width/4 - 32, canvas.height/4 - 32)); 
 	
 	let roomWidth = 15;
 	let roomHeight = 12;

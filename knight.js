@@ -1,52 +1,44 @@
-class Player {
-    static MAX_VEL = 600; //Pixels per second (I think -Gabe)
+class Knight {
     constructor(x, y) {
         Object.assign(this, {x, y});
 
-        this.state = 0;     // 0:idle, 1:walking, 2:attacking
-        this.facing = 1;    // 0:north, 1:south, 2:east, 3:west
+        this.state = 0;  // 0:idle,  1:walking, 2:attacking
+        this.facing = 1; // 0:north, 1:south,   2:east, 3:west
         this.attackHitCollector = [];
+
+        this.currButton = 0;
+        this.elapsedTime = 0;
+        this.nextChange = 1;
 
         this.animations = [];
         this.setupAnimations();
 
         this.phys2d = {static: false, velocity: {x: 0, y: 0}};
-        this.tag = "player";
-    };
+        this.tag = "enemy";
+    }
 
     setupAnimations() {
-        for (let i = 0; i < 3; i++) {           // states
-            this.animations.push([]);          
-            for (let j = 0; j < 4; j++) {       // directions
-                this.animations[i].push([]);    
-            }
-        }
+        this.animations = Array(1);
+        this.animations[0] = [
+            ANIMANAGER.getAnimation('ANIMA_blue_enemy_north'),
+            ANIMANAGER.getAnimation('ANIMA_blue_enemy_south'),
+            ANIMANAGER.getAnimation('ANIMA_blue_enemy_east'),
+            ANIMANAGER.getAnimation('ANIMA_blue_enemy_west')
+        ]
+        this.animations[1] = [
+            ANIMANAGER.getAnimation('ANIMA_blue_enemy_north'),
+            ANIMANAGER.getAnimation('ANIMA_blue_enemy_south'),
+            ANIMANAGER.getAnimation('ANIMA_blue_enemy_east'),
+            ANIMANAGER.getAnimation('ANIMA_blue_enemy_west')
+        ]
+        this.animations[2] = [
+            ANIMANAGER.getAnimation('ANIMA_blue_enemy_north'),
+            ANIMANAGER.getAnimation('ANIMA_blue_enemy_south'),
+            ANIMANAGER.getAnimation('ANIMA_blue_enemy_east'),
+            ANIMANAGER.getAnimation('ANIMA_blue_enemy_west')
+        ]
+    }
 
-        // idle animations
-        // facing north
-        this.animations[0][0] = ANIMANAGER.getAnimation('ANIMA_link_Idle_north');
-        // facing south
-        this.animations[0][1] = ANIMANAGER.getAnimation('ANIMA_link_Idle_south');
-        // facing east
-        this.animations[0][2] = ANIMANAGER.getAnimation('ANIMA_link_Idle_east');
-        // facing west
-        this.animations[0][3] = ANIMANAGER.getAnimation('ANIMA_link_Idle_west');
-
-        //walking animations
-        //facing north
-        this.animations[1][0] = ANIMANAGER.getAnimation('ANIMA_link_run_north');
-        // facing south
-        this.animations[1][1] = ANIMANAGER.getAnimation('ANIMA_link_run_south');
-        // facing east
-        this.animations[1][2] = ANIMANAGER.getAnimation('ANIMA_link_run_east');
-        // facing west
-        this.animations[1][3] = ANIMANAGER.getAnimation('ANIMA_link_run_west');
-
-        this.animations[2][0] = ANIMANAGER.getAnimation('ANIMA_link_attack_west');
-        this.animations[2][1] = ANIMANAGER.getAnimation('ANIMA_link_attack_east');
-        this.animations[2][2] = ANIMANAGER.getAnimation('ANIMA_link_attack_east');
-        this.animations[2][3] = ANIMANAGER.getAnimation('ANIMA_link_attack_west');
-    };
 
     updateState() {
         if (this.phys2d.velocity.x != 0 || this.phys2d.velocity.y != 0) this.state = 1;
@@ -56,24 +48,33 @@ class Player {
     update() {
         let prevFacing = this.facing;
         this.sidesAffected = undefined;
+
+        this.elapsedTime += gameEngine.clockTick;
+
+        if (this.elapsedTime > this.nextChange) {
+            this.nextChange += 1;
+            this.currButton = Math.floor(Math.random * 4);
+        }
+
+        // this.currButton --> 0 = w  | 1 = s  |  2 = d  |  3 = a
         
-        if (gameEngine.keys["w"])      [this.facing, this.state, this.phys2d.velocity.y] = [0, 1, -Player.MAX_VEL];
-        else if (gameEngine.keys["s"]) [this.facing, this.state, this.phys2d.velocity.y] = [1, 1, Player.MAX_VEL];
+        if (this.currButton === 0)      [this.facing, this.state, this.phys2d.velocity.y] = [0, 1, -Player.MAX_VEL];
+        else if (this.currButton === 1) [this.facing, this.state, this.phys2d.velocity.y] = [1, 1, Player.MAX_VEL];
         else                            this.phys2d.velocity.y = 0;
         
-        if (gameEngine.keys["d"])      [this.facing, this.state, this.phys2d.velocity.x] = [2, 1, Player.MAX_VEL];
-        else if (gameEngine.keys["a"]) [this.facing, this.state, this.phys2d.velocity.x] = [3, 1, -Player.MAX_VEL];
+        if (this.currButton === 2)      [this.facing, this.state, this.phys2d.velocity.x] = [2, 1, Player.MAX_VEL];
+        else if (this.currButton === 3) [this.facing, this.state, this.phys2d.velocity.x] = [3, 1, -Player.MAX_VEL];
         else                            this.phys2d.velocity.x = 0;
 
-        if(gameEngine.keys["j"] && this.state != 2) {this.state = 2; console.log('attacking...');}
+        // if(gameEngine.keys["j"] && this.state != 2) {this.state = 2; console.log('attacking...');}
 
-        if(this.state == 2) this.processAttack();
+        // if(this.state == 2) this.processAttack();
 
         this.phys2d.velocity = normalizeVector(this.phys2d.velocity);
         this.phys2d.velocity.x *= Player.MAX_VEL * gameEngine.clockTick;
         this.phys2d.velocity.y *= Player.MAX_VEL * gameEngine.clockTick;
 
-        if(this.state != 2) this.updateState();
+        // if(this.state != 2) this.updateState();
 
         let prevX = this.x;
         let prevY = this.y;
@@ -83,7 +84,7 @@ class Player {
         this.updateCollider();
         this.collisionChecker(prevX, prevY);
 
-        gameEngine.currMap.screenEdgeTransition(this);
+        // gameEngine.currMap.screenEdgeTransition(this);
     };
 
     /**
@@ -107,10 +108,6 @@ class Player {
                 }
             }
         });
-    }
-
-    processAttack(){
-
     }
 
     updateCollider(){
@@ -152,6 +149,5 @@ class Player {
     draw(ctx, scale) {
         this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
         if(this.colliding && this.sidesAffected) this.drawCollider(ctx);
-        //ANIMANAGER.getAnimation('ANIMA_blue_enemy_east').animate(gameEngine.clockTick, ctx, 200, 200, scale);
-    };
+    }
 }

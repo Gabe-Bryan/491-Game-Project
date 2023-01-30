@@ -1,7 +1,6 @@
 class AnimationBuilder {
     constructor() {
         ANIMANAGER.addSpriteSheet('OW_TILES', ASSET_MANAGER.getAsset('overworld_tiles.png'));
-        ANIMANAGER.addSpriteSheet('OW_TILES', ASSET_MANAGER.getAsset('overworld_tiles.png'));
 
         ANIMANAGER.addSpriteSet('env_grasses', 'OW_TILES',
                         [253, 270, 287, 304, 725],
@@ -20,9 +19,6 @@ class AnimationBuilder {
                         [99],
                         [299],
                         [315]);
-    
-        
-        ANIMANAGER.addSpriteSheet('LINKold', ASSET_MANAGER.getAsset('linkNWSE.png'));
 
         ANIMANAGER.addSpriteRow('SET_link_run_west', 'LINKold', 0, 74, 17, 24, 8, 1);
         ANIMANAGER.addSpriteRow('SET_link_Idle_SNEW', 'LINKold', 0, 104, 16, 24, 8, 1);
@@ -54,6 +50,26 @@ class AnimationBuilder {
         ANIMANAGER.addAnimation('ANIMA_link_Idle_west', 'SET_link_west', [0], 2);
 
         ANIMANAGER.addAnimation('ANIMA_link_attack_west', 'SET_link_attack_west', 6, [0.1, 0.07, 0.05, 0.04, 0.07, 0.1]);        
-        ANIMANAGER.addAnimation('ANIMA_link_attack_east', 'SET_link_attack_east', 6, [0.1, 0.07, 0.05, 0.04, 0.07, 0.1]);  
+        ANIMANAGER.addAnimation('ANIMA_link_attack_east', 'SET_link_attack_east', 6, [0.1, 0.07, 0.05, 0.04, 0.07, 0.1]);
+
+
+        ANIMANAGER.addSpriteSheet('ENEMIES', ASSET_MANAGER.getAsset('enemies.png'));
+        // addSpriteSet(id, spriteSheet, x_origs, x_ends, y_origs, y_ends, x_offsets = 0, y_offsets = 0) {
+        ANIMANAGER.addSpriteSet('SET_blue_enemy_south', 'ENEMIES', 1, 23, [156, 197, 235, 277], [191, 230, 273, 311])
+        ANIMANAGER.addAnimation('ANIMA_blue_enemy_south', 'SET_blue_enemy_south', 4, 0.2);
+
+        ANIMANAGER.addSpriteSet('SET_blue_enemy_west', 'ENEMIES', 36, 68, [161, 200, 240], [187, 227, 267], [0,-2,0])
+        ANIMANAGER.addAnimation('ANIMA_blue_enemy_west', 'SET_blue_enemy_west', 3, 0.2);
+
+        clone = ANIMANAGER.getSpriteSet('SET_blue_enemy_west').clone('SET_blue_enemy_east', ANIMANAGER);
+        clone.mirrorSet_Horz();
+        clone.x_offset_s = [0, 2, 0];
+        ANIMANAGER.addAnimation('ANIMA_blue_enemy_east', 'SET_blue_enemy_east', 3, 0.2);
+
+        ANIMANAGER.addSpriteSet('SET_blue_enemy_north', 'ENEMIES', 81, 103, [156, 197, 235, 277], [191, 230, 273, 311], 0, [0, -1, 0, 1])
+        ANIMANAGER.addAnimation('ANIMA_blue_enemy_north', 'SET_blue_enemy_north', 4, 0.2);
+        
+        //addAnimation(id, spriteSetName, fSequence, fTiming, x_offset = 0, y_offset = 0) {
+
     }
 }
