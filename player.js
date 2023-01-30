@@ -46,6 +46,8 @@ class Player {
         this.animations[2][1] = ANIMANAGER.getAnimation('ANIMA_link_attack_east');
         this.animations[2][2] = ANIMANAGER.getAnimation('ANIMA_link_attack_east');
         this.animations[2][3] = ANIMANAGER.getAnimation('ANIMA_link_attack_west');
+
+        this.attackTime = this.animations[2][0].fTiming.reduce((a, b) => a+b);
     };
 
     updateState() {
@@ -57,21 +59,22 @@ class Player {
         let prevFacing = this.facing;
         this.sidesAffected = undefined;
         
-        if (gameEngine.keys["w"])      [this.facing, this.state, this.phys2d.velocity.y] = [0, 1, -Player.MAX_VEL];
-        else if (gameEngine.keys["s"]) [this.facing, this.state, this.phys2d.velocity.y] = [1, 1, Player.MAX_VEL];
+        let walkStateChange = this.state <= 1 ? 1 : this.state;
+        if (gameEngine.keys["w"])      [this.facing, this.state, this.phys2d.velocity.y] = [0, walkStateChange, -Player.MAX_VEL];
+        else if (gameEngine.keys["s"]) [this.facing, this.state, this.phys2d.velocity.y] = [1, walkStateChange, Player.MAX_VEL];
         else                            this.phys2d.velocity.y = 0;
         
-        if (gameEngine.keys["d"])      [this.facing, this.state, this.phys2d.velocity.x] = [2, 1, Player.MAX_VEL];
-        else if (gameEngine.keys["a"]) [this.facing, this.state, this.phys2d.velocity.x] = [3, 1, -Player.MAX_VEL];
+        if (gameEngine.keys["d"])      [this.facing, this.state, this.phys2d.velocity.x] = [2, walkStateChange, Player.MAX_VEL];
+        else if (gameEngine.keys["a"]) [this.facing, this.state, this.phys2d.velocity.x] = [3, walkStateChange, -Player.MAX_VEL];
         else                            this.phys2d.velocity.x = 0;
 
-        if(gameEngine.keys["j"] && this.state != 2) {this.state = 2; console.log('attacking...');}
+        if(gameEngine.keys["j"] && this.state != 2) {this.state = 2; this.attackTimeLeft = this.attackTime;}
 
         if(this.state == 2) this.processAttack();
-
+        let velocityMod = this.state == 2 ? 1/4 : 1;
         this.phys2d.velocity = normalizeVector(this.phys2d.velocity);
-        this.phys2d.velocity.x *= Player.MAX_VEL * gameEngine.clockTick;
-        this.phys2d.velocity.y *= Player.MAX_VEL * gameEngine.clockTick;
+        this.phys2d.velocity.x *= Player.MAX_VEL * gameEngine.clockTick * velocityMod;
+        this.phys2d.velocity.y *= Player.MAX_VEL * gameEngine.clockTick * velocityMod;
 
         if(this.state != 2) this.updateState();
 
@@ -110,7 +113,9 @@ class Player {
     }
 
     processAttack(){
-
+        this.attackTimeLeft -= gameEngine.clockTick;
+        if(this.attackTimeLeft - gameEngine.clockTick <= 0) this.state = 0;
+        else console.log('time left: ' + this.attackTimeLeft + ' out of: ' + this.attackTime);
     }
 
     updateCollider(){
