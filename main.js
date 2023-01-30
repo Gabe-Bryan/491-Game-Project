@@ -21,7 +21,8 @@ ASSET_MANAGER.downloadAll(() => {
 	let roomHeight = 16;
 	let testMap = new GameMap("prototype_map.png", roomWidth, roomHeight, 16*SCALE, 16*SCALE, {
 		'#00ff00':'grass',
-		'#555555':'stone',
+		'#555555':'stone_grass',
+		'#333333':'stone_sand',
 		'#ffff00':'sand'
 	});
 

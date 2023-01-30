@@ -88,7 +88,7 @@ class GameEngine {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
         // Draw the scene first
-        this.scene.draw(this.ctx, 4);
+        this.scene.draw(this.ctx, SCALE);
 
         // Draw latest things in non-scene entities first
         for (let i = this.entities.length - 1; i >= 0; i--) {

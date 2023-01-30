@@ -15,27 +15,37 @@ class GameMap {
     }
 
     screenEdgeTransition(player) {
-        if (player.x < 0) {
+        let horizBuffer = player.collider.width/2;
+        let vertBuffer = player.collider.height/2;
+
+        let cX = player.collider.corner.x;
+        let cY = player.collider.corner.y;
+
+        if (cX + horizBuffer < 0) {                               // WEST EDGE
             gameEngine.scene.clearScene();
-            player.x = this.cellWidthInPx - 64;
+            player.x = this.cellWidthInPx - horizBuffer;
             this.loadMapCell(this.currCellX - 1, this.currCellY);
             this.addMapEntitiesToEngine(gameEngine);
-        } else if (player.x > this.cellWidthInPx) {
+        
+        } else if (cX + horizBuffer > this.cellWidthInPx) {       // EAST EDGE
             gameEngine.scene.clearScene();
-            player.x = 0;
+            player.x = 0 - horizBuffer;
             this.loadMapCell(this.currCellX + 1, this.currCellY);
             this.addMapEntitiesToEngine(gameEngine);
-        } else if (player.y < 0) {
+        
+        } else if (cY + vertBuffer < 0) {                        // NORTH EDGE
             gameEngine.scene.clearScene();
-            player.y = this.cellHeightInPx - pxTileWidth * SCALE;
+            player.y = this.cellHeightInPx - (vertBuffer + 28);
             this.loadMapCell(this.currCellX, this.currCellY - 1);
             this.addMapEntitiesToEngine(gameEngine);
-        } else if (player.y > this.cellHeightInPx) {
+        
+        } else if (cY + vertBuffer > this.cellHeightInPx) {      // SOUTH EDGE
             gameEngine.scene.clearScene();
-            player.y = 0;
+            player.y = 0 - (vertBuffer+28);
             this.loadMapCell(this.currCellX, this.currCellY + 1);
             this.addMapEntitiesToEngine(gameEngine);
         }
+        
     }
 
     pixelToHexColor(pixel) {
@@ -82,7 +92,8 @@ class GameMap {
                 let tileColor = this.colorMappings[rgb];
 
                 if (tileColor == 'grass')           tile = new Grass(tileX, tileY);
-                else if (tileColor == 'stone')      tile = new Stone(tileX, tileY);
+                else if (tileColor == 'stone_grass')tile = new Stone(tileX, tileY, 'grass');
+                else if (tileColor == 'stone_sand') tile = new Stone(tileX, tileY, 'sand');
                 else if (tileColor == 'sand')       tile = new Sand(tileX, tileY);
                 else                                tile = new Grass(tileX, tileY);
 

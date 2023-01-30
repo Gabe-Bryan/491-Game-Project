@@ -1,8 +1,9 @@
 class Player {
-    static MAX_VEL = 600; //Pixels per second (I think -Gabe)
+    static MAX_VEL = 200; //Pixels per second (I think -Gabe)
     constructor(x, y) {
         Object.assign(this, {x, y});
 
+        this.DEBUG = false;
         this.state = 0;     // 0:idle, 1:walking, 2:attacking
         this.facing = 1;    // 0:north, 1:south, 2:east, 3:west
         this.attackHitCollector = [];
@@ -114,7 +115,7 @@ class Player {
     }
 
     updateCollider(){
-        this.collider = {type: "box", corner: {x: this.x, y: (this.y + 28)}, width: 16*SCALE, height: 16*SCALE};
+        this.collider = {type: "box", corner: {x: this.x+1, y: (this.y + 28)+1}, width: 14*SCALE, height: 14*SCALE};
     }
 
     drawCollider(ctx) {
@@ -153,5 +154,25 @@ class Player {
         this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
         if(this.colliding && this.sidesAffected) this.drawCollider(ctx);
         //ANIMANAGER.getAnimation('ANIMA_link_attack_west').animate(gameEngine.clockTick, ctx, 200, 200, scale);
+
+        if(this.DEBUG) {
+            ctx.fillStyle = "#f0f";
+            let cW = this.collider.width;
+            let cH = this.collider.height;
+            let cX = this.collider.corner.x;
+            let cY = this.collider.corner.y;
+            let nX = cX + (cW/2);
+            let nY = cY + (cH/2);
+            let dS = 3;
+            ctx.fillStyle = "#f00";
+            ctx.fillRect(cX, cY, cW, cH);
+            ctx.fillStyle = "#00f";
+            ctx.fillRect(nX-dS, nY-dS, dS*scale, dS*scale);
+            ctx.fillStyle = "#333";
+            ctx.fillRect(10, ctx.canvas.height - 40, 100, 30)
+            ctx.fillStyle = "#fff";
+            ctx.font = "20px monospace";
+            ctx.fillText(`(${Math.floor(cX)},${Math.floor(cY)})`, 10, ctx.canvas.height-20);
+        }
     };
 }
