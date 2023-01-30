@@ -37,6 +37,11 @@ class AnimationBuilder {
 
         //ANIMANAGER.addSpriteRow('SET_link_Idle_SNEW', 'LINKold', 0, 104, 16, 24, 8, 1);
 
+        ANIMANAGER.addSpriteSet('SET_link_attack_west', 'LINK', [519, 546, 574, 611, 652, 681], [535, 569, 604, 642, 680, 704], [192, 191, 192, 192, 192, 192], [215, 215, 215, 215, 221, 223], [0, -9, -13, -14, -12, -7], [0, -1, 0, 0, 0, 0]);
+        let clone = ANIMANAGER.getSpriteSet('SET_link_attack_west').clone('SET_link_attack_east', ANIMANAGER);
+        clone.mirrorSet_Horz();
+        clone.x_offset_s = [0, 0, 0, 0, 0, 0];
+
         //addAnimation(id, spriteSetName, fSequence, fTiming, x_offset = 0, y_offset = 0) {
         ANIMANAGER.addAnimation('ANIMA_link_run_south', 'SET_link_south', [1,2,3,4,5,6,7,8], 0.1);
         ANIMANAGER.addAnimation('ANIMA_link_run_north', 'SET_link_north', [1,2,3,4,5,6,7,8], 0.1);
@@ -47,6 +52,8 @@ class AnimationBuilder {
         ANIMANAGER.addAnimation('ANIMA_link_Idle_north', 'SET_link_north', [0], 2);
         ANIMANAGER.addAnimation('ANIMA_link_Idle_east', 'SET_link_east', [0], 2);
         ANIMANAGER.addAnimation('ANIMA_link_Idle_west', 'SET_link_west', [0], 2);
-        
+
+        ANIMANAGER.addAnimation('ANIMA_link_attack_west', 'SET_link_attack_west', 6, [0.1, 0.07, 0.05, 0.04, 0.07, 0.1]);        
+        ANIMANAGER.addAnimation('ANIMA_link_attack_east', 'SET_link_attack_east', 6, [0.1, 0.07, 0.05, 0.04, 0.07, 0.1]);  
     }
 }

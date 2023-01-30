@@ -3,8 +3,9 @@ class Player {
     constructor(x, y) {
         Object.assign(this, {x, y});
 
-        this.state = 0;     // 0:idle, 1:walking
+        this.state = 0;     // 0:idle, 1:walking, 2:attacking
         this.facing = 1;    // 0:north, 1:south, 2:east, 3:west
+        this.attackHitCollector = [];
 
         this.animations = [];
         this.setupAnimations();
@@ -14,7 +15,7 @@ class Player {
     };
 
     setupAnimations() {
-        for (let i = 0; i < 2; i++) {           // states
+        for (let i = 0; i < 3; i++) {           // states
             this.animations.push([]);          
             for (let j = 0; j < 4; j++) {       // directions
                 this.animations[i].push([]);    
@@ -40,6 +41,11 @@ class Player {
         this.animations[1][2] = ANIMANAGER.getAnimation('ANIMA_link_run_east');
         // facing west
         this.animations[1][3] = ANIMANAGER.getAnimation('ANIMA_link_run_west');
+
+        this.animations[2][0] = ANIMANAGER.getAnimation('ANIMA_link_attack_west');
+        this.animations[2][1] = ANIMANAGER.getAnimation('ANIMA_link_attack_east');
+        this.animations[2][2] = ANIMANAGER.getAnimation('ANIMA_link_attack_east');
+        this.animations[2][3] = ANIMANAGER.getAnimation('ANIMA_link_attack_west');
     };
 
     updateState() {
@@ -59,11 +65,15 @@ class Player {
         else if (gameEngine.keys["a"]) [this.facing, this.state, this.phys2d.velocity.x] = [3, 1, -Player.MAX_VEL];
         else                            this.phys2d.velocity.x = 0;
 
+        if(gameEngine.keys["j"] && this.state != 2) {this.state = 2; console.log('attacking...');}
+
+        if(this.state == 2) this.processAttack();
+
         this.phys2d.velocity = normalizeVector(this.phys2d.velocity);
         this.phys2d.velocity.x *= Player.MAX_VEL * gameEngine.clockTick;
         this.phys2d.velocity.y *= Player.MAX_VEL * gameEngine.clockTick;
 
-        this.updateState();
+        if(this.state != 2) this.updateState();
 
         let prevX = this.x;
         let prevY = this.y;
@@ -97,6 +107,10 @@ class Player {
                 }
             }
         });
+    }
+
+    processAttack(){
+
     }
 
     updateCollider(){
@@ -138,5 +152,6 @@ class Player {
     draw(ctx, scale) {
         this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
         if(this.colliding && this.sidesAffected) this.drawCollider(ctx);
+        //ANIMANAGER.getAnimation('ANIMA_link_attack_west').animate(gameEngine.clockTick, ctx, 200, 200, scale);
     };
 }
