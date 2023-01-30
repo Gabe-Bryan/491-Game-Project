@@ -3,7 +3,7 @@ const ASSET_MANAGER = new AssetManager("./assets/");
 const ANIMANAGER = new AnimationManager();
 const SCALE = 3;
 
-ASSET_MANAGER.queueDownload("prototype_map.png", "link.png", "overworld_tiles.png", "enemies.png")
+ASSET_MANAGER.queueDownload("prototype_map.png", "link.png", "overworld_tiles.png", "enemies.png", "characters.png")
 
 ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");
@@ -16,6 +16,7 @@ ASSET_MANAGER.downloadAll(() => {
 
 	gameEngine.addEntity(new Player(canvas.width/2 - 144, canvas.height/2 - 32)); 
 	gameEngine.addEntity(new Knight(canvas.width/4, canvas.height/2));
+	gameEngine.addEntity(new Bunny(canvas.width-500, canvas.height/3));
 	
 	let roomWidth = 20;
 	let roomHeight = 16;

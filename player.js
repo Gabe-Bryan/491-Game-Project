@@ -158,7 +158,7 @@ class Player {
     draw(ctx, scale) {
         this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
         if(this.colliding && this.sidesAffected) this.drawCollider(ctx);
-        //ANIMANAGER.getAnimation('ANIMA_link_attack_west').animate(gameEngine.clockTick, ctx, 200, 200, scale);
+        // ANIMANAGER.getAnimation('ANIMA_bunny_west').animate(gameEngine.clockTick, ctx, 200, 200, scale);
 
         if(this.DEBUG) {
             ctx.fillStyle = "#f0f";

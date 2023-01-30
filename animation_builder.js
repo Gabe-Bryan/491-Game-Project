@@ -31,7 +31,6 @@ class AnimationBuilder {
         ANIMANAGER.addSpriteRow('SET_link_east' , 'LINK',  4, 55, 17, 24,  9, [10,  9, 10,  6,  8,  9,  4,  4]);
         ANIMANAGER.getSpriteSet('SET_link_east').clone('SET_link_west', ANIMANAGER).mirrorSet_Horz();
 
-        //ANIMANAGER.addSpriteRow('SET_link_Idle_SNEW', 'LINKold', 0, 104, 16, 24, 8, 1);
 
         ANIMANAGER.addSpriteSet('SET_link_attack_west', 'LINK', [519, 546, 574, 611, 652, 681], [535, 569, 604, 642, 680, 704], [192, 191, 192, 192, 192, 192], [215, 215, 215, 215, 221, 223], [0, -9, -13, -14, -12, -7], [0, -1, 0, 0, 0, 0]);
         let clone = ANIMANAGER.getSpriteSet('SET_link_attack_west').clone('SET_link_attack_east', ANIMANAGER);
@@ -70,6 +69,19 @@ class AnimationBuilder {
         ANIMANAGER.addAnimation('ANIMA_blue_enemy_north', 'SET_blue_enemy_north', 4, 0.2);
         
         //addAnimation(id, spriteSetName, fSequence, fTiming, x_offset = 0, y_offset = 0) {
+        ANIMANAGER.addSpriteSheet('CHARTR1', ASSET_MANAGER.getAsset('characters.png'))
+        
+        ANIMANAGER.addSpriteRow('SET_bunny', 'CHARTR1', 4, 419, 17, 25, 8, 7);
 
+        ANIMANAGER.addAnimation('ANIMA_bunny_east', 'SET_bunny', [0,1], 0.2);
+
+        ANIMANAGER.getSpriteSet('SET_bunny').clone('SET_bunny_mirror', ANIMANAGER).mirrorSet_Horz();
+        ANIMANAGER.addAnimation('ANIMA_bunny_west', 'SET_bunny_mirror', [0,1], 0.2);
+        ANIMANAGER.addAnimation('ANIMA_bunny_south', 'SET_bunny', [2,3,4], 0.2);
+        ANIMANAGER.addAnimation('ANIMA_bunny_north', 'SET_bunny', [5,6,7], 0.2);
+
+
+
+        // addSpriteRow(id, spriteSheet, x_orig, y_orig, width, height, count, gaps, x_offsets = 0, y_offset = 0) {
     }
 }
