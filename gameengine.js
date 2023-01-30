@@ -88,7 +88,7 @@ class GameEngine {
 
         // Draw latest things first
         for (let i = this.entities.length - 1; i >= 0; i--) {
-            this.entities[i].draw(this.ctx, 4, this);
+            this.entities[i].draw(this.ctx, SCALE);
         }
     };
 

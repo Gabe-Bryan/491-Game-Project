@@ -22,13 +22,13 @@ class GameMap {
 
     screenEdgeTransition(player) {
         if (player.x < 0) {
-            player.x = this.cellWidthInPx - 64;
+            player.x = this.cellWidthInPx - pxTileWidth * SCALE;
             this.loadMapCell(this.currCellX - 1, this.currCellY);
         } else if (player.x > this.cellWidthInPx) {
             player.x = 0;
             this.loadMapCell(this.currCellX + 1, this.currCellY);
         } else if (player.y < 0) {
-            player.y = this.cellHeightInPx - 64;
+            player.y = this.cellHeightInPx - pxTileWidth * SCALE;
             this.loadMapCell(this.currCellX, this.currCellY - 1);
         } else if (player.y > this.cellHeightInPx) {
             player.y = 0;
@@ -72,8 +72,8 @@ class GameMap {
                 let rgb = this.pixelToHexColor(mapPixel);
 
                 let tile = null;
-                let tileX = x * 16 * 4;
-                let tileY = y * 16 * 4;
+                let tileX = x * 16 * SCALE;
+                let tileY = y * 16 * SCALE;
                 let tileColor = this.colorMappings[rgb];
 
                 if (tileColor == 'grass')           tile = new Grass(tileX, tileY);

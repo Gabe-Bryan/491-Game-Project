@@ -98,7 +98,7 @@ class Player {
     }
 
     updateCollider(){
-        this.collider = {type: "box", corner: {x: this.x, y: (this.y + 28)}, width: 56, height: 56};
+        this.collider = {type: "box", corner: {x: this.x, y: (this.y + 28)}, width: 16*SCALE, height: 16*SCALE};
     }
 
     drawCollider(ctx) {

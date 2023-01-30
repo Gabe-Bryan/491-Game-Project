@@ -18,10 +18,10 @@ class Grass {
 class Stone {
     constructor(xLoc, yLoc) {
         Object.assign(this, {xLoc, yLoc});
-
+        
         this.tiles = ANIMANAGER.getSpriteSet('env_stones');
         this.phys2d = {static: true};
-        this.collider = {type: "box", corner: {x: xLoc, y: yLoc}, height: 4*16, width: 4*16};
+        this.collider = {type: "box", corner: {x: xLoc, y: yLoc}, height: 16 * SCALE, width: 16 * SCALE};
         this.tag = 'environment';
     };
 
