@@ -57,10 +57,10 @@ class Knight {
             this.currButton = Math.floor(Math.random() * 4);
         }
 
-        if (this.x > 965) this.currButton = 3;
-        if (this.x < 0) this.currButton = 2;
-        if (this.y < 0) this.currButton = 0;
-        if (this.y > 775) this.currButton = 1;
+        if (this.x > 960) this.currButton = 3;
+        if (this.x < 10) this.currButton = 2;
+        if (this.y < 10) this.currButton = 0;
+        if (this.y > 770) this.currButton = 1;
         // this.currButton --> 0 = w  | 1 = s  |  2 = d  |  3 = a
         
         if (this.currButton === 0)      [this.facing, this.state, this.phys2d.velocity.y] = [0, 1, -Player.MAX_VEL];
