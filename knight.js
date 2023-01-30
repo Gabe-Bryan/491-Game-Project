@@ -6,7 +6,7 @@ class Knight {
         this.facing = 1; // 0:north, 1:south,   2:east, 3:west
         this.attackHitCollector = [];
 
-        this.currButton = 0;
+        this.currButton = 1;
         this.elapsedTime = 0;
         this.nextChange = 1;
 
@@ -52,8 +52,9 @@ class Knight {
         this.elapsedTime += gameEngine.clockTick;
 
         if (this.elapsedTime > this.nextChange) {
-            this.nextChange += 1;
-            this.currButton = Math.floor(Math.random * 4);
+            this.elapsedTime = 0;
+            this.nextChange = Math.random() *2;
+            this.currButton = Math.floor(Math.random() * 4);
         }
 
         // this.currButton --> 0 = w  | 1 = s  |  2 = d  |  3 = a
