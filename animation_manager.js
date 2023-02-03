@@ -93,6 +93,19 @@ class AnimationManager {
         return theNewSpriteSet;
     }
 
+    /**
+     * 
+     * @param {*} id 
+     * @param {*} spriteSheet 
+     * @param {*} x_orig 
+     * @param {*} y_orig 
+     * @param {*} width 
+     * @param {*} height 
+     * @param {*} count 
+     * @param {*} gaps 
+     * @param {*} x_offset 
+     * @param {*} y_offsets 
+     */
     addSpriteColumn(id, spriteSheet, x_orig, y_orig, width, height, count, gaps, x_offset = 0, y_offsets = 0) {
         if (typeof spriteSheet === 'string') spriteSheet = this.spriteSheets.get(spriteSheet); // we need the object
 
@@ -237,8 +250,9 @@ class AnimationManager {
     }
 }
 
-/**@access Private : don't call this, don't even look at it!*/
-class Sprite { // AH! I caught you 😠
+
+class Sprite { 
+    /**@access PRIVATE so don't use*/
     constructor(image, sx = 0, sy = 0, sWidth = image.width, sHeight = image.height) {
         Object.assign(this, { image, sx, sy, sWidth, sHeight });
         this.isImageBitmap = image instanceof ImageBitmap;
@@ -282,9 +296,8 @@ class Sprite { // AH! I caught you 😠
     }
 }
 
-
 class SpriteSet {
-    /** Don't use this, call a SpriteSet constructor in the AnimationManager class instead. */
+    /**@access PRIVATE so don't use*/
     constructor(id, spriteSheet, sx_s, sy_s, sWidth_s, sHeight_s, x_offset_s, y_offset_s) {
         Object.assign(this, { id, spriteSheet, sx_s, sy_s, sWidth_s, sHeight_s, x_offset_s, y_offset_s });
         this.count = sx_s.length;
@@ -360,6 +373,7 @@ class SpriteSet {
         }
     }
 
+    /* Not used for this project
     tileSprite(ctx, spriteIndex, dx, dy, numHorzTiles, numVertTiles, xScale = 1, yScale = xScale) {
         if (spriteIndex instanceof Array) {
             let sWidth = this.sWidth_s[spriteIndex[0]];
@@ -384,19 +398,12 @@ class SpriteSet {
                 }
             }
         }
-    }
+    } */
 };
 
-/**
- * Animation™ makes the animation magic happen 🐭
- */
+
 class Animation {
-    /**
-     * @param {string} id The unique ID of this Animation
-     * @param {SpriteSet} spriteSet see SpriteSet® 
-     * @param {number[]} fSequence In-order list of sprites in animation 
-     * @param {number[]} fTiming In-order list of frame durations (milliseconds)
-     */
+    /**@access PRIVATE so don't use*/
     constructor(id, spriteSet, fSequence, fTiming, x_offset, y_offset) {
         if (fSequence.length !== fTiming.length)
             throw new Error('Animation: fSequence and fTiming are not same length');
