@@ -153,6 +153,6 @@ class Knight {
 
     draw(ctx, scale) {
         this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
-        if(this.colliding && this.sidesAffected) this.drawCollider(ctx);
+        // if(this.colliding && this.sidesAffected) this.drawCollider(ctx);
     }
 }
