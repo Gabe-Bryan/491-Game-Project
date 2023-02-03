@@ -1,21 +1,25 @@
+/**
+ * Made for use in TCSS 491 @UW-T Winter 2023
+ * @author Christopher Henderson
+ */
+
 // Global Stuff
 const DEBUG = 0; // <--is broken, I bet it was you! shame on you 🤨
 
-// main class
+/**
+ * Manages the Animations, and also the sprites
+ */
 class AnimationManager {
     constructor() {
-        this.spriteSheets = new Map(); // <string: id, object: Image Obj (from AssetManager)>
-        this.spriteSets = new Map(); // <string: id, object: SpriteSet>
-        this.animations = new Map(); // <string: id, object: Animation>
+        this.spriteSheets = new Map(); // <string: id, object: Image>
+        this.spriteSets = new Map();   // <string: id, object: SpriteSet>
+        this.animations = new Map();   // <string: id, object: Animation>
     }
+
     // you don't need to use the getters, but they are here if you prefer to use them 😀
     getSpriteSheet(id) { return this.spriteSheets.get(id); }
     getSpriteSet(id) { return this.spriteSets.get(id); }
     getAnimation(id) { return this.animations.get(id); }
-
-    setSpriteSheet(id, spiteSheet_obj) { this.spriteSheets.set(id, spiteSheet_obj); }
-    setSpriteSet(id, spiteSet_obj) { this.spriteSets.set(id, spiteSet_obj); }
-    setAnimation(id, animation_obj) { this.animations.set(id, animation_obj); }
 
     /**
      * Adds a SpriteSheet to the collection
@@ -44,9 +48,25 @@ class AnimationManager {
         if (typeof spriteSheet === 'string') spriteSheet = this.spriteSheets.get(spriteSheet); // we need the object
 
         if (this.spriteSets.has(id)) console.log(`addSpriteSet: spriteSets.${id} has been overridden!`);
-        this.spriteSets.set(id, new SpriteSet(id, spriteSheet, [x_orig], [y_orig], [width], [height], [x_offset], [y_offset]));
+        const theNewSpriteSet = new SpriteSet(id, spriteSheet, [x_orig], [y_orig], [width], [height], [x_offset], [y_offset]);
+        this.spriteSets.set(id, theNewSpriteSet);
+        return theNewSpriteSet;
     }
 
+    /**
+     * Add Sprites that all line up in a row, they need to have const width and height
+     * @param {string} id The unique ID of this Sprite
+     * @param {string} spriteSheet Unique ID of SpriteSheet or a SpriteSheet Object
+     * @param {number} x_orig the x position of the entire row
+     * @param {number} y_orig the y position of the entire row
+     * @param {number} width the width of all sprite in row
+     * @param {number} height the height of all sprite in the row
+     * @param {number} count the number of sprite in the row 
+     * @param {number | number[]} gaps the gap between the sprites in the row
+     * @param {number[]} x_offsets optional : offsets the sprite's x position when drawn
+     * @param {number[]} y_offset optional : offsets the sprite's y position when drawn
+     * @returns 
+     */
     addSpriteRow(id, spriteSheet, x_orig, y_orig, width, height, count, gaps, x_offsets = 0, y_offset = 0) {
         if (typeof spriteSheet === 'string') spriteSheet = this.spriteSheets.get(spriteSheet); // we need the object
 
@@ -68,7 +88,9 @@ class AnimationManager {
         let y_offsets = Array(count).fill(y_offset); // y_offsets are all the same 
 
         if (this.spriteSets.has(id)) console.log(`addSpriteSet: spriteSets.${id} has been overridden!`);
-        this.spriteSets.set(id, new SpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_offsets, y_offsets));
+        const theNewSpriteSet = new SpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_offsets, y_offsets);
+        this.spriteSets.set(id, theNewSpriteSet);
+        return theNewSpriteSet;
     }
 
     addSpriteColumn(id, spriteSheet, x_orig, y_orig, width, height, count, gaps, x_offset = 0, y_offsets = 0) {
@@ -155,7 +177,9 @@ class AnimationManager {
         }
 
         if (this.spriteSets.has(id)) console.log(`addSpriteSet: spriteSets.${id} has been overridden!`);
-        this.spriteSets.set(id, new SpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_offsets, y_offsets));
+        const theNewSpriteSet = new SpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_offsets, y_offsets);
+        this.spriteSets.set(id, theNewSpriteSet);
+        return theNewSpriteSet;
     }
 
     /**
@@ -166,7 +190,6 @@ class AnimationManager {
      * @param {number[] | number} fTiming In-order list of frame durations (milliseconds) pass one number for all same timing
      */
     addAnimation(id, spriteSetName, fSequence, fTiming, x_offset = 0, y_offset = 0) {
-
         if (typeof fSequence === 'number') {
             let count = fSequence;
             fSequence = Array(count);
@@ -182,11 +205,35 @@ class AnimationManager {
             console.log(`addAnimation: animations.${id} has been overridden!`);
         }
 
-
-
         const setObj = this.spriteSets.get(spriteSetName); // Animation class constructor wants the SpriteSet object
-        this.animations.set(id, new Animation(id, setObj, fSequence, fTiming, x_offset, y_offset));
+        const theNewAnimation = new Animation(id, setObj, fSequence, fTiming, x_offset, y_offset);
+        this.animations.set(id, theNewAnimation);
+        return theNewAnimation;
 
+    }
+
+    /**
+     * Clones a SpriteSet and puts the clone into the spriteSets map.
+     * DOES NOT clone any modifications to the sprites in the Set, ie the array of Sprite objects
+     * @param {string} clone_id
+     * @param {string} orig_id 
+     */
+    cloneSpriteSet(clone_id, orig_id) {
+        const mrClone = this.getSpriteSet(orig_id).clone(clone_id);
+        this.spriteSets.set(clone_id, mrClone);
+        return mrClone;
+    }
+
+    /**
+     * Clones an Animation and puts the clone into the animations map.
+     * DOES NOT clone any modifications to the Animation after it first declared
+     * @param {string} clone_id 
+     * @param {string} orig_id
+     */
+    cloneAnimation(clone_id, orig_id) {
+        const mrClone = this.getAnimation(orig_id).clone(clone_id);
+        this.animations.set(clone_id, mrClone);
+        return mrClone;
     }
 }
 
@@ -210,10 +257,10 @@ class Sprite { // AH! I caught you 😠
             console.error("Cannot convert To ImageBitmap because this sprite is already a ImageBitmap");
             return;
         }
-        let ofscn_canvas = new OffscreenCanvas(this.sWidth, this.sHeight);
-        let ofscn_ctx = ofscn_canvas.getContext('2d');
-        ofscn_ctx.drawImage(this.image, this.sx, this.sy, this.sWidth, this.sHeight, 0, 0, this.sWidth, this.sHeight);
-        this.image = ofscn_canvas.transferToImageBitmap();
+        let offscn_canvas = new OffscreenCanvas(this.sWidth, this.sHeight);
+        let offscn_ctx = offscn_canvas.getContext('2d');
+        offscn_ctx.drawImage(this.image, this.sx, this.sy, this.sWidth, this.sHeight, 0, 0, this.sWidth, this.sHeight);
+        this.image = offscn_canvas.transferToImageBitmap();
         this.fitToImage();
     }
 
@@ -224,12 +271,14 @@ class Sprite { // AH! I caught you 😠
         let ofscn_canvas = new OffscreenCanvas(this.sWidth, this.sHeight);
         let ofscn_ctx = ofscn_canvas.getContext('2d');
         ofscn_ctx.scale(horz ? -1 : 1, vert ? -1 : 1);
-        ofscn_ctx.drawImage(this.image, this.sx, this.sy, this.sWidth, this.sHeight, horz ? -this.sWidth : 0, vert ? -this.sHeight : 0, this.sWidth, this.sHeight);
+        ofscn_ctx.drawImage(this.image, this.sx, this.sy, this.sWidth, this.sHeight,
+            horz ? -this.sWidth : 0, vert ? -this.sHeight : 0, this.sWidth, this.sHeight
+        );
         this.image = ofscn_canvas.transferToImageBitmap();
     }
 
-    draw(ctx, dx, dy, dWidth, dHeight, xScale = 1, yScale = xScale) {
-        ctx.drawImage(this.image, this.sx, this.sy, this.sWidth, this.sHeight, dx, dy, dWidth * xScale, dHeight * yScale);
+    draw(ctx, dx, dy, dWidth, dHeight) {
+        ctx.drawImage(this.image, this.sx, this.sy, this.sWidth, this.sHeight, dx, dy, dWidth, dHeight);
     }
 }
 
@@ -246,26 +295,26 @@ class SpriteSet {
             this.spriteSet[i] = new Sprite(spriteSheet, this.sx_s[i], this.sy_s[i], this.sWidth_s[i], this.sHeight_s[i])
     }
 
-    /**
-     * Clones this Sprite Set and puts clone in spriteSets map.
-     * Does NOT clone any modifications to the spriteSet, ie the array of Sprite objects
-     * @param {string} clones_id unique id for the cloned SpiteSet
-     * @returns the cloned SpiteSet
-     */
-    clone(clones_id, animanager) {
-        let clone = new SpriteSet(clones_id, this.spriteSheet, this.sx_s, this.sy_s, this.sWidth_s, this.sHeight_s, this.x_offset_s, this.y_offset_s);
-        animanager.setSpriteSet(clones_id, clone);
-        return (clone);
+    get_id() {return this.id;}
+    set_x_offsets(new_x_offsets) {this.x_offset_s = new_x_offsets;}
+
+    clone(clones_id) {
+        return new SpriteSet(
+            clones_id, this.spriteSheet,
+            this.sx_s, this.sy_s, 
+            this.sWidth_s, this.sHeight_s,
+            this.x_offset_s, this.y_offset_s
+        );
     }
     
     /** Horizontally mirrors (flip over x-axis) all the sprites in this set. */
-    mirrorSet_Horz() { this.spriteSet.forEach(sprt => sprt.mirrorImg(true, false)); }
+    mirrorSet_Horz() {this.spriteSet.forEach(sprite => sprite.mirrorImg(true, false));}
 
     /** Vertically mirrors (flip over y-axis) all the sprites in this set. */
-    mirrorSet_Vert() { this.spriteSet.forEach(sprt => sprt.mirrorImg(false, true)); }
+    mirrorSet_Vert() { this.spriteSet.forEach(sprite => sprite.mirrorImg(false, true)); }
 
     /** Horizontally & Vertically mirrors all the sprites in this set. */
-    mirrorSet_Both() { this.spriteSet.forEach(sprt => sprt.mirrorImg(true, true)); }
+    mirrorSet_Both() { this.spriteSet.forEach(sprite => sprite.mirrorImg(true, true)); }
 
     getSpriteCount() {
         return this.count;
@@ -356,7 +405,6 @@ class Animation {
         this.fCount = this.fSequence.length;
         this.init();
     }
-    
 
     init() {
         this.fTiming_mod = [...this.fTiming];
@@ -377,14 +425,26 @@ class Animation {
         this.nextFrameAt = this.fTiming_mod[0] * this.tempo;
     }
 
-    /*
-    clone(clones_id, cloneModded = true) {
-        if(cloneModded)
-            return new Animation(clones_id, this.spriteSet, this.fSequence_mod, this.fTiming_mod, this.x_offset_mod, this.y_offset_mod);
-        else
-            return new Animation(clones_id, this.spriteSet, this.fSequence, this.fTiming, this.x_offset, this.y_offset);  
+    clone(clones_id) {
+        return new Animation(
+            clones_id, this.spriteSet, 
+            this.fSequence, this.fTiming,
+            this.x_offset, this.y_offset
+        );
     }
-    */
+
+    mirrorAnimation_Horz(new_x_offsets_sprite, new_x_offset_anima) {
+        const cloneID = (this.spriteSet.get_id() + '_clone');
+        const spriteSetClone = this.spriteSet.clone(cloneID);
+        spriteSetClone.mirrorSet_Horz();
+        if (!(new_x_offsets_sprite === undefined)) 
+            spriteSetClone.set_x_offsets(new_x_offsets_sprite);
+        if (!(new_x_offset_anima === undefined))
+            this.x_offset = new_x_offset_anima;
+        this.spriteSet = spriteSetClone;
+        this.init();
+        
+    }
 
     getFrameDimensions(log = false) {
         return spriteSet.getSpriteDimensions(this.currFrame, log);
