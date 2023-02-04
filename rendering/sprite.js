@@ -3,8 +3,8 @@
  */
 class Sprite { 
     /** don't use this! Instead use the Animation Manager to build Sprite. */
-    constructor(src, sx = 0, sy = 0, sWidth = src.width, sHeight = src.height) {
-        Object.assign(this, { src, sx, sy, sWidth, sHeight });
+    constructor(src, sx, sy, sWidth, sHeight, x_ofs = 0, y_ofs = 0) {
+        Object.assign(this, {src, sx, sy, sWidth, sHeight, x_ofs, y_ofs});
         this.isImageBitmap = src instanceof ImageBitmap;
     }
 
@@ -41,7 +41,9 @@ class Sprite {
         this.src = ofscn_canvas.transferToImageBitmap();
     }
 
-    draw(ctx, dx, dy, dWidth, dHeight) {
-        ctx.drawImage(this.src, this.sx, this.sy, this.sWidth, this.sHeight, dx, dy, dWidth, dHeight);
+    draw(ctx, dx, dy, x_scl = 1, y_scl = x_scl) {
+        ctx.drawImage(this.src, this.sx, this.sy, this.sWidth, this.sHeight,
+            dx + this.x_ofs, dy + this.y_ofs, this.sWidth * x_scl, this.sHeight * y_scl
+        );
     }
 }
