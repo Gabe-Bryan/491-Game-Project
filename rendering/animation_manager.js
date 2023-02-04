@@ -1,15 +1,14 @@
-var DEBUG = 0;
+var DEBUG_ANIMA = 0;
 
 /**
  * Manages the Animations, and also the sprites
  * @author Christopher Henderson
  */
 class AnimationManager {
-    constructor(setDebug = 0) {
+    constructor() {
         this.spriteSheets = new Map(); // <string: id, object: Image>
         this.spriteSets = new Map();   // <string: id, object: SpriteSet>
         this.animations = new Map();   // <string: id, object: Animation>
-        DEBUG = setDebug;
     }
 
     // you don't need to use the getters, but they are here if you prefer to use them 😀

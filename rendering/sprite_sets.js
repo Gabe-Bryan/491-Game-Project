@@ -1,18 +1,16 @@
-var DEBUG = 0;
-
 /**
  * @author Christopher Henderson
  */
 class SpriteSet {
-    /**@access PRIVATE so don't use*/
+    /** don't use this! Instead use the Animation Manager to build SpriteSet. */
     constructor(id, spriteSheet, sx_s, sy_s, sWidth_s, sHeight_s, x_offset_s, y_offset_s) {
-        Object.assign(this, { id, spriteSheet, sx_s, sy_s, sWidth_s, sHeight_s, x_offset_s, y_offset_s });
+        Object.assign(this, {id, spriteSheet, sx_s, sy_s, sWidth_s, sHeight_s, x_offset_s, y_offset_s});
         this.count = sx_s.length;
 
         // building and filling the array of Sprite obj
-        this.spriteSet = Array(this.count);
+        this.sprites = Array(this.count);
         for (let i = 0; i < this.count; i++)
-            this.spriteSet[i] = new Sprite(spriteSheet, this.sx_s[i], this.sy_s[i], this.sWidth_s[i], this.sHeight_s[i])
+            this.sprites[i] = new Sprite(spriteSheet, this.sx_s[i], this.sy_s[i], this.sWidth_s[i], this.sHeight_s[i])
     }
 
     get_id() {return this.id;}
@@ -28,44 +26,35 @@ class SpriteSet {
     }
     
     /** Horizontally mirrors (flip over x-axis) all the sprites in this set. */
-    mirrorSet_Horz() {this.spriteSet.forEach(sprite => sprite.mirrorImg(true, false));}
+    mirrorSet_Horz() {this.sprites.forEach(sprite => sprite.mirrorImg(true, false));}
 
     /** Vertically mirrors (flip over y-axis) all the sprites in this set. */
-    mirrorSet_Vert() { this.spriteSet.forEach(sprite => sprite.mirrorImg(false, true)); }
+    mirrorSet_Vert() {this.sprites.forEach(sprite => sprite.mirrorImg(false, true));}
 
     /** Horizontally & Vertically mirrors all the sprites in this set. */
-    mirrorSet_Both() { this.spriteSet.forEach(sprite => sprite.mirrorImg(true, true)); }
+    mirrorSet_Both() {this.sprites.forEach(sprite => sprite.mirrorImg(true, true));}
 
-    getSpriteCount() {
-        return this.count;
-    }
+    getSpriteCount() {return this.count;}
 
-    getSpriteDimensions(spriteKey, log = false) {
-        if (log)
-            console.log(`${this.id}[${spriteKey}] --> width: ${sWidth_s[spriteKey]}, height:${sHeight_s[spriteKey]}`);
-        return [sWidth_s[spriteKey], sHeight_s[spriteKey]];
+    getSpriteSet() {return this.sprites};
+
+    getSpriteDimensions(spriteKey) {
+        return [this.sprites[sKey].sWidth, this.sprites[sKey].sHeight];
     }
 
     drawSprite(ctx, sKey, dx, dy, xScale = 1, yScale = xScale) {
         if (sKey >= this.count) return;
 
-        let sWidth = this.sWidth_s[sKey];
-        let sHeight = this.sHeight_s[sKey];
-        let dWidth = sWidth * xScale;
-        let dHeight = sHeight * yScale;
+        let dWidth = this.sprites[sKey].sWidth * xScale;
+        let dHeight = this.sprites[sKey].sHeight * yScale;
 
         dx += this.x_offset_s[sKey] * xScale;
         dy += this.y_offset_s[sKey] * yScale;
 
-        if (DEBUG >= 2) {
-            console.log(`dx:${dx}  dy:${dy}  xs:${xScale}  ys:${yScale}  sx:${sx}  sy:${sy}  sWidth:${sWidth}  
-            sHeight:${sHeight}  dWidth:${dWidth}  dHeight:${dHeight}`)
-        }
-
         // ctx.drawImage(this.spriteSet[sKey], 0, 0, sWidth, sHeight, dx, dy, dWidth, dHeight);
-        this.spriteSet[sKey].draw(ctx, dx, dy, dWidth, dHeight);
+        this.sprites[sKey].draw(ctx, dx, dy, dWidth, dHeight);
 
-        if (DEBUG >= 1) {
+        if (DEBUG_ANIMA >= 1) {
             ctx.lineWidth = 1;
             ctx.fillStyle = "rgba(100, 220, 255, 1)";
             ctx.strokeStyle = "rgba(50, 255, 50, 0.8)";

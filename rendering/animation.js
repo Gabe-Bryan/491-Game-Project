@@ -1,10 +1,8 @@
-var DEBUG = 0;
-
 /**
  * @author Christopher Henderson
  */
 class Animation {
-    /**@access PRIVATE so don't use*/
+    /** don't use this! Instead use the Animation Manager to build Animation. */
     constructor(id, spriteSet, fSequence, fTiming, x_offset, y_offset) {
         if (fSequence.length !== fTiming.length)
             throw new Error('Animation: fSequence and fTiming are not same length');
@@ -24,7 +22,9 @@ class Animation {
         this.elapsedTime = 0;
         this.currFrame = 0;
         this.nextFrameAt = this.fTiming_mod[0] * this.tempo;
+        
         this.looping = true;
+        this.isReversed = false;
     }
 
     reset() {
@@ -54,6 +54,13 @@ class Animation {
         
     }
 
+    getCurrentFrame() {return this.currFrame}
+    getElapsedTime()  {return this.elapsedTime}
+    getNextFrameAt()  {return this.nextFrameAt}
+    isLooping() {return this.looping}
+    // isReversed() {return this.}
+    // getFlags() {return {looping: this.looping, reversed: this.reversed}}
+
     getFrameDimensions(log = false) {
         return spriteSet.getSpriteDimensions(this.currFrame, log);
     }
@@ -66,9 +73,10 @@ class Animation {
         this.tempo = 100 / animationSpeed;
     }
 
-    reverseAnima() {
+    setReverseAnima() {
         this.fTiming_mod.reverse();
         this.fSequence_mod.reverse();
+        this.isReversed = this.isReversed? false : true;
     }
 
     calcFrame() {
@@ -87,7 +95,7 @@ class Animation {
         let frameNum = this.calcFrame();
         this.spriteSet.drawSprite(ctx, frameNum, dx + this.x_offset_mod, dy + this.y_offset_mod, xScale, yScale)
 
-        if (DEBUG >= 1) {
+        if (DEBUG_ANIMA >= 1) {
             ctx.lineWidth = 1;
             ctx.fillStyle = "rgba(100, 220, 255, 1)";
             ctx.strokeStyle = "rgba(50, 255, 50, 0.8)";
