@@ -1,15 +1,18 @@
 var DEBUG_ANIMA = 0;
 
-/** change to Rendex
+/** TODO change NAME to Rendex
  * Manages the Animations, and also the sprites
  * @author Christopher Henderson
  */
 class AnimationManager {
     constructor() {
         this.spriteSheets = new Map(); // <string: id, object: Image>
-        this.spriteSets = new Map();   // <string: id, object: SpriteSet>
-        this.animations = new Map();   // <string: id, object: Animation>
-        this.library = new Map(); // <string: id, Type (SpriteSheet, Animation, TileSet, etc)
+        this.spriteSets =  new Map();  // <string: id, object: SpriteSet>
+        this.animations =  new Map();  // <string: id, object: Animation>
+        this.TileSets  =  new Map();   // <string: is, object: TitleSet>
+
+        // should work like a look up table, ie get me <name of any valid type object> --> returns that object
+        this.library = new Map();  // <string: id, object: valid type>   ~> valid types are: SpriteSheet, SpriteSet, Animation, TileSet
     }
 
     /** Retrieves a Sprite Sheet from the Library
@@ -31,7 +34,6 @@ class AnimationManager {
      * @returns the new SpriteSheet
      */
     addSpriteSheet(id, spriteSheet) {
-        // TODO: check for bad inputs
         if (typeof id !== 'string') throw new Error(`id must be a string, not this: ${id}`)
         if (spriteSheet instanceof Image) {
             this.spriteSheets.set(id, spriteSheet);
@@ -42,8 +44,9 @@ class AnimationManager {
     /**
      * Adds an empty Sprite Set to the Library.
      * Can also be used to erase an existing Sprite Set by overwriting it!
+     * 
      * @param {string} id
-     * @returns the new Sprite Set
+     * @returns The empty Sprite Set
      */
     addEmptySpriteSet(id) {
         if (typeof id !== 'string') throw new Error(`id must be a string, not this: ${id}`)
@@ -54,88 +57,224 @@ class AnimationManager {
     }
 
     /**
-     * @description Adds a new Sprite Set to the Library if 'id' doesn't already exist
+     * Adds a new Sprite Set to the Library if 'id' doesn't already exist
      * and puts a single Sprite in it that you specify here.
      * 
      * @param {string} id The unique ID of this Sprite Set
      * @param {string | object} spriteSheet Unique ID of Sprite-Sheet or a Sprite Sheet Object
-     * @param {number} x_orig X-origin of the Sprite
-     * @param {number} y_orig Y-origin of the Sprite
-     * @param {number} width width of the Sprite
-     * @param {number} height height of the Sprite
-     * @param {number} x_ofs offsets Sprite's X orig position | default is 0
-     * @param {number} y_ofs offsets Sprite's Y orig position | default is 0
-     * @returns the new Sprite Set
+     * @param {number} x_orig X origin coordinate of the Sprite
+     * @param {number} y_orig Y origin coordinate of the Sprite
+     * @param {number} width Width of the Sprite
+     * @param {number} height Height of the Sprite
+     * @param {number} x_ofs X offset: alters X origin coordinate when Sprite is drawn
+     * @param {number} y_ofs Y offset: alters Y origin coordinate when Sprite is drawn
+     * @returns The Sprite Set
      */
     addSpriteSingle(id, spriteSheet, x_orig, y_orig, width, height, x_ofs = 0, y_ofs = 0) {
         const spriteSet = this.spriteSetSetup(id, spriteSheet);
+        spriteSheet = this.spriteSheets.get(spriteSheet);
         spriteSet.addSprite(spriteSheet, x_orig, y_orig, width, height, x_ofs, y_ofs)
         return spriteSet;
     }
 
     /**
+     * Build a SpriteSet from a regular, or at least semi-regular, grid of sprites!
      * 
-     * @param {string} id 
-     * @param {string | Image} spriteSheet 
-     * @param {number} x_orig 
-     * @param {number} y_orig 
-     * @param {number} row_count number of rows
-     * @param {number} col_count number of columns
-     * @param {number | number[]} rows_heights the heights of each row
-     * @param {number | number[]} col_widths the widths of each column 
-     * @param {number | number[]} row_gaps gaps between sprites in the same row
-     * @param {number | number[]} col_gaps col_gaps gaps between the columns of the grid
-     * @param {number[]} x_ofs 
-     * @param {number[]} y_ofs 
+     * @param {string} id Unique ID of this Sprite Set
+     * @param {string | Image} spriteSheet Unique ID of Sprite-Sheet or a Sprite Sheet Object
+     * 
+     * @param {number} row_count Number of rows
+     * @param {number} col_count Number of column
+     * 
+     * @param {number} x_orig X origin coordinate of the Sprite
+     * @param {number} y_orig Y origin coordinate of the Sprite
+     * 
+     * @param {number | number[]} widths Widths of sprites in each column
+     * @param {number | number[]} heights Heights of sprites in each row
+     * 
+     * @param {number | number[]} row_gaps Empty spaces between the entire rows themselves
+     * @param {number | number[]} col_gaps Empty spaces between the entire columns themselves 
+     * 
+     * ↓ X & Y offsets alter the (X,Y) origin coordinate when a sprite is drawn ↓
+     * @param {number[]| number[][]} x_ofs 2D array[row][col] of every Sprites X offset <OR>
+     *                                     1D array[col] every row or column has same X offset depending on ofs_mode
+     * @param {number[]| number[][]} y_ofs 2D array[row][col] of every Sprites Y offset <OR>
+     *                                     1D array[col] every row or column has same Y offset depending on ofs_mode
+     * 
+     * ↓ Only used if x_ofs and/or y_ofs are 1D arrays ↓
+     * @param {boolean} x_ofs_m True if every row will have same X offsets, false if columns : defaults to rows
+     * @param {boolean} y_ofs_m True if every row will have same Y offsets, false if columns : defaults to x_ofs_m
+     * 
+     * @returns The Sprite Set
      */
-    addSpriteGrid(id, spriteSheet, x_orig, y_orig, row_count, col_count, rows_heights, col_widths, row_gaps, col_gaps, x_ofs, y_ofs) {
+    addSpriteGrid(id, spriteSheet, row_count, col_count, x_orig, y_orig, widths, heights,
+                      row_gaps, col_gaps, x_ofs, y_ofs, x_ofs_m = true, y_ofs_m = x_ofs_m  )
+    {
         const spriteSet = this.spriteSetSetup(id, spriteSheet);
+        spriteSheet = this.spriteSheets.get(spriteSheet);
+        let nf = [false,false,false,false] // number flags for [widths, heights, col_gaps, row_gaps]: true = is a number, false = is an Array
+        if (typeof heights  === 'number') nf[0] = true;
+        if (typeof widths   === 'number') nf[1] = true;
+        if (typeof col_gaps === 'number') nf[2] = true;
+        if (typeof row_gaps === 'number') nf[3] = true;
 
-        if (rows_heights === 'number') rows_heights = Array(row_count).fill(rows_heights)
-        if (col_widths === 'number') col_widths = Array(col_count).fill(col_widths)
-        
-        if (typeof row_gaps === 'number') row_gaps = Array(col_gaps).fill(row_gaps);
-        else gaps.push(0); // pads a 0 at the end of user array, bc 1 less gap than count
+        // their is 1 less gap than the number of sprites in each row / column
+        // so we need to add an extra 0 to end of the user's inputted array
+        if (!nf[2]) col_gaps.push(0)
+        if (!nf[3]) row_gaps.push(0)
 
-        if (typeof col_gaps === 'number') col_gaps = Array(row_count).fill(col_gaps);
-        else gaps.push(0); // pads a 0 at the end of user array, bc 1 less gap than count
-
-        
-
-        // if (x_ofs === 'number') x_ofs = Array(col_count).fill(x_ofs)
-        // if (y_ofs === 'number') y_ofs = Array(row_count).fill(y_ofs)
-
-        let xstart = x_orig;
-        let ystart = y_orig;
-
-        let x_origs = Array(row_count);
-        let y_origs = Array(row_count);
-        if (typeof x_ofs === 'number') x_ofs = Array(row_count).fill(x_ofs);
-        if (typeof y_ofs === 'number') y_ofs = Array(row_count).fill(y_ofs);
-        
-        for (let i = 0; i < row_count; i++) {
-            x_origs[i] = new Array(col_count)
-            y_origs[i] = new Array(col_count)
-            if (typeof x_ofs[i] === 'number') x_ofs[i] = Array(col_count).fill(x_ofs);
-            if (typeof y_ofs[i] === 'number') y_ofs[i] = Array(col_count).fill(y_ofs);
+        //          [x 1D, x 2D]    [y 1D, y 2D]
+        let af = [[false, false], [false, false]] // is array flags 
+        if (x_ofs instanceof Array) {
+            af[0][0] = true;
+            if (x_ofs[0] instanceof Array) af[0][1] = true;
         }
-  
+        if (y_ofs instanceof Array) {
+            af[1][0] = true;
+            if (y_ofs[0] instanceof Array) af[1][1] = true;
+        }
+
+        
+
+        let _x_orig = x_orig; let _y_orig = y_orig;
         for (let row = 0; row < row_count; row++) {
             for (let col = 0; col < col_count; col++) {
-                // x part
-                x_origs[row][col] = xstart;
-                xstart += col_widths[col] + col_gaps[col];
-                //y part
-                y_origs[row][col] = ystart;
-                ystart += rows_heights[row] + gaps[row];
+                // determine the width and hight, depends on input type
+                let _width  = nf[0] ? widths  : widths[col];
+                let _height = nf[1] ? heights : heights[row];
+
+                // determine the X offset and Y offset, depends on if using 2D or 1D arrays and the offsets mode
+                let _x_ofs  = af[0][0] ? (af[0][1] ? x_ofs[row][col] : (x_ofs_m ? x_ofs[col] : x_ofs[row])) : 0;
+                let _y_ofs  = af[1][0] ? (af[1][1] ? y_ofs[row][col] : (y_ofs_m ? y_ofs[col] : y_ofs[row])) : 0;
+
+                // add that sprite directly to the Set
+                spriteSet.addSprite(spriteSheet, _x_orig, _y_orig, _width, _height, _x_ofs, _y_ofs);
+
+                // calculate the x-origin point for next sprite in this row
+                _x_orig += _width + (nf[2] ? col_gaps : col_gaps[col]);
             }
+            // move down to the next row, same idea as above ↑
+            _y_orig += (nf[1] ? heights : heights[row]) + (nf[3] ? row_gaps : row_gaps[col]);
         }
 
-
+        return spriteSet;
     }
 
     /**
-     * @description Adds a new Sprite Set to the Library and adds Sprites which all line up in a row,
+     * Build a SpriteSet from a regular, or at least semi-regular, row of sprites!
+     * 
+     * @param {string} id Unique ID of this Sprite Set
+     * @param {string | Image} spriteSheet Unique ID of Sprite-Sheet or a Sprite Sheet Object
+     * @param {number} sprite_count Number of sprites in the row
+     * 
+     * @param {number} x_orig X origin coordinate of the Sprite
+     * @param {number} y_orig Y origin coordinate of the Sprite
+     * 
+     * @param {number | number[]} widths Widths of the Sprites
+     * @param {number | number[]} heights Heights of the Sprites
+     * @param {number | number[]} gaps Empty spaces between Sprites
+     * 
+     * @param {number[]} x_ofs X offset: alters X origin coordinate when Sprite is drawn
+     * @param {number[]} y_ofs Y offset: alters Y origin coordinate when Sprite is drawn
+     * 
+     * @returns The Sprite Set
+     */
+    addSpriteRow(id, spriteSheet, sprite_count, x_orig, y_orig, widths, heights, gaps, x_ofs, y_ofs) {
+        return this.addSpriteGrid (
+            id, spriteSheet,
+            1, sprite_count,  // row_count, col_count
+            x_orig, y_orig,   // x_orig, y_orig
+            widths, heights,  // widths, heights
+            0, gaps,          // row_gaps, col_gaps
+            x_ofs, y_ofs,     // x_ofs, y_ofs
+            true, true
+        );
+    }
+    
+    /**
+     * Build a SpriteSet from a regular, or at least semi-regular, column of sprites!
+     * 
+     * @param {string} id Unique ID of this Sprite Set
+     * @param {string | Image} spriteSheet Unique ID of Sprite-Sheet or a Sprite Sheet Object
+     * @param {number} sprite_count Number of sprites in the row
+     * 
+     * @param {number} x_orig X origin coordinate of the Sprite
+     * @param {number} y_orig Y origin coordinate of the Sprite
+     * 
+     * @param {number | number[]} widths Widths of the Sprites
+     * @param {number | number[]} heights Heights of the Sprites
+     * @param {number | number[]} gaps Empty spaces between Sprites
+     * 
+     * @param {number[]} x_ofs X offset: alters X origin coordinate when Sprite is drawn
+     * @param {number[]} y_ofs Y offset: alters Y origin coordinate when Sprite is drawn
+     * 
+     * @returns The Sprite Set
+     */
+    addSpriteColumn(id, spriteSheet, sprite_count, x_orig, y_orig, widths, heights, gaps, x_ofs, y_ofs) {
+        return this.addSpriteGrid (
+            id, spriteSheet,
+            sprite_count, 1,  // row_count, col_count
+            x_orig, y_orig,   // x_orig, y_orig
+            widths, heights,  // widths, heights
+            gaps, 0,          // row_gaps, col_gaps
+            x_ofs, y_ofs,     // x_ofs, y_ofs
+            false, false
+        );
+    }
+
+    /**
+     * Build a SpriteSet from any rectangle on the sprite sheet
+     * 
+     * @param {string} id Unique ID of this Sprite Set
+     * @param {string | Image} spriteSheet Unique ID of Sprite-Sheet or a Sprite Sheet Object
+     * @param {number} x_orig X origin coordinate of Sprites
+     * @param {number} y_orig Y origin coordinate of Sprites
+     * @param {number | number[]} widths Width of Sprites
+     * @param {number | number[]} heights Height of Sprites
+     * @param {number[]} x_ofs X offset: alters X origin coordinate when Sprite is drawn
+     * @param {number[]} y_ofs Y offset: alters Y origin coordinate when Sprite is drawn
+     * 
+     * @returns The Sprite Set
+     */
+    addSpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_ofs, y_ofs) {
+        const spriteSet = this.spriteSetSetup(id, spriteSheet);
+        spriteSheet = this.spriteSheets.get(spriteSheet);
+
+        // number flags for [x_origs, y_origs, widths, heights]: true = is a number, false = is an Array (we assume if not number then Array)
+        let nf = [false,false,false,false] 
+        if (typeof x_origs === 'number') nf[0] = true;
+        if (typeof y_origs === 'number') nf[1] = true;
+        if (typeof widths  === 'number') nf[2] = true;
+        if (typeof heights === 'number') nf[3] = true;
+
+        let ofs = [false, false] // see if we have offsets
+        if (x_ofs instanceof Array) ofs[0] = true;
+        if (y_ofs instanceof Array) ofs[1] = true;
+
+        // determines the number of sprites being added, good luck reading it lolz
+        let count = nf[0] ? (nf[1] ? (nf[2] ? (nf[3] ? 1 : heights.length) : widths.length) : y_origs.length) : x_origs.length;
+
+        for (let i = 0; i < count; i++) {
+            let _x_orig = nf[0] ? x_origs : x_origs[i];
+            let _y_orig = nf[1] ? y_origs : y_origs[i];
+            let _width  = nf[2] ? widths  : widths[i];
+            let _height = nf[3] ? heights : heights[i];
+            // offsets now
+            let _x_ofs = ofs[0] ? x_ofs[i] : 0;
+            let _y_ofs = ofs[1] ? y_ofs[i] : 0;
+
+            spriteSet.addSprite(spriteSheet, _x_orig, _y_orig, _width, _height, _x_ofs, _y_ofs)
+        }
+
+        return spriteSet
+    }
+
+    
+
+/* ///////////////    G R A V E Y A R D   /////////////////////////////////////////
+
+
+     * Adds a new Sprite Set to the Library and adds Sprites which all line up in a row,
      * they need to have const width and height!
      * 
      * @param {string} id The unique ID of this Sprite
@@ -149,7 +288,7 @@ class AnimationManager {
      * @param {number[]} x_ofs optional : offsets the sprite's x position when drawn
      * @param {number[]} y_ofs optional : offsets the sprite's y position when drawn
      * @returns the new Sprite Set
-     */
+
     addSpriteRow(id, spriteSheet, x_orig, y_orig, width, height, count, gaps, x_ofs = 0, y_ofs = 0) {
         if (typeof spriteSheet === 'string') spriteSheet = this.spriteSheets.get(spriteSheet); // we need the object
 
@@ -176,7 +315,7 @@ class AnimationManager {
         return theNewSpriteSet;
     }
 
-    /**
+
      * Add Sprites that all line up in a column, they need to have const width and height
      * 
      * @param {string} id The unique ID of this Sprite
@@ -190,7 +329,7 @@ class AnimationManager {
      * @param {number[]} x_offsets optional : offsets the sprite's x position when drawn
      * @param {number[]} y_offset optional : offsets the sprite's y position when drawn
      * @returns the new SpriteSet
-     */
+
     addSpriteColumn(id, spriteSheet, x_orig, y_orig, width, height, count, gaps, x_offset = 0, y_offsets = 0) {
         if (typeof spriteSheet === 'string') spriteSheet = this.spriteSheets.get(spriteSheet); // we need the object
 
@@ -218,81 +357,8 @@ class AnimationManager {
         return theNewSpriteSet;
     }
 
-        /**
-     * 
-     * @param {string} id
-     * @param {string | Image} spriteSheet
-     * @param {number} x_orig
-     * @param {number} y_orig
-     * @param {number} rows_cont number of rows in sprite sheet
-     * @param {number | number[]} rows_len number of sprites in a/each row
-     * @param {number | number[] | number[][]} heights the heights of each row
-     * @param {number | number[] | number[][]} widths the widths of each column 
-     * @param {number | number[] | number[][]} row_gaps gaps between the rows of the grid
-     * @param {number | number[] | number[][]} col_gaps gaps between the columns of the grid
-     * @param {number | number[] | number[][]} x_ofs 
-     * @param {number | number[] | number[][]} y_ofs 
-     */
-        addSprite2Darray(id, spriteSheet, x_orig, y_orig, rows_cont, rows_len, widths, heights, row_gaps, col_gaps, x_ofs = 0, y_ofs = 0) {
-            const spriteSet = this.spriteSetSetup(id, spriteSheet);
-    
-            // easy fix
-            if (rows_len === 'number') rows_len = Array(rows_cont).fill(rows_len)
-            // we first check to see if its a number, if not we assume its an array,
-            // we then check if its a 1d array, if not we assume its a 2d array
-            let widths_dim   = typeof widths === 'number'   ? 1 : typeof widths[0] === 'number'   ? 2 : 3;
-            let heights_dim  = typeof heights === 'number'  ? 1 : typeof heights[0] === 'number'  ? 2 : 3;
-            let row_gaps_dim = typeof row_gaps === 'number' ? 1 : typeof row_gaps[0] === 'number' ? 2 : 3;
-            let col_gaps_dim = typeof col_gaps === 'number' ? 1 : typeof col_gaps[0] === 'number' ? 2 : 3;
-            let x_ofs_dim    = typeof x_ofs === 'number'    ? 1 : typeof x_ofs[0] === 'number'    ? 2 : 3;
-            let y_ofs_dim    = typeof y_ofs === 'number'    ? 1 : typeof y_ofs[0] === 'number'    ? 2 : 3;
-    
-            if (row_gaps_dim === 1) row_gaps.push(0);
-            else row_gaps.forEach(x => x.push(0));
-    
-            if (col_gaps_dim === 1) col_gaps.push(0);
-            else col_gaps.forEach(x => x.push(0));
-    
-    
-            // if (heights === 'number') heights = Array(row_count).fill(heights)
-            // if (widths === 'number') widths = Array(col_count).fill(widths)
-            
-            // if (typeof row_gaps === 'number') row_gaps = Array(col_gaps).fill(row_gaps);
-            // else gaps.push(0); // pads a 0 at the end of user array, bc 1 less gap than count
-    
-            // if (typeof col_gaps === 'number') col_gaps = Array(row_count).fill(col_gaps);
-            // else gaps.push(0); // pads a 0 at the end of user array, bc 1 less gap than count
-    
-            // if (x_ofs === 'number') x_ofs = Array(col_count).fill(x_ofs)
-            // if (y_ofs === 'number') y_ofs = Array(row_count).fill(y_ofs)
-    
-            let xstart = x_orig;
-            let ystart = y_orig;
-    
-            let x_origs = Array(rows_len);
-            let y_origs = Array(rows_len);
-    
-            
-            for (let i = 0; i < rows_len; i++) {
-                x_origs[i] = new Array(rows_cont)
-                y_origs[i] = new Array(rows_cont)
-            }
-    
-            for (let row = 0; row < rows_cont; row++) {
-                for (let sprt = 0; rows_len[row] < rows_cont; sprt++) {
-                    // x part
-                    x_origs[row][col] = xstart;
-                    xstart += widths[col] + col_gaps[col];
-                    //y part
-                    y_origs[row][col] = ystart;
-                    ystart += heights[row] + gaps[row];
-                }
-            }
-    
-    
-        }
 
-    /**
+    /
      * Adds a SpriteSet to the collection
      * 
      * @param {string} id The unique ID of this SpriteSet
@@ -304,7 +370,7 @@ class AnimationManager {
      * @param {number[] | number} x_offsets Optional : offsets each sprite's x position when drawn
      * @param {number[] | number} y_offsets Optional : offsets each sprite's y position when drawn
      * @returns the new SpriteSet
-     */
+     
     addSpriteSet(id, spriteSheet, x_origs, x_ends, y_origs, y_ends, x_offsets = 0, y_offsets = 0) {
         if (typeof spriteSheet === 'string') spriteSheet = this.spriteSheets.get(spriteSheet); // we need the object
 
@@ -356,6 +422,8 @@ class AnimationManager {
         this.spriteSets.set(id, theNewSpriteSet);
         return theNewSpriteSet;
     }
+    
+/////////////  ↑ the Old stuff ↑ /////////////////////////////////////////////////////// */
 
     /**
      * Adds a new Animation to the library if animations 
@@ -417,15 +485,17 @@ class AnimationManager {
         return mrClone;
     }
 
+    /** Validates input, makes new SpriteSet if `id` doesn't already exist, else returns the set named `id`*/
     spriteSetSetup(id, spriteSheet) {
-        if (typeof id !== 'string') throw new Error(`id must be a string, not this: ${id}`)
-        if ((typeof spriteSheet === 'string') && this.spriteSheets.has(spriteSheet)) {
+        if (typeof id !== 'string') throw new Error(`id must be a string, not this: ${id}`);
+
+        if ((typeof spriteSheet === 'string') && (this.spriteSheets.has(spriteSheet)))
             spriteSheet = this.spriteSheets.get(spriteSheet);
-        }
-        else if (!(spriteSheet instanceof Image)) {
-            throw new Error(`spriteSheet must be the id of a SpriteSheet object OR an Image, not this: ${spriteSheet}`)
-        }
-        else return (this.spriteSets.has(id))? this.spriteSets.get(id) : addEmptySpriteSet(id);
+
+        if (!(spriteSheet instanceof Image))
+            throw new Error(`spriteSheet must be the id of a SpriteSheet object OR an Image, not this: ${spriteSheet}`);
+
+        return (this.spriteSets.has(id))? this.spriteSets.get(id) : this.addEmptySpriteSet(id);
     }
 
 }

@@ -6,7 +6,7 @@ class SpriteSet {
     constructor(the_id) {
         this.id = the_id;
         this.count = 0;
-        this.sprites = new Set();
+        this.sprites = new Array();
     }
 
     spriteIngester(spriteSheet, count, sx_s, sy_s, sWidth_s, sHeight_s, x_ofs, y_ofs) {
@@ -15,7 +15,7 @@ class SpriteSet {
     }
 
     addSprite(spriteSheet, sx, sy, sWidth, sHeight, x_ofs, y_ofs) {
-        this.sprites.add(new Sprite(spriteSheet, sx, sy, sWidth, sHeight, x_ofs, y_ofs));
+        this.sprites.push(new Sprite(spriteSheet, sx, sy, sWidth, sHeight, x_ofs, y_ofs));
         this.count++;
     }
 
@@ -52,19 +52,19 @@ class SpriteSet {
         if (sKey >= this.count) return;
         this.sprites[sKey].draw(ctx, dx, dy, xScale, yScale);
 
-        if (DEBUG_ANIMA >= 1) {
-            ctx.lineWidth = 1;
-            ctx.fillStyle = "rgba(100, 220, 255, 1)";
-            ctx.strokeStyle = "rgba(50, 255, 50, 0.8)";
-            ctx.font = '9px monospace';
+        // if (DEBUG_ANIMA >= 1) {
+        //     ctx.lineWidth = 1;
+        //     ctx.fillStyle = "rgba(100, 220, 255, 1)";
+        //     ctx.strokeStyle = "rgba(50, 255, 50, 0.8)";
+        //     ctx.font = '9px monospace';
 
-            ctx.strokeRect(dx, dy, dWidth, dHeight);
-            ctx.fillText('s:' + sKey, dx + 2, dy - 5); // sprite number
-            ctx.fillText('x:' + Math.floor(dx), dx + 2, dy - 25); // x orig-cord
-            ctx.fillText('y:' + Math.floor(dy), dx + 2, dy - 15); // y orig-cord
-            ctx.fillText('w:' + dWidth, dx + (dWidth / 2) - 12, dy + dHeight + 15); // width of sprite
-            ctx.fillText('h:' + dHeight, dx + dWidth + 5, dy + (dHeight / 2) + 5);  // height of sprite
-        }
+        //     ctx.strokeRect(dx, dy, dWidth, dHeight);
+        //     ctx.fillText('s:' + sKey, dx + 2, dy - 5); // sprite number
+        //     ctx.fillText('x:' + Math.floor(dx), dx + 2, dy - 25); // x orig-cord
+        //     ctx.fillText('y:' + Math.floor(dy), dx + 2, dy - 15); // y orig-cord
+        //     ctx.fillText('w:' + dWidth, dx + (dWidth / 2) - 12, dy + dHeight + 15); // width of sprite
+        //     ctx.fillText('h:' + dHeight, dx + dWidth + 5, dy + (dHeight / 2) + 5);  // height of sprite
+        // }
     }
 
 };

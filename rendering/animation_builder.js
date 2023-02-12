@@ -4,12 +4,20 @@ class AnimationBuilder {
         /// /// T I L E S /// ///
         ANIMANAGER.addSpriteSheet('OW_TILES', ASSET_MANAGER.getAsset('overworld_tiles.png'));
 
+        // addSpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_ofs, y_ofs) {
+        ANIMANAGER.addSpriteSet(
+            'env_grasses', 'OW_TILES',
+            [253, 270, 287, 304, 725],
+            [269, 286, 303, 320, 741],
+            64, 64
+        );
+        /*
         ANIMANAGER.addSpriteSet('env_grasses', 'OW_TILES',
                         [253, 270, 287, 304, 725],
                         [269, 286, 303, 320, 741],
                         [ 57,  57,  57,  57,  33],
                         [ 73,  73,  73,  73,  49]);
-
+        
         ANIMANAGER.addSpriteSet('env_stones', 'OW_TILES', 
                         [759, 776],
                         [775, 792],
@@ -23,7 +31,7 @@ class AnimationBuilder {
                         [315]);
 
         /// /// L I N K /// ///
-
+        
         ANIMANAGER.addSpriteSheet('LINK', ASSET_MANAGER.getAsset('link.png'));
         ANIMANAGER.addSpriteRow('SET_link_south', 'LINK', 90, 11, 16, 24,  9, [16, 11,  9,  7, 10, 10,  7, 10]);
         ANIMANAGER.addSpriteRow('SET_link_north', 'LINK',  3, 94, 16, 24,  9, [11, 11,  8, 11,  7,  9,  8,  8]);
@@ -73,6 +81,8 @@ class AnimationBuilder {
         ANIMANAGER.addAnimation('ANIMA_bunny_north', 'SET_bunny', [5,6,7], 0.2);
         ANIMANAGER.addAnimation('ANIMA_bunny_east', 'SET_bunny', [0,1], 0.2);
         ANIMANAGER.cloneAnimation('ANIMA_bunny_west','ANIMA_bunny_east').mirrorAnimation_Horz()
+
+        */
     }
 }
 

@@ -35,8 +35,9 @@ class Sprite {
         let ofscn_canvas = new OffscreenCanvas(this.sWidth, this.sHeight);
         let ofscn_ctx = ofscn_canvas.getContext('2d');
         ofscn_ctx.scale(horz ? -1 : 1, vert ? -1 : 1);
-        ofscn_ctx.drawImage(this.src, this.sx, this.sy, this.sWidth, this.sHeight,
-            horz ? -this.sWidth : 0, vert ? -this.sHeight : 0, this.sWidth, this.sHeight
+        ofscn_ctx.drawImage(
+            this.src, this.sx, this.sy, this.sWidth, this.sHeight,
+            horz ? - this.sWidth : 0, vert ? - this.sHeight : 0, this.sWidth, this.sHeight
         );
         this.src = ofscn_canvas.transferToImageBitmap();
     }

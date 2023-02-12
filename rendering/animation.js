@@ -92,9 +92,11 @@ class Animation {
     }
 
     animate(tick, ctx, dx, dy, xScale = 1, yScale = xScale) {
+        //console.log(this.spriteSet)
         let frameNum = this.calcFrame();
+        //console.log(frameNum)
         this.spriteSet.drawSprite(ctx, frameNum, dx + this.x_offset_mod, dy + this.y_offset_mod, xScale, yScale)
-
+        
         if (DEBUG_ANIMA >= 1) {
             ctx.lineWidth = 1;
             ctx.fillStyle = "rgba(100, 220, 255, 1)";
