@@ -1,8 +1,8 @@
 const gameEngine = new GameEngine();
 const ASSET_MANAGER = new AssetManager("./assets/");
-const ANIMANAGER = new AnimationManager();
+const GRAPHICS = new GraphicsManager();
 const SCALE = 3;
-
+const TILE_SIZE = 16;
 ASSET_MANAGER.queueDownload("prototype_map.png", "link.png", "overworld_tiles.png", "enemies.png", "characters.png")
 
 ASSET_MANAGER.downloadAll(() => {
@@ -10,7 +10,7 @@ ASSET_MANAGER.downloadAll(() => {
 	const ctx = canvas.getContext("2d");
 	ctx.imageSmoothingEnabled = false;
 
-	new AnimationBuilder(); // <- just to build the sprites & animations into ANIMANAGER
+	new GraphicsLoader(); // <- just to build the sprites & animations into GRAPHICS
 
 	gameEngine.addEntity(new Player(canvas.width/2 - 144, canvas.height/2 - 32)); 
 	gameEngine.addEntity(new Knight(canvas.width/4, canvas.height/2));

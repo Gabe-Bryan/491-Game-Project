@@ -6,8 +6,9 @@ class Animation {
     constructor(id, spriteSet, fSequence, fTiming, x_offset, y_offset) {
         if (fSequence.length !== fTiming.length)
             throw new Error('Animation: fSequence and fTiming are not same length');
+            
+        Object.assign(this, {id, spriteSet, fSequence, fTiming, x_offset, y_offset });
 
-        Object.assign(this, { id, spriteSet, fSequence, fTiming, x_offset, y_offset });
         this.fCount = this.fSequence.length;
         this.init();
     }
@@ -34,23 +35,43 @@ class Animation {
     }
 
     clone(clones_id) {
-        return new Animation(
-            clones_id, this.spriteSet, 
-            this.fSequence, this.fTiming,
-            this.x_offset, this.y_offset
+        const copy_sprites = this.spriteSet.clone(this.spriteSet.id.concat("_clone"))
+        // console.log(copy_sprites)
+        // constructor(id, spriteSet, fSequence, fTiming, x_offset, y_offset)
+        const copy_anima = new Animation(clones_id, copy_sprites,
+            [...this.fSequence], [...this.fTiming], this.x_offset, this.y_offset
         );
+        // console.log(clones_id)
+        // console.log(copy_anima)
+        return copy_anima;
     }
 
     mirrorAnimation_Horz(new_x_offsets_sprite, new_x_offset_anima) {
-        const cloneID = (this.spriteSet.get_id() + '_clone');
-        const spriteSetClone = this.spriteSet.clone(cloneID);
-        spriteSetClone.mirrorSet_Horz();
-        if (!(new_x_offsets_sprite === undefined)) 
-            spriteSetClone.set_x_offsets(new_x_offsets_sprite);
+        const mirName = String(this.spriteSet.get_id() + "_HorzMirr");
+        this.spriteSet.mirrorSet_Horz();
+
+        if (!(new_x_offsets_sprite === undefined))
+            this.spriteSet.set_x_ofs(new_x_offsets_sprite);
         if (!(new_x_offset_anima === undefined))
             this.x_offset = new_x_offset_anima;
-        this.spriteSet = spriteSetClone;
+
         this.init();
+
+        // const mirName = String(this.spriteSet.get_id() + "_HorzMirr");
+        // // console.log(mirName)
+        // const spriteSetClone = this.spriteSet.clone(mirName);
+        // // console.log(spriteSetClone);
+        // spriteSetClone.mirrorSet_Horz();
+        // //console.log(spriteSetClone);
+        // if (!(new_x_offsets_sprite === undefined))
+        //     spriteSetClone.set_Xofs(new_x_offsets_sprite);
+        // if (!(new_x_offset_anima === undefined))
+        //     this.x_offset = new_x_offset_anima;
+        // console.log(this.spriteSet);
+        // this.spriteSet = spriteSetClone;
+        // console.log(this.spriteSet);
+
+        // this.init();
         
     }
 
@@ -95,7 +116,7 @@ class Animation {
         //console.log(this.spriteSet)
         let frameNum = this.calcFrame();
         //console.log(frameNum)
-        this.spriteSet.drawSprite(ctx, frameNum, dx + this.x_offset_mod, dy + this.y_offset_mod, xScale, yScale)
+        this.spriteSet.drawSprite(frameNum, ctx, dx + this.x_offset_mod, dy + this.y_offset_mod, xScale, yScale)
         
         if (DEBUG_ANIMA >= 1) {
             ctx.lineWidth = 1;

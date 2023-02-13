@@ -1,9 +1,9 @@
 const ENGINE = new GameEngine();
 const ASSET_MANAGER = new AssetManager("../assets/");
-const ANIMANAGER = new AnimationManager();
+const GRAPHICS = new GraphicsManager();
 const SCALE = 5;
 
-ASSET_MANAGER.queueDownload("link.png")
+ASSET_MANAGER.queueDownload("link.png", "enemies.png", "characters.png");
 
 ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");
@@ -19,40 +19,34 @@ ASSET_MANAGER.downloadAll(() => {
 });
 
 function loader() {
-    ANIMANAGER.addSpriteSheet('LINK', ASSET_MANAGER.getAsset('link.png'));
+    // addSpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_ofs, y_ofs)
 
-    //         id, spriteSheet, sprite_count, x_orig, y_orig, widths, heights, gaps, x_ofs, y_ofs
-    ANIMANAGER.addSpriteRow('SET_link_south', 'LINK', 9, 90, 11, 16, 24, [16, 11,  9,  7, 10, 10,  7, 10]);
+    // addSpriteRow(id, spriteSheet, sprite_count, x_orig, y_orig, widths, heights, gaps, x_ofs, y_ofs) 
+    GRAPHICS.addSpriteSheet('CHARTR1', ASSET_MANAGER.getAsset('characters.png'))
+    
+    // GRAPHICS.addSpriteRow('SET_bunny', 'CHARTR1', 8, 4, 419, 17, 25, 7);
+    GRAPHICS.addSpriteSet('SET_bunny', 'CHARTR1', [4, 28, 52, 76, 100, 125, 149, 174], 419, 17, 25);
 
-    //                            id, spriteSheet, x_orig, y_orig, width, height, count, gaps, x_offsets = 0, y_offset = 0
-    //ANIMANAGER.addSpriteRow('SET_link_south', 'LINK', 90, 11, 16, 24,  9, [16, 11,  9,  7, 10, 10,  7, 10]);
+    
+    GRAPHICS.addAnimation('ANIMA_bunny_south', 'SET_bunny', [2,3,4], 1);
+    GRAPHICS.addAnimation('ANIMA_bunny_north', 'SET_bunny', [5,6,7], 1);
+    GRAPHICS.addAnimation('ANIMA_bunny_east', 'SET_bunny', [0,1], 1);
+    GRAPHICS.cloneAnimation('ANIMA_bunny_west','ANIMA_bunny_east').mirrorAnimation_Horz()
 
-    // ANIMANAGER.addSpriteRow('SET_link_north', 'LINK',  3, 94, 16, 24,  9, [11, 11,  8, 11,  7,  9,  8,  8]);
-    // ANIMANAGER.addSpriteRow('SET_link_east' , 'LINK',  4, 55, 17, 24,  9, [10,  9, 10,  6,  8,  9,  4,  4]);
+}   // addAnimation(id, spriteSetName, fSequence, fTiming, x_offset = 0, y_offset = 0)
 
-    ANIMANAGER.addAnimation('ANIMA_link_run_south', 'SET_link_south', [1,2,3,4,5,6,7], 0.1);
-    // ANIMANAGER.addAnimation('ANIMA_link_run_north', 'SET_link_north', [1,2,3,4,5,6,7], 0.1);
-    // ANIMANAGER.addAnimation('ANIMA_link_run_east',  'SET_link_east',  [1,2,3,4,5,6,7], 0.1);
-    // ANIMANAGER.cloneAnimation('ANIMA_link_run_west', 'ANIMA_link_run_east').mirrorAnimation_Horz();
-
-    // ANIMANAGER.addAnimation('ANIMA_link_Idle_south', 'SET_link_south', [0], 2);
-    // ANIMANAGER.addAnimation('ANIMA_link_Idle_north', 'SET_link_north', [0], 2);
-    // ANIMANAGER.addAnimation('ANIMA_link_Idle_east', 'SET_link_east', [0], 2);
-    // ANIMANAGER.cloneAnimation('ANIMA_link_Idle_west', 'ANIMA_link_Idle_east').mirrorAnimation_Horz();
-}
 
 
 class Testy{
     constructor(canvas, scale) {
-        this.x = (canvas.width - 16 * scale) / 2;
-        this.y = (canvas.height - 24 * scale) / 2;
-
+        this.x = 150
+        this.y = 100
     }
 
     update() {
     }
 
     draw(ctx, scale) {
-        ANIMANAGER.getAnimation('ANIMA_link_run_south').animate(ENGINE.clockTick, ctx, this.x, this.y, scale);
+        GRAPHICS.getAnimation('ANIMA_bunny_west').animate(ENGINE.clockTick, ctx, this.x, this.y, scale);
     }
 }

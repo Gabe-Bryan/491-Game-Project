@@ -2,7 +2,7 @@ class Grass {
     constructor(xLoc, yLoc) {
         Object.assign(this, {xLoc, yLoc});
 
-        this.tiles = ANIMANAGER.getSpriteSet('env_grasses');
+        this.tiles = GRAPHICS.getSpriteSet('env_grasses');
         this.tag = 'environment';        
     };
 
@@ -11,14 +11,14 @@ class Grass {
     };
 
     draw(ctx, scale) {
-        this.tiles.drawSprite(ctx, 1, this.xLoc, this.yLoc, scale);
+        this.tiles.drawSprite(1, ctx, this.xLoc, this.yLoc, scale);
     };
 }
 
 class Stone {
     constructor(xLoc, yLoc, bgTile="grass") {
         Object.assign(this, {xLoc, yLoc, bgTile});
-        this.tiles = ANIMANAGER.getSpriteSet('env_stones');
+        this.tiles = GRAPHICS.getSpriteSet('env_stones');
         this.phys2d = {static: true};
         this.collider = {type: "box", corner: {x: xLoc, y: yLoc}, height: 16 * SCALE, width: 16 * SCALE};
         this.tag = 'environment';
@@ -36,8 +36,8 @@ class Stone {
         else if (this.bgTile == "sand")
             temp = new Sand(this.xLoc, this.yLoc);
         if (temp)
-            temp.tiles.drawSprite(ctx, tileIndex, this.xLoc, this.yLoc, scale);
-        this.tiles.drawSprite(ctx, 0, this.xLoc, this.yLoc, scale);
+            temp.tiles.drawSprite(tileIndex, ctx, this.xLoc, this.yLoc, scale);
+        this.tiles.drawSprite(0, ctx, this.xLoc, this.yLoc, scale);
     }
 }
 
@@ -45,7 +45,7 @@ class Sand {
     constructor(xLoc, yLoc) {
         Object.assign(this, {xLoc, yLoc});
 
-        this.tiles = ANIMANAGER.getSpriteSet('env_sands');
+        this.tiles = GRAPHICS.getSpriteSet('env_sands');
         this.tag = 'environment';
     };
 
@@ -54,6 +54,6 @@ class Sand {
     };
 
     draw(ctx, scale) {
-        this.tiles.drawSprite(ctx, 0, this.xLoc, this.yLoc, scale);
+        this.tiles.drawSprite(0, ctx, this.xLoc, this.yLoc, scale);
     };
 }

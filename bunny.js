@@ -20,22 +20,22 @@ class Bunny {
     setupAnimations() {
         this.animations = Array(1);
         this.animations[0] = [
-            ANIMANAGER.getAnimation('ANIMA_bunny_north'),
-            ANIMANAGER.getAnimation('ANIMA_bunny_south'),
-            ANIMANAGER.getAnimation('ANIMA_bunny_east'),
-            ANIMANAGER.getAnimation('ANIMA_bunny_west')
+            GRAPHICS.getAnimation('ANIMA_bunny_north'),
+            GRAPHICS.getAnimation('ANIMA_bunny_south'),
+            GRAPHICS.getAnimation('ANIMA_bunny_east'),
+            GRAPHICS.getAnimation('ANIMA_bunny_west')
         ]
         this.animations[1] = [
-            ANIMANAGER.getAnimation('ANIMA_bunny_north'),
-            ANIMANAGER.getAnimation('ANIMA_bunny_south'),
-            ANIMANAGER.getAnimation('ANIMA_bunny_east'),
-            ANIMANAGER.getAnimation('ANIMA_bunny_west')
+            GRAPHICS.getAnimation('ANIMA_bunny_north'),
+            GRAPHICS.getAnimation('ANIMA_bunny_south'),
+            GRAPHICS.getAnimation('ANIMA_bunny_east'),
+            GRAPHICS.getAnimation('ANIMA_bunny_west')
         ]
         this.animations[2] = [
-            ANIMANAGER.getAnimation('ANIMA_bunny_north'),
-            ANIMANAGER.getAnimation('ANIMA_bunny_south'),
-            ANIMANAGER.getAnimation('ANIMA_bunny_east'),
-            ANIMANAGER.getAnimation('ANIMA_bunny_west')
+            GRAPHICS.getAnimation('ANIMA_bunny_north'),
+            GRAPHICS.getAnimation('ANIMA_bunny_south'),
+            GRAPHICS.getAnimation('ANIMA_bunny_east'),
+            GRAPHICS.getAnimation('ANIMA_bunny_west')
         ]
     }
 
