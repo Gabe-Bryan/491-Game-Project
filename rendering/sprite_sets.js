@@ -10,9 +10,9 @@ class SpriteSet {
     }
 
     get_id() {return this.id;}
-    getSpriteCount() {return this.count;}
-    getSpriteSet() {return this.sprites};
-    getSpriteDimensions(sKey) {return [this.sprites[sKey].sWidth, this.sprites[sKey].sHeight];}
+    getCount() {return this.count;}
+    getSprites() {return this.sprites};
+    getSpriteDim(sKey) {return [this.sprites[sKey].sWidth, this.sprites[sKey].sHeight];}
 
     // spriteIngester(spriteSheet, count, sx_s, sy_s, sWidth_s, sHeight_s, x_ofs, y_ofs) {
     //     for (let i = 0; i < count; i++)

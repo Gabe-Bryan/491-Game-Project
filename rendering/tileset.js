@@ -9,19 +9,26 @@ class TileSet {
         this.tileCount = 0;
     }
 
-    add_Labeled_SpriteSet(spriteSet) {
-        spriteSet.getSpriteSet().forEach(s => this.spriteLibrary.put(s, s.label));
-    }
+    getTile(id) {return this.tiles.get(id);}
 
     addSpriteSet(spriteSet, labels) {
-        let theSprites = spriteSet.getSpriteSet();
+        let theSprites = spriteSet.getSprites();
         for (let i = 0; i < spriteSet.getCount(); i++)
-            this.spriteLibrary.put(theSprites[i], labels[i])
+            this.spriteLibrary.set
+            (
+                labels === undefined ? (theSprites[i].label === undefined ? i.toString() : theSprites[i].label) :  labels[i],
+                theSprites[i]
+            );
+    }
+
+    addTile(id, ...sprites) {
+        const mcTile = new Tile(id);
+        sprites.forEach(sprite => mcTile.addLayer(this.spriteLibrary.get(sprite)));
     }
 }
 
 class Tile {
-    constructor(id, width, height, x_scl = 1, y_scl = x_scl, backgroundColor = null) {
+    constructor(id, width = TILE_SIZE, height =TILE_SIZE, x_scl = SCALE, y_scl = x_scl, backgroundColor = null) {
         Object.assign(this, {id, width, height, x_scl, y_scl, backgroundColor});
         if (backgroundColor !== null) setBackgroundColor(backgroundColor);
         this.layers = new Array(); // fill with Sprite Objects

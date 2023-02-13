@@ -9,14 +9,20 @@ class GraphicsManager {
         this.spriteSheets = new Map(); // <string: id, object: Image>
         this.spriteSets =  new Map();  // <string: id, object: SpriteSet>
         this.animations =  new Map();  // <string: id, object: Animation>
-        this.TileSets  =  new Map();   // <string: is, object: TitleSet>
+        this.tileSets  =  new Map();   // <string: is, object: TitleSet>
 
         // should work like a look up table, ie get me <name of any valid type object> --> returns that object
         this.library = new Map();  // <string: id, object: valid type>
         // valid types are: SpriteSheet, SpriteSet, Animation, TileSet
     }
 
-    addElement(id, type, object) { 
+    /**
+     * 
+     * @param {*} id 
+     * @param {*} type 
+     * @param {*} object 
+     */
+    add(id, type, object) { 
         switch (type) {
             case 'SpriteSheet' :
                 this.spriteSheets.set(id, object);
@@ -31,18 +37,34 @@ class GraphicsManager {
                 this.library.set(id, type);
                 break;
             case 'TileSet' :
-                this.TileSets.set(id, object);
+                this.tileSets.set(id, object);
                 this.library.set(id, type);
                 break;
         }
     }
 
-    render(id, keyORtick, ctx, dx, dy, xScale, yScale) { // valid types: SpriteSheet, SpriteSet, Animation, TileSet
+    /**
+     * Get `id` from wherever it may be...
+     * @param {*} id 
+     */
+    get(id) {
         let type = this.library.get(id);
         switch (type) {
-            // case 'SpriteSheet' :
-            //     this.spriteSets.set(id, object);
-            //     break;
+            case 'SpriteSheet' :
+                return this.spriteSheets.get(id);
+            case 'SpriteSet' :
+                return this.spriteSets.get(id);
+            case 'Animation' :
+                return this.animations.get(id);
+            case 'TileSet' :
+                return this.TileSets.get(id);
+        }
+    }
+
+    // idk how well this works?????
+    render(id, keyORtick, ctx, dx, dy, xScale, yScale) {
+        
+        switch (type) {
             case 'SpriteSet' :
                 this.spriteSets.get(id).drawSprite(keyORtick, ctx, dx, dy, xScale, yScale);
                 break;
@@ -55,6 +77,8 @@ class GraphicsManager {
         }
     }
 
+
+    // only lame people still use these old fashioned getters, use the 'get' method to become cool 😎
     /** Retrieves a Sprite Sheet from the Library
      * @param {string} id The unique ID of this Sprite Sheet */
     getSpriteSheet(id) { return this.spriteSheets.get(id); }
@@ -67,6 +91,10 @@ class GraphicsManager {
      * @param {string} id The unique ID of this Animation */
     getAnimation(id) { return this.animations.get(id); }
 
+    /** Retrieves a TileSet from the Library
+     * @param {string} id The unique ID of this TileSet */
+    getTileSet(id) { return this.TileSets.get(id); }
+
     /**
      * Adds a Sprite Sheet to the Library
      * @param {string} id 
@@ -76,9 +104,23 @@ class GraphicsManager {
     addSpriteSheet(id, spriteSheet) {
         if (typeof id !== 'string') throw new Error(`id must be a string, not this: ${id}`)
         if (spriteSheet instanceof Image) {
-            this.addElement(id, 'SpriteSheet', spriteSheet);
+            this.add(id, 'SpriteSheet', spriteSheet);
             return this.getSpriteSheet(id);
         } else throw new Error(`spriteSheet must be an Image, not this: ${spriteSheet}`)
+    }
+
+    /** Validates input, makes new SpriteSet if `id` doesn't already exist, else returns the set named `id`*/
+    spriteSetSetup(id, spriteSheet) {
+        if (typeof id !== 'string')
+            throw new Error(`id must be a string, not this: ${id}`);
+
+        if ((typeof spriteSheet === 'string') && (this.spriteSheets.has(spriteSheet)))
+            spriteSheet = this.spriteSheets.get(spriteSheet);
+
+        if (!(spriteSheet instanceof Image))
+            throw new Error(`spriteSheet must be the id of a SpriteSheet object OR an Image, not this: ${spriteSheet}`);
+
+        return (this.spriteSets.has(id))? this.spriteSets.get(id) : this.addEmptySpriteSet(id);
     }
 
     /**
@@ -92,7 +134,7 @@ class GraphicsManager {
         if (typeof id !== 'string') throw new Error(`id must be a string, not this: ${id}`)
         if (this.spriteSets.has(id)) console.log(`Sprite Set ${id} has been erased!`);
         const spriteSet = new SpriteSet(id);
-        this.addElement(id, 'SpriteSet', spriteSet);
+        this.add(id, 'SpriteSet', spriteSet);
         return spriteSet
     }
 
@@ -351,9 +393,22 @@ class GraphicsManager {
 
         const setObj = this.spriteSets.get(spriteSetName); // Animation class constructor wants the SpriteSet object
         const theNewAnimation = new Animation(id, setObj, fSequence, fTiming, x_offset, y_offset);
-        this.addElement(id, 'Animation', theNewAnimation)
+        this.add(id, 'Animation', theNewAnimation)
         return theNewAnimation;
 
+    }
+
+    /**
+     *  make A tile set
+     * @param {string} id The unique ID of this TileSet
+     * @param {SpriteSet} spriteSet OPTIONAL! you can maybe skip a step by building with a SpriteSet
+     * @returns The new TileSet
+     */
+    addTileSet(id, spriteSet = null) {
+        const tileSet = new TileSet(id);
+        this.add(id, 'TileSet', tileSet);
+        if (spriteSet instanceof SpriteSet) tileSet.addSpriteSet(spriteSet);
+        return tileSet;
     }
 
     /**
@@ -365,7 +420,7 @@ class GraphicsManager {
      */
     cloneSpriteSet(clone_id, orig_id) {
         const cloneSpriteSet = this.getSpriteSet(orig_id).clone(clone_id);
-        this.addElement(clone_id, 'SpriteSet', cloneSpriteSet);
+        this.add(clone_id, 'SpriteSet', cloneSpriteSet);
         return cloneSpriteSet;
     }
 
@@ -379,22 +434,8 @@ class GraphicsManager {
     cloneAnimation(clone_id, orig_id) {
         const origAnima = this.getAnimation(orig_id);
         const cloneAnima = origAnima.clone(clone_id);
-        this.addElement(clone_id, 'Animation', cloneAnima);
+        this.add(clone_id, 'Animation', cloneAnima);
         return cloneAnima;
-    }
-
-    /** Validates input, makes new SpriteSet if `id` doesn't already exist, else returns the set named `id`*/
-    spriteSetSetup(id, spriteSheet) {
-        if (typeof id !== 'string')
-            throw new Error(`id must be a string, not this: ${id}`);
-
-        if ((typeof spriteSheet === 'string') && (this.spriteSheets.has(spriteSheet)))
-            spriteSheet = this.spriteSheets.get(spriteSheet);
-
-        if (!(spriteSheet instanceof Image))
-            throw new Error(`spriteSheet must be the id of a SpriteSheet object OR an Image, not this: ${spriteSheet}`);
-
-        return (this.spriteSets.has(id))? this.spriteSets.get(id) : this.addEmptySpriteSet(id);
     }
 
 }

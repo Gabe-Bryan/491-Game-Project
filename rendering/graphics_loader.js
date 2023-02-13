@@ -5,18 +5,16 @@ class GraphicsLoader {
         GRAPHICS.addSpriteSheet('OW_TILES', ASSET_MANAGER.getAsset('overworld_tiles.png'));
 
         GRAPHICS.addSpriteSet (
-            'env_grasses', 'OW_TILES',
-            [253, 270, 287, 304, 725],
-            [ 57,  57,  57,  57,  33],
-            16, 16
-        );
-        
-        GRAPHICS.addSpriteSet(
-            'env_stones', 'OW_TILES', 
-            [759, 776], 67,  16, 16
+            'environment', 'OW_TILES',
+            [253, 270, 287, 304, 725, 759, 776, 83],
+            [ 57,  57,  57,  57,  33, 67, 67, 299],
+            16, 16, 0, 0,
+            ['grass1', 'grass2', 'pole_stump', 'bush', 'grass3', 'light8block', 'dark8block', 'sand']
         );
 
-        GRAPHICS.addSpriteSet('env_sands', 'OW_TILES', 83, 299, 16, 16);
+        const tilesMan = GRAPHICS.addTileSet('tileSet1', GRAPHICS.get('environment'));
+        tilesMan.addTile()
+
 
         /// /// L I N K /// ///
         
