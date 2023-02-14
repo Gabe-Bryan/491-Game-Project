@@ -26,6 +26,7 @@ class SpriteSet {
 
     getSprite_byIndex(index) {return this.sprites[index];}
     getSprite_byLabel(label) {return this.sprites.find(s => s.label === label);}
+    gsl(label) {return this.getSprite_byLabel(label);}
 
     set_x_ofs(new_x_offsets) {
         for (let i = 0; i < new_x_offsets.length; i++){

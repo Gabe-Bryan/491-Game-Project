@@ -9,18 +9,19 @@ class GraphicsManager {
         this.spriteSheets = new Map(); // <string: id, object: Image>
         this.spriteSets =  new Map();  // <string: id, object: SpriteSet>
         this.animations =  new Map();  // <string: id, object: Animation>
-        this.tileSets  =  new Map();   // <string: is, object: TitleSet>
+        //this.tileSets  =  new Map();   // <string: is, object: TitleSet>
+        this.tiles =  new Map();  // <string: id, object: Animation>
 
         // should work like a look up table, ie get me <name of any valid type object> --> returns that object
         this.library = new Map();  // <string: id, object: valid type>
-        // valid types are: SpriteSheet, SpriteSet, Animation, TileSet
+        // valid types are: SpriteSheet, SpriteSet, Animation, Tile
     }
 
     /**
      * 
-     * @param {*} id 
-     * @param {*} type 
-     * @param {*} object 
+     * @param {string} id 
+     * @param {string} type 
+     * @param {Object} object SpriteSheet, SpriteSet, Animation, Tile
      */
     add(id, type, object) { 
         switch (type) {
@@ -36,8 +37,12 @@ class GraphicsManager {
                 this.animations.set(id, object);
                 this.library.set(id, type);
                 break;
-            case 'TileSet' :
-                this.tileSets.set(id, object);
+            // case 'TileSet' :
+            //     this.tileSets.set(id, object);
+            //     this.library.set(id, type);
+            //     break;
+            case 'Tile' :
+                this.tiles.set(id, object);
                 this.library.set(id, type);
                 break;
         }
@@ -45,7 +50,7 @@ class GraphicsManager {
 
     /**
      * Get `id` from wherever it may be...
-     * @param {*} id 
+     * @param {string} id 
      */
     get(id) {
         let type = this.library.get(id);
@@ -56,14 +61,16 @@ class GraphicsManager {
                 return this.spriteSets.get(id);
             case 'Animation' :
                 return this.animations.get(id);
-            case 'TileSet' :
-                return this.TileSets.get(id);
+            // case 'TileSet' :
+            //     return this.TileSets.get(id);
+            case 'Tile' :
+                return this.tiles.get(id);
         }
     }
 
     // idk how well this works?????
     render(id, keyORtick, ctx, dx, dy, xScale, yScale) {
-        
+        let type = this.library.get(id);
         switch (type) {
             case 'SpriteSet' :
                 this.spriteSets.get(id).drawSprite(keyORtick, ctx, dx, dy, xScale, yScale);
@@ -91,9 +98,13 @@ class GraphicsManager {
      * @param {string} id The unique ID of this Animation */
     getAnimation(id) { return this.animations.get(id); }
 
-    /** Retrieves a TileSet from the Library
+    // /** Retrieves a TileSet from the Library
+    //  * @param {string} id The unique ID of this TileSet */
+    // getTileSet(id) { return this.TileSets.get(id); }
+
+    /** Retrieves a Tile from the Library
      * @param {string} id The unique ID of this TileSet */
-    getTileSet(id) { return this.TileSets.get(id); }
+    getTiles(id) { return this.Tiles.get(id); }
 
     /**
      * Adds a Sprite Sheet to the Library
@@ -395,20 +406,32 @@ class GraphicsManager {
         const theNewAnimation = new Animation(id, setObj, fSequence, fTiming, x_offset, y_offset);
         this.add(id, 'Animation', theNewAnimation)
         return theNewAnimation;
-
     }
 
+    // /**
+    //  *  make A tile set
+    //  * @param {string} id The unique ID of this TileSet
+    //  * @param {SpriteSet} spriteSet OPTIONAL! you can maybe skip a step by building with a SpriteSet
+    //  * @returns The new TileSet
+    //  */
+    // addTileSet(id, spriteSet = null) {
+    //     const tileSet = new TileSet(id);
+    //     this.add(id, 'TileSet', tileSet);
+    //     if (spriteSet instanceof SpriteSet) tileSet.addSpriteSet(spriteSet);
+    //     return tileSet;
+    // }
+
     /**
-     *  make A tile set
-     * @param {string} id The unique ID of this TileSet
-     * @param {SpriteSet} spriteSet OPTIONAL! you can maybe skip a step by building with a SpriteSet
-     * @returns The new TileSet
+     * Make a tile with given sprites.
+     * @param {string} id 
+     * @param  {...Sprite} sprites 
      */
-    addTileSet(id, spriteSet = null) {
-        const tileSet = new TileSet(id);
-        this.add(id, 'TileSet', tileSet);
-        if (spriteSet instanceof SpriteSet) tileSet.addSpriteSet(spriteSet);
-        return tileSet;
+    addTile(id, ...sprites) {
+        const theTile = new Tile(id);
+        sprites.forEach(sprite => theTile.addLayer(sprite));
+        this.add(id, 'Tile', theTile);
+        //console.log(theTile)
+        return theTile;
     }
 
     /**
@@ -419,9 +442,9 @@ class GraphicsManager {
      * @returns SpriteSet clone
      */
     cloneSpriteSet(clone_id, orig_id) {
-        const cloneSpriteSet = this.getSpriteSet(orig_id).clone(clone_id);
-        this.add(clone_id, 'SpriteSet', cloneSpriteSet);
-        return cloneSpriteSet;
+        const clonedSpriteSet = this.getSpriteSet(orig_id).clone(clone_id);
+        this.add(clone_id, 'SpriteSet', clonedSpriteSet);
+        return clonedSpriteSet;
     }
 
     /**
@@ -432,10 +455,9 @@ class GraphicsManager {
      * @returns Animation clone 
      */
     cloneAnimation(clone_id, orig_id) {
-        const origAnima = this.getAnimation(orig_id);
-        const cloneAnima = origAnima.clone(clone_id);
-        this.add(clone_id, 'Animation', cloneAnima);
-        return cloneAnima;
+        const clonedAnimation = this.getAnimation(orig_id).clone(clone_id);
+        this.add(clone_id, 'Animation', clonedAnimation);
+        return clonedAnimation;
     }
 
 }

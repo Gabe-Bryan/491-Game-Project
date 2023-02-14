@@ -9,11 +9,21 @@ class GraphicsLoader {
             [253, 270, 287, 304, 725, 759, 776, 83],
             [ 57,  57,  57,  57,  33, 67, 67, 299],
             16, 16, 0, 0,
-            ['grass1', 'grass2', 'pole_stump', 'bush', 'grass3', 'light8block', 'dark8block', 'sand']
+            ['grass_light', 'grass_thick', 'signpost_stump', 'bush1', 'grass_patch', 'light8block', 'dark8block', 'sand']
         );
 
-        const tilesMan = GRAPHICS.addTileSet('tileSet1', GRAPHICS.get('environment'));
-        tilesMan.addTile()
+        const spt = GRAPHICS.get('environment');
+        GRAPHICS.addTile('grass', spt.gsl('grass_thick'));
+        GRAPHICS.addTile('sand', spt.gsl('sand'));
+        GRAPHICS.addTile('stone on grass', spt.gsl('grass_thick'), spt.gsl('light8block')).setBackgroundColor('rgb(72,152,72)');
+        GRAPHICS.addTile('stone on sand', spt.gsl('sand'), spt.gsl('light8block'));
+
+
+        // const theSprites = GRAPHICS.get('environment');
+        // theSprites.forEach(sprite => {
+        //     let label = sprite.label; // every sprite in the set needs to be already labeled
+        //     theTileSet.addTile(String(label + '_tile'), label);
+        // });
 
 
         /// /// L I N K /// ///

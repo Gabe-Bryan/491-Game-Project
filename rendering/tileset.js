@@ -1,37 +1,76 @@
 /**
  * @author Christopher Henderson
  */
+
+/*
 class TileSet {
     constructor(the_id) {
         this.id = the_id
-        this.tiles = new Map();  // <string, Tile>
+        this.tilesLibrary = new Map();  // <string, Tile>
         this.spriteLibrary = new Map(); // <label, Sprite>
         this.tileCount = 0;
     }
 
-    getTile(id) {return this.tiles.get(id);}
+    getTile(id) {return this.tilesLibrary.get(id);}
+    getSprite(label) {return this.spriteLibrary.get(label);}
+    printSpriteLib() {this.spriteLibrary.forEach((label, sprite) => console.log(`label: ${label}, sprite: ${sprite}`));}
 
     addSpriteSet(spriteSet, labels) {
         let theSprites = spriteSet.getSprites();
         for (let i = 0; i < spriteSet.getCount(); i++)
-            this.spriteLibrary.set
-            (
+            this.spriteLibrary.set (
                 labels === undefined ? (theSprites[i].label === undefined ? i.toString() : theSprites[i].label) :  labels[i],
-                theSprites[i]
-            );
+                    theSprites[i]  );
     }
 
-    addTile(id, ...sprites) {
-        const mcTile = new Tile(id);
-        sprites.forEach(sprite => mcTile.addLayer(this.spriteLibrary.get(sprite)));
+    makeEasyTileSet(spriteSet) {
+        let theSprites = spriteSet.getSprites();
+        for (let i = 0; i < spriteSet.getCount(); i++) {
+            let label = theSprites[i].label;
+            this.spriteLibrary.set(label, theSprites[i]);
+            this.addTile(label, label)
+        }
     }
+
+    addManyTiles(sprites, ids) {
+        if (ids instanceof Array && ids.length != sprites.length)
+            throw new Error(`'id' and 'sprites' arrays must have equal lengths! sprites: ${sprites}  ids: ${ids}`);
+        // else
+        for (let i = 0; i < ids.length; i++) {
+            let id = ids instanceof Array ? id[i] : sprites[i].label;
+            this.addTile(id, sprites[i]);
+        }
+    }
+
+    addTile(id, ...spriteLabels) {
+        const mcTile = new Tile(id);
+        spriteLabels.forEach(sprite => mcTile.addLayer(this.spriteLibrary.get(sprite)));
+        this.tilesLibrary.set(is, mcTile);
+        return mcTile;
+    }
+
+    cloneTile(clone_id, orig_id) {
+        const clonedTile = this.getTile(orig_id).clone(clone_id);
+        this.set(clone_id, clonedTile);
+        return clonedTile;
+    }
+
+    removeTile(id) {this.tilesLibrary.delete(id);}
+    removeSprite(label) {this.spriteLibrary.delete(label);}
 }
 
+*/
+
+
 class Tile {
-    constructor(id, width = TILE_SIZE, height =TILE_SIZE, x_scl = SCALE, y_scl = x_scl, backgroundColor = null) {
+    constructor(id, width = TILE_SIZE, height = TILE_SIZE, x_scl = SCALE, y_scl = x_scl, backgroundColor = null) {
         Object.assign(this, {id, width, height, x_scl, y_scl, backgroundColor});
         if (backgroundColor !== null) setBackgroundColor(backgroundColor);
         this.layers = new Array(); // fill with Sprite Objects
+    }
+
+    clone(clone_id) {
+        return new Tile(clone_id, this.width, this.height, this.x_scl, this.y_scl, this.backgroundColor, [...this.layers]);
     }
 
     getLayerCount() {return this.layers.length;}
@@ -70,11 +109,20 @@ class Tile {
         this.layers.forEach(sprite => sprite.draw(ctx, dx, dy, SCALE, SCALE))
     }
 
+    /**
+     * Good ol'fashin with all the fixins  🤮
+     * @param {*} ctx 
+     * @param {*} dx 
+     * @param {*} dy 
+     */
     drawTile(ctx, dx, dy) {
         if (this.backgroundColor !== null) {
             ctx.fillStyle = this.backgroundColor
-            ctx.fillRect(dx, dy, this.width, this.height);
+            ctx.fillRect(dx, dy, this.width * this.x_scl, this.height * this.y_scl);
         }
-        this.layers.forEach(sprite => sprite.draw(ctx, dx, dy, this.x_scl, this.y_scl))
+        this.layers.forEach(sprite => {
+            //console.log(this.layers)
+            sprite.draw(ctx, dx, dy, this.x_scl, this.y_scl)
+        })
     }
 }

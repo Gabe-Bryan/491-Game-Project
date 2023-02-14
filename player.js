@@ -157,7 +157,7 @@ class Player {
 
     draw(ctx, scale) {
         GRAPHICS.render(this.animations[this.state][this.facing], gameEngine.clockTick, ctx, this.x, this.y, scale);
-        //this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
+        // this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
         // GRAPHICS.getAnimation('ANIMA_bunny_west').animate(gameEngine.clockTick, ctx, 200, 200, scale);
         
         
