@@ -26,61 +26,49 @@ class Animation {
         
         this.looping = true;
         this.isReversed = false;
+        return this;
     }
 
     reset() {
         this.elapsedTime = 0;
         this.currFrame = 0;
         this.nextFrameAt = this.fTiming_mod[0] * this.tempo;
+        return this;
     }
 
     clone(clones_id) {
         const copy_sprites = this.spriteSet.clone(this.spriteSet.id.concat("_clone"))
-        // console.log(copy_sprites)
-        // constructor(id, spriteSet, fSequence, fTiming, x_offset, y_offset)
         const copy_anima = new Animation(clones_id, copy_sprites,
-            [...this.fSequence], [...this.fTiming], this.x_offset, this.y_offset
-        );
-        // console.log(clones_id)
-        // console.log(copy_anima)
+            [...this.fSequence], [...this.fTiming], this.x_offset, this.y_offset);
         return copy_anima;
     }
 
-    mirrorAnimation_Horz(new_x_offsets_sprite, new_x_offset_anima) {
-        const mirName = String(this.spriteSet.get_id() + "_HorzMirr");
+    mirrorAnimation_Horz(new_x_offsets_sprite, new_x_offset_anima) {       
         this.spriteSet.mirrorSet_Horz();
+        this.spriteSet.id = String(this.spriteSet.get_id() + "_HorzMirr");
+        let setSize = this.spriteSet.getCount();
 
-        if (!(new_x_offsets_sprite === undefined))
+        // sprite set x offset
+        if (new_x_offsets_sprite instanceof Array && new_x_offsets_sprite.length === setSize)
             this.spriteSet.set_x_ofs(new_x_offsets_sprite);
-        if (!(new_x_offset_anima === undefined))
-            this.x_offset = new_x_offset_anima;
-
-        this.init();
-
-        // const mirName = String(this.spriteSet.get_id() + "_HorzMirr");
-        // // console.log(mirName)
-        // const spriteSetClone = this.spriteSet.clone(mirName);
-        // // console.log(spriteSetClone);
-        // spriteSetClone.mirrorSet_Horz();
-        // //console.log(spriteSetClone);
-        // if (!(new_x_offsets_sprite === undefined))
-        //     spriteSetClone.set_Xofs(new_x_offsets_sprite);
-        // if (!(new_x_offset_anima === undefined))
-        //     this.x_offset = new_x_offset_anima;
-        // console.log(this.spriteSet);
-        // this.spriteSet = spriteSetClone;
-        // console.log(this.spriteSet);
-
-        // this.init();
+        else if (typeof new_x_offsets_sprite === 'number')
+            this.spriteSet.set_x_ofs(new Array(setSize).fill(new_x_offsets_sprite));
         
+        // animation x offset
+        if (new_x_offset_anima instanceof Array && new_x_offset_anima.length === setSize)
+            x_offset = new_x_offset_anima;
+        else if (typeof new_x_offset_anima === 'number')
+            x_offset.fill(new_x_offset_anima);
+
+        return this.init();
     }
 
-    getCurrentFrame() {return this.currFrame}
-    getElapsedTime()  {return this.elapsedTime}
-    getNextFrameAt()  {return this.nextFrameAt}
-    isLooping() {return this.looping}
-    // isReversed() {return this.}
-    // getFlags() {return {looping: this.looping, reversed: this.reversed}}
+    getCurrentFrame() {return this.currFrame;}
+    getElapsedTime()  {return this.elapsedTime;}
+    getNextFrameAt()  {return this.nextFrameAt;}
+    isLooping() {return this.looping;}
+    isReversed() {return this.isReversed;}
+    //getFlags() {return {looping: this.looping, reversed: this.reversed}}
 
     getFrameDimensions(log = false) {
         return spriteSet.getSpriteDimensions(this.currFrame, log);
@@ -88,16 +76,19 @@ class Animation {
 
     setLooping(looping) {
         this.looping = looping;
+        return this;
     }
 
     setAnimaSpeed(animationSpeed) {
         this.tempo = 100 / animationSpeed;
+        return this;
     }
 
     setReverseAnima() {
         this.fTiming_mod.reverse();
         this.fSequence_mod.reverse();
         this.isReversed = this.isReversed? false : true;
+        return this;
     }
 
     calcFrame() {

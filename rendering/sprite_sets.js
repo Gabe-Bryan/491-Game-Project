@@ -54,6 +54,13 @@ class SpriteSet {
         return cloneSet;
     }
     
+    /**
+     * Will mirror every sprite in this SpriteSet
+     * @param {boolean} horz flip horizontally ?
+     * @param {boolean} vert flip vertically ? 
+     */
+    mirrorSet(horz, vert) {this.sprites.forEach(sprite => sprite.mirrorImg(horz, vert));}
+
     /** Horizontally mirrors (flip over x-axis) all the sprites in this set. */
     mirrorSet_Horz() {this.sprites.forEach(sprite => sprite.mirrorImg(true, false));}
 
