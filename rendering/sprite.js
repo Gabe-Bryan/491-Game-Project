@@ -57,7 +57,7 @@ class Sprite {
 
     draw(ctx, dx, dy, x_scl = 1, y_scl = x_scl) {
         ctx.drawImage(this.src, this.sx, this.sy, this.sWidth, this.sHeight,
-            dx + this.x_ofs, dy + this.y_ofs, this.sWidth * x_scl, this.sHeight * y_scl
+            dx + this.x_ofs * x_scl, dy + this.y_ofs * y_scl, this.sWidth * x_scl, this.sHeight * y_scl
         );
     }
 

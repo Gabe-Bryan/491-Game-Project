@@ -118,16 +118,16 @@ class Animation {
         //console.log(frameNum)
         this.spriteSet.drawSprite(frameNum, ctx, dx + this.x_offset_mod, dy + this.y_offset_mod, xScale, yScale)
         
-        if (DEBUG_ANIMA >= 1) {
+        if (1) {
             ctx.lineWidth = 1;
             ctx.fillStyle = "rgba(100, 220, 255, 1)";
             ctx.strokeStyle = "rgba(50, 255, 50, 0.8)";
-            ctx.font = '10px monospace';
+            ctx.font = '12px monospace';
 
-            ctx.fillText('f:' + this.fSequence[this.currFrame], dx + 25, dy - 5); // animation frame number
+            ctx.fillText('f:' + this.fSequence[this.currFrame], dx + 35, dy - 5); // animation frame number
 
             let dur = Math.floor(this.fTiming_mod[this.currFrame] * 1000);
-            ctx.fillText('ms:' + dur, dx + 50, dy - 5); // animation frame duration in milliseconds
+            ctx.fillText('ms:' + dur, dx + 60, dy - 5); // animation frame duration in milliseconds
         }
 
         this.elapsedTime += tick;

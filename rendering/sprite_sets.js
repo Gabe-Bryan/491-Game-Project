@@ -67,7 +67,7 @@ class SpriteSet {
         if (sKey >= this.count) return;
         this.sprites[sKey].draw(ctx, dx, dy, xScale, yScale);
 
-        if(0) this.sprites[sKey].drawDebug(sKey, ctx, dx, dy, xScale, yScale)
+        if(1) this.sprites[sKey].drawDebug(sKey, ctx, dx, dy, xScale, yScale)
     }
 
 };
