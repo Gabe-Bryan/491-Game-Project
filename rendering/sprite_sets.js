@@ -1,109 +1,73 @@
-var DEBUG = 0;
-
 /**
  * @author Christopher Henderson
  */
 class SpriteSet {
-    /**@access PRIVATE so don't use*/
-    constructor(id, spriteSheet, sx_s, sy_s, sWidth_s, sHeight_s, x_offset_s, y_offset_s) {
-        Object.assign(this, { id, spriteSheet, sx_s, sy_s, sWidth_s, sHeight_s, x_offset_s, y_offset_s });
-        this.count = sx_s.length;
-
-        // building and filling the array of Sprite obj
-        this.spriteSet = Array(this.count);
-        for (let i = 0; i < this.count; i++)
-            this.spriteSet[i] = new Sprite(spriteSheet, this.sx_s[i], this.sy_s[i], this.sWidth_s[i], this.sHeight_s[i])
+    /** don't use this! Instead use the Animation Manager to build SpriteSet. */
+    constructor(the_id) {
+        this.id = the_id;
+        this.count = 0;
+        this.sprites = new Array();
     }
 
     get_id() {return this.id;}
-    set_x_offsets(new_x_offsets) {this.x_offset_s = new_x_offsets;}
+    getCount() {return this.count;}
+    getSprites() {return this.sprites};
+    getSpriteDim(sKey) {return [this.sprites[sKey].sWidth, this.sprites[sKey].sHeight];}
+
+    // spriteIngester(spriteSheet, count, sx_s, sy_s, sWidth_s, sHeight_s, x_ofs, y_ofs) {
+    //     for (let i = 0; i < count; i++)
+    //         addSprite(spriteSheet, sx_s[i], sy_s[i], sWidth_s[i], sHeight_s[i], x_ofs[i], y_ofs[i])
+    // }
+
+    addSprite(spriteSheet, sx, sy, sWidth, sHeight, x_ofs, y_ofs, label) {
+        this.sprites.push(new Sprite(spriteSheet, sx, sy, sWidth, sHeight, x_ofs, y_ofs, label));
+        this.count++;
+    }
+
+    getSprite_byIndex(index) {return this.sprites[index];}
+    getSprite_byLabel(label) {return this.sprites.find(s => s.label === label);}
+    gsl(label) {return this.getSprite_byLabel(label);}
+
+    set_x_ofs(new_x_offsets) {
+        for (let i = 0; i < new_x_offsets.length; i++){
+            this.sprites[i].x_ofs = new_x_offsets[i];
+        }
+    }
+
+    set_y_ofs(new_y_offsets) {
+        for (let i = 0; i < new_y_offsets.length; i++){
+            this.sprites[i].y_ofs = new_y_offsets[i];
+        }
+    }
 
     clone(clones_id) {
-        return new SpriteSet(
-            clones_id, this.spriteSheet,
-            this.sx_s, this.sy_s, 
-            this.sWidth_s, this.sHeight_s,
-            this.x_offset_s, this.y_offset_s
-        );
+        const clone = new SpriteSet(clones_id);
+        clone.count = this.count;
+        clone.sprites = this.spriteSetClone();
+        return clone;
+    }
+
+    spriteSetClone() {
+        const cloneSet = new Array();
+        for (let i = 0; i < this.count; i++)
+            cloneSet.push(this.sprites[i].clone());
+        return cloneSet;
     }
     
     /** Horizontally mirrors (flip over x-axis) all the sprites in this set. */
-    mirrorSet_Horz() {this.spriteSet.forEach(sprite => sprite.mirrorImg(true, false));}
+    mirrorSet_Horz() {this.sprites.forEach(sprite => sprite.mirrorImg(true, false));}
 
     /** Vertically mirrors (flip over y-axis) all the sprites in this set. */
-    mirrorSet_Vert() { this.spriteSet.forEach(sprite => sprite.mirrorImg(false, true)); }
+    mirrorSet_Vert() {this.sprites.forEach(sprite => sprite.mirrorImg(false, true));}
 
     /** Horizontally & Vertically mirrors all the sprites in this set. */
-    mirrorSet_Both() { this.spriteSet.forEach(sprite => sprite.mirrorImg(true, true)); }
+    mirrorSet_Both() {this.sprites.forEach(sprite => sprite.mirrorImg(true, true));}
 
-    getSpriteCount() {
-        return this.count;
-    }
-
-    getSpriteDimensions(spriteKey, log = false) {
-        if (log)
-            console.log(`${this.id}[${spriteKey}] --> width: ${sWidth_s[spriteKey]}, height:${sHeight_s[spriteKey]}`);
-        return [sWidth_s[spriteKey], sHeight_s[spriteKey]];
-    }
-
-    drawSprite(ctx, sKey, dx, dy, xScale = 1, yScale = xScale) {
+    drawSprite(sKey, ctx, dx, dy, xScale, yScale) {
         if (sKey >= this.count) return;
+        this.sprites[sKey].draw(ctx, dx, dy, xScale, yScale);
 
-        let sWidth = this.sWidth_s[sKey];
-        let sHeight = this.sHeight_s[sKey];
-        let dWidth = sWidth * xScale;
-        let dHeight = sHeight * yScale;
-
-        dx += this.x_offset_s[sKey] * xScale;
-        dy += this.y_offset_s[sKey] * yScale;
-
-        if (DEBUG >= 2) {
-            console.log(`dx:${dx}  dy:${dy}  xs:${xScale}  ys:${yScale}  sx:${sx}  sy:${sy}  sWidth:${sWidth}  
-            sHeight:${sHeight}  dWidth:${dWidth}  dHeight:${dHeight}`)
-        }
-
-        // ctx.drawImage(this.spriteSet[sKey], 0, 0, sWidth, sHeight, dx, dy, dWidth, dHeight);
-        this.spriteSet[sKey].draw(ctx, dx, dy, dWidth, dHeight);
-
-        if (DEBUG >= 1) {
-            ctx.lineWidth = 1;
-            ctx.fillStyle = "rgba(100, 220, 255, 1)";
-            ctx.strokeStyle = "rgba(50, 255, 50, 0.8)";
-            ctx.font = '9px monospace';
-
-            ctx.strokeRect(dx, dy, dWidth, dHeight);
-            ctx.fillText('s:' + sKey, dx + 2, dy - 5); // sprite number
-            ctx.fillText('x:' + Math.floor(dx), dx + 2, dy - 25); // x orig-cord
-            ctx.fillText('y:' + Math.floor(dy), dx + 2, dy - 15); // y orig-cord
-            ctx.fillText('w:' + dWidth, dx + (dWidth / 2) - 12, dy + dHeight + 15); // width of sprite
-            ctx.fillText('h:' + dHeight, dx + dWidth + 5, dy + (dHeight / 2) + 5);  // height of sprite
-        }
+        if(0) this.sprites[sKey].drawDebug(sKey, ctx, dx, dy, xScale, yScale)
     }
 
-    /* Not used for this project
-    tileSprite(ctx, spriteIndex, dx, dy, numHorzTiles, numVertTiles, xScale = 1, yScale = xScale) {
-        if (spriteIndex instanceof Array) {
-            let sWidth = this.sWidth_s[spriteIndex[0]];
-            let sHeight = this.sHeight_s[spriteIndex[0]];
-
-            for (let h = 0; h < numHorzTiles; h++) {
-                for (let v = 0; v < numVertTiles; v++) {
-                    let dx_t = dx + h * sWidth * xScale;
-                    let dy_t = dy + v * sHeight * yScale;
-                    this.drawSprite(ctx, spriteIndex[v, h], dx_t, dy_t, xScale, yScale);
-                }
-            }
-        } else {
-            let sWidth = this.sWidth_s[spriteIndex];
-            let sHeight = this.sHeight_s[spriteIndex];
-
-            for (let h = 0; h < numHorzTiles; h++) {
-                for (let v = 0; v < numVertTiles; v++) {
-                    let dx_t = dx + h * sWidth * xScale;
-                    let dy_t = dy + v * sHeight * yScale;
-                    this.drawSprite(ctx, spriteIndex, dx_t, dy_t, xScale, yScale);
-                }
-            }
-        }
-    } */
 };

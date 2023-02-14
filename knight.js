@@ -20,22 +20,22 @@ class Knight {
     setupAnimations() {
         this.animations = Array(1);
         this.animations[0] = [
-            ANIMANAGER.getAnimation('ANIMA_blue_enemy_north'),
-            ANIMANAGER.getAnimation('ANIMA_blue_enemy_south'),
-            ANIMANAGER.getAnimation('ANIMA_blue_enemy_east'),
-            ANIMANAGER.getAnimation('ANIMA_blue_enemy_west')
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_north'),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_south'),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_east'),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_west')
         ]
         this.animations[1] = [
-            ANIMANAGER.getAnimation('ANIMA_blue_enemy_north'),
-            ANIMANAGER.getAnimation('ANIMA_blue_enemy_south'),
-            ANIMANAGER.getAnimation('ANIMA_blue_enemy_east'),
-            ANIMANAGER.getAnimation('ANIMA_blue_enemy_west')
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_north'),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_south'),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_east'),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_west')
         ]
         this.animations[2] = [
-            ANIMANAGER.getAnimation('ANIMA_blue_enemy_north'),
-            ANIMANAGER.getAnimation('ANIMA_blue_enemy_south'),
-            ANIMANAGER.getAnimation('ANIMA_blue_enemy_east'),
-            ANIMANAGER.getAnimation('ANIMA_blue_enemy_west')
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_north'),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_south'),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_east'),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_west')
         ]
     }
 

@@ -25,30 +25,30 @@ class Player {
 
         // idle animations
         // facing north
-        this.animations[0][0] = ANIMANAGER.getAnimation('ANIMA_link_Idle_north');
+        this.animations[0][0] = 'ANIMA_link_Idle_north';
         // facing south
-        this.animations[0][1] = ANIMANAGER.getAnimation('ANIMA_link_Idle_south');
+        this.animations[0][1] = 'ANIMA_link_Idle_south';
         // facing east
-        this.animations[0][2] = ANIMANAGER.getAnimation('ANIMA_link_Idle_east');
+        this.animations[0][2] = 'ANIMA_link_Idle_east';
         // facing west
-        this.animations[0][3] = ANIMANAGER.getAnimation('ANIMA_link_Idle_west');
+        this.animations[0][3] = 'ANIMA_link_Idle_west';
 
         //walking animations
         //facing north
-        this.animations[1][0] = ANIMANAGER.getAnimation('ANIMA_link_run_north');
+        this.animations[1][0] = 'ANIMA_link_run_north';
         // facing south
-        this.animations[1][1] = ANIMANAGER.getAnimation('ANIMA_link_run_south');
+        this.animations[1][1] = 'ANIMA_link_run_south';
         // facing east
-        this.animations[1][2] = ANIMANAGER.getAnimation('ANIMA_link_run_east');
+        this.animations[1][2] = 'ANIMA_link_run_east';
         // facing west
-        this.animations[1][3] = ANIMANAGER.getAnimation('ANIMA_link_run_west');
+        this.animations[1][3] = 'ANIMA_link_run_west';
 
-        this.animations[2][0] = ANIMANAGER.getAnimation('ANIMA_link_attack_west');
-        this.animations[2][1] = ANIMANAGER.getAnimation('ANIMA_link_attack_east');
-        this.animations[2][2] = ANIMANAGER.getAnimation('ANIMA_link_attack_east');
-        this.animations[2][3] = ANIMANAGER.getAnimation('ANIMA_link_attack_west');
+        this.animations[2][0] = 'ANIMA_link_attack_west';
+        this.animations[2][1] = 'ANIMA_link_attack_east';
+        this.animations[2][2] = 'ANIMA_link_attack_east';
+        this.animations[2][3] = 'ANIMA_link_attack_west';
 
-        this.attackTime = this.animations[2][0].fTiming.reduce((a, b) => a+b);
+        this.attackTime = GRAPHICS.getAnimation('ANIMA_link_attack_west').fTiming.reduce((a, b) => a+b);
     };
 
     updateState() {
@@ -156,10 +156,12 @@ class Player {
     }
 
     draw(ctx, scale) {
-        this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
+        GRAPHICS.render(this.animations[this.state][this.facing], gameEngine.clockTick, ctx, this.x, this.y, scale);
+        // this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
+        // GRAPHICS.getAnimation('ANIMA_bunny_west').animate(gameEngine.clockTick, ctx, 200, 200, scale);
+        
+        
         if(this.colliding && this.sidesAffected) this.drawCollider(ctx);
-        // ANIMANAGER.getAnimation('ANIMA_bunny_west').animate(gameEngine.clockTick, ctx, 200, 200, scale);
-
         if(this.DEBUG) {
             ctx.fillStyle = "#f0f";
             let cW = this.collider.width;
