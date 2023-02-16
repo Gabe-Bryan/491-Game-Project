@@ -1,8 +1,9 @@
 class Player {
-    static MAX_VEL = 600; //Pixels per second (I think -Gabe)
+    static MAX_VEL = 200; //Pixels per second (I think -Gabe)
     constructor(x, y) {
         Object.assign(this, {x, y});
 
+        this.DEBUG = false;
         this.state = 0;     // 0:idle, 1:walking, 2:attacking
         this.facing = 1;    // 0:north, 1:south, 2:east, 3:west
         this.attackHitCollector = [];
@@ -24,30 +25,30 @@ class Player {
 
         // idle animations
         // facing north
-        this.animations[0][0] = ANIMANAGER.getAnimation('ANIMA_link_Idle_north');
+        this.animations[0][0] = 'ANIMA_link_Idle_north';
         // facing south
-        this.animations[0][1] = ANIMANAGER.getAnimation('ANIMA_link_Idle_south');
+        this.animations[0][1] = 'ANIMA_link_Idle_south';
         // facing east
-        this.animations[0][2] = ANIMANAGER.getAnimation('ANIMA_link_Idle_east');
+        this.animations[0][2] = 'ANIMA_link_Idle_east';
         // facing west
-        this.animations[0][3] = ANIMANAGER.getAnimation('ANIMA_link_Idle_west');
+        this.animations[0][3] = 'ANIMA_link_Idle_west';
 
         //walking animations
         //facing north
-        this.animations[1][0] = ANIMANAGER.getAnimation('ANIMA_link_run_north');
+        this.animations[1][0] = 'ANIMA_link_run_north';
         // facing south
-        this.animations[1][1] = ANIMANAGER.getAnimation('ANIMA_link_run_south');
+        this.animations[1][1] = 'ANIMA_link_run_south';
         // facing east
-        this.animations[1][2] = ANIMANAGER.getAnimation('ANIMA_link_run_east');
+        this.animations[1][2] = 'ANIMA_link_run_east';
         // facing west
-        this.animations[1][3] = ANIMANAGER.getAnimation('ANIMA_link_run_west');
+        this.animations[1][3] = 'ANIMA_link_run_west';
 
-        this.animations[2][0] = ANIMANAGER.getAnimation('ANIMA_link_attack_west');
-        this.animations[2][1] = ANIMANAGER.getAnimation('ANIMA_link_attack_east');
-        this.animations[2][2] = ANIMANAGER.getAnimation('ANIMA_link_attack_east');
-        this.animations[2][3] = ANIMANAGER.getAnimation('ANIMA_link_attack_west');
+        this.animations[2][0] = 'ANIMA_link_attack_west';
+        this.animations[2][1] = 'ANIMA_link_attack_east';
+        this.animations[2][2] = 'ANIMA_link_attack_east';
+        this.animations[2][3] = 'ANIMA_link_attack_west';
 
-        this.attackTime = this.animations[2][0].fTiming.reduce((a, b) => a+b);
+        this.attackTime = GRAPHICS.getAnimation('ANIMA_link_attack_west').fTiming.reduce((a, b) => a+b);
     };
 
     /*updateState() {
@@ -124,7 +125,7 @@ class Player {
     }
 
     updateCollider(){
-        this.collider = {type: "box", corner: {x: this.x, y: (this.y + 28)}, width: 56, height: 56};
+        this.collider = {type: "box", corner: {x: this.x+1, y: (this.y + 28)+1}, width: 14*SCALE, height: 14*SCALE};
     }
 
     drawCollider(ctx) {
@@ -160,8 +161,30 @@ class Player {
     }
 
     draw(ctx, scale) {
-        this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
+        GRAPHICS.render(this.animations[this.state][this.facing], gameEngine.clockTick, ctx, this.x, this.y, scale);
+        // this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
+        // GRAPHICS.getAnimation('ANIMA_bunny_west').animate(gameEngine.clockTick, ctx, 200, 200, scale);
+        
+        
         if(this.colliding && this.sidesAffected) this.drawCollider(ctx);
-        //ANIMANAGER.getAnimation('ANIMA_link_attack_west').animate(gameEngine.clockTick, ctx, 200, 200, scale);
+        if(this.DEBUG) {
+            ctx.fillStyle = "#f0f";
+            let cW = this.collider.width;
+            let cH = this.collider.height;
+            let cX = this.collider.corner.x;
+            let cY = this.collider.corner.y;
+            let nX = cX + (cW/2);
+            let nY = cY + (cH/2);
+            let dS = 3;
+            ctx.fillStyle = "#f00";
+            ctx.fillRect(cX, cY, cW, cH);
+            ctx.fillStyle = "#00f";
+            ctx.fillRect(nX-dS, nY-dS, dS*scale, dS*scale);
+            ctx.fillStyle = "#333";
+            ctx.fillRect(10, ctx.canvas.height - 40, 100, 30)
+            ctx.fillStyle = "#fff";
+            ctx.font = "20px monospace";
+            ctx.fillText(`(${Math.floor(cX)},${Math.floor(cY)})`, 10, ctx.canvas.height-20);
+        }
     };
 }
