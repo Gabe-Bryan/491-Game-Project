@@ -6,6 +6,50 @@ const COLLIDER_TYPES = ["line", "box", "circle"];
 
 const COLLISION_GAP = 0.01;//Gap that is created when a physics collision is made
 
+/**
+ * Called on all entities that have a phys2d component
+ * @param {*} entities 
+ */
+const updatePhys = (entities) => {
+    let entitiesCount = entities.length;
+    for(let i =0; i < entitiesCount; i++){
+        let entity = entities[i];
+        if(!entity.removeFromWorld && entity.phys2d && !entity.phys2d.static){
+            let prevX = entity.x;
+            let prevY = entity.y;
+
+            entity.x += entity.phys2d.velocity.x;
+            entity.y += entity.phys2d.velocity.y;
+            if(entity.collider && entity.phys2d.isSolid !== false){
+                entity.updateCollider();
+                correctMovement(prevX, prevY, entity);
+            }
+            
+        }
+    }
+}
+
+/**
+     * Called once per tick after adjusting player position
+     * @param {*} prevX x value before velocity was applied
+     * @param {*} prevY y value before velocity was applied
+     */
+correctMovement = (prevX, prevY, me) => {
+    me.colliding = false;//.sort((e1, e2) => -(distance(e1, this) - distance(e2, this)))
+    gameEngine.scene.env_entities.forEach(entity => {
+        if(entity.collider != undefined && entity.collider.type === "box" && entity != me){
+            //Check to see if player is colliding with entity
+            let colliding = checkCollision(me, entity);
+            me.colliding = colliding || me.colliding;//store for later purposes
+            //check to see if the collision entity is solid and the type of entity we are looking for
+            if(colliding && entity.phys2d && entity.phys2d.static && entity.tag == "environment"){
+                dynmStaticColHandler(me, entity, prevX, prevY);//Handle collision
+                me.updateCollider();
+            }
+        }
+    });
+}
+
 const checkCollision = (entity1, entity2, callback = undefined) => {
     if(entity1.collider == null || entity2.collider == null) {
         console.error("You are passing an entity that has no collider!");
@@ -84,17 +128,21 @@ const circleCircleCol = (circle1, circle2, callback = (dist) => dist <= circle1.
  * @param {*} callback 
  */
 const boxBoxCol = (box1, box2, callback = (whereIsB1) => {return !(whereIsB1.up || whereIsB1.down || whereIsB1.right || whereIsB1.left)}) => {
-    let xDist = box1.corner.x - box2.corner.x;
-    let yDist = box1.corner.y - box2.corner.y;
-    let maxHeight = Math.max(box1.height, box2.height);
-    let maxWidth = Math.max(box1.width, box2.width);
-    let results = { up: yDist <= -box1.height,
-                    down: yDist >= box2.height, 
-                    right: xDist >= box2.height, 
-                    left: xDist <= -box1.height};
-    //console.log(results);
+    try{
+        let xDist = box1.corner.x - box2.corner.x;
+        let yDist = box1.corner.y - box2.corner.y;
+        let maxHeight = Math.max(box1.height, box2.height);
+        let maxWidth = Math.max(box1.width, box2.width);
+        let results = { up: yDist <= -box1.height,
+                        down: yDist >= box2.height, 
+                        right: xDist >= box2.height, 
+                        left: xDist <= -box1.height};
+        //console.log(results);
 
-    return callback(results);
+        return callback(results);
+    }catch(TypeError){
+        console.error(box1);
+    }
 }
 
 /**
@@ -170,3 +218,23 @@ const distance = (point1, point2) => {
     return Math.sqrt((point2.x - point1.x) ** 2 + (point2.y - point1.y) ** 2);
 }
 
+const distVect = (point1, point2) => {
+    return {x: point2.x - point1.x, y: point2.y - point1.y};
+}
+
+const scaleVect = (vector, scalar) =>{
+    return {x: vector.x * scalar, y: vector.y * scalar};
+}
+
+const addVect = (v1, v2) => {return {x: v1.x +v2.x, y: v1.y + v2.y}};
+
+const drawBoxCollider = (ctx, entity) => {
+    /*if(entity.colliding != undefined){
+        ctx.strokeStyle = "red";
+    } else {
+        ctx.strokeStyle = "green";
+    }*/
+    ctx.strokeStyle = entity.colliding ? "red" : "green";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(entity.collider.corner.x, entity.collider.corner.y, entity.collider.width, entity.collider.height);
+}

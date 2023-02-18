@@ -17,26 +17,8 @@ class SceneManager{
     }
 
     update(){
-        this.updateList(this.env_entities);
-        this.updateList(this.interact_entities);
-    }
-
-    updateList(entities){
-        let entitiesCount = entities.length;
-
-        for (let i = 0; i < entitiesCount; i++) {
-            let entity = entities[i];
-
-            if (!entity.removeFromWorld) {
-                entity.update();
-            }
-        }
-
-        for (let i = entities.length - 1; i >= 0; --i) {
-            if (entities[i].removeFromWorld) {
-                entities.splice(i, 1);
-            }
-        }
+        updateList(this.env_entities);
+        updateList(this.interact_entities);
     }
 
     addInteractable(entity){

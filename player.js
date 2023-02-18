@@ -1,18 +1,30 @@
 class Player {
+    
+    static MAX_HP = 10;
     static MAX_VEL = 200; //Pixels per second (I think -Gabe)
+    static KB_DUR = 0.05;
+
+    static CURR_PLAYER = undefined;
+
     constructor(x, y) {
         Object.assign(this, {x, y});
 
-        this.DEBUG = false;
-        this.state = 0;     // 0:idle, 1:walking, 2:attacking
-        this.facing = 1;    // 0:north, 1:south, 2:east, 3:west
-        this.attackHitCollector = [];
+        this.DEBUG = true;
+        this.state = 0;     // 0:idle, 1:walking, 2:attacking, 3: taking damage
+        this.facing = 1;    
+        this.attackHitbox = undefined;
+        this.attackHBDim = {width: 20 * SCALE, height: 32 * SCALE};
+        this.attackHBOffset = {x: 0, y: -3 * SCALE};
 
         this.animations = [];
         this.setupAnimations();
 
         this.phys2d = {static: false, velocity: {x: 0, y: 0}};
         this.tag = "player";
+        this.updateCollider();
+
+        this.hp = Player.MAX_HP;
+        this.kbLeft = 0;
     };
 
     setupAnimations() {
@@ -43,17 +55,39 @@ class Player {
         // facing west
         this.animations[1][3] = 'ANIMA_link_run_west';
 
+        //North
         this.animations[2][0] = 'ANIMA_link_attack_west';
+        //South
         this.animations[2][1] = 'ANIMA_link_attack_east';
+        //East
         this.animations[2][2] = 'ANIMA_link_attack_east';
+        //West
         this.animations[2][3] = 'ANIMA_link_attack_west';
 
         this.attackTime = GRAPHICS.getAnimation('ANIMA_link_attack_west').fTiming.reduce((a, b) => a+b);
     };
 
-    updateState() {
+    /*updateState() {
         if (this.phys2d.velocity.x != 0 || this.phys2d.velocity.y != 0) this.state = 1;
         else this.state = 0;
+    }*/
+    updateState(moveIn, attackIn){
+        if(attackIn || this.state == 2) {
+            if(this.state != 2) {
+                this.attackTimeLeft = this.attackTime;
+                this.attackHits = [];
+            }
+            this.state = 2;
+        }
+        else if(moveIn.x != 0 || moveIn.y != 0) this.state = 1;
+        else this.state = 0;
+    }
+
+    updateDirection(moveIn){
+        if(moveIn.x > 0) this.facing = 2;
+        else if(moveIn.x < 0) this.facing = 3;
+        else if(moveIn.y > 0) this.facing = 0;
+        else if (moveIn.y < 0) this.facing = 1;
     }
 
     update() {
@@ -61,69 +95,141 @@ class Player {
         this.sidesAffected = undefined;
         
         let walkStateChange = this.state <= 1 ? 1 : this.state;
-        if (gameEngine.keys["w"])      [this.facing, this.state, this.phys2d.velocity.y] = [0, walkStateChange, -Player.MAX_VEL];
-        else if (gameEngine.keys["s"]) [this.facing, this.state, this.phys2d.velocity.y] = [1, walkStateChange, Player.MAX_VEL];
-        else                            this.phys2d.velocity.y = 0;
+        let moveIn = {x: 0, y: 0}
+        if (gameEngine.keys["w"])      moveIn.y = 1;//[this.facing, this.state, this.phys2d.velocity.y] = [0, walkStateChange, -Player.MAX_VEL];
+        else if (gameEngine.keys["s"]) moveIn.y = -1;//[this.facing, this.state, this.phys2d.velocity.y] = [1, walkStateChange, Player.MAX_VEL];
         
-        if (gameEngine.keys["d"])      [this.facing, this.state, this.phys2d.velocity.x] = [2, walkStateChange, Player.MAX_VEL];
-        else if (gameEngine.keys["a"]) [this.facing, this.state, this.phys2d.velocity.x] = [3, walkStateChange, -Player.MAX_VEL];
-        else                            this.phys2d.velocity.x = 0;
+        if (gameEngine.keys["d"])      moveIn.x = 1;//[this.facing, this.state, this.phys2d.velocity.x] = [2, walkStateChange, Player.MAX_VEL];
+        else if (gameEngine.keys["a"]) moveIn.x = -1;//[this.facing, this.state, this.phys2d.velocity.x] = [3, walkStateChange, -Player.MAX_VEL];
+        
+        this.moveIn = normalizeVector(moveIn);
+        this.attackIn = gameEngine.keys['j'];
+        this.updateState(this.moveIn, this.attackIn);
 
-        if(gameEngine.keys["j"] && this.state != 2) {this.state = 2; this.attackTimeLeft = this.attackTime;}
+        if(this.state != 2) this.updateDirection(this.moveIn);
+        else this.processAttack();
 
-        if(this.state == 2) this.processAttack();
-        let velocityMod = this.state == 2 ? 1/4 : 1;
-        this.phys2d.velocity = normalizeVector(this.phys2d.velocity);
-        this.phys2d.velocity.x *= Player.MAX_VEL * gameEngine.clockTick * velocityMod;
-        this.phys2d.velocity.y *= Player.MAX_VEL * gameEngine.clockTick * velocityMod;
+        if(this.kbLeft > 0){
+            this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
+            //console.log(this.phys2d.velocity);
+            console.log(this.kbVect);
+            this.phys2d.velocity.x *= gameEngine.clockTick;
+            this.phys2d.velocity.y *= gameEngine.clockTick;
 
-        if(this.state != 2) this.updateState();
-
-        let prevX = this.x;
-        let prevY = this.y;
-
-        this.x += this.phys2d.velocity.x;
-        this.y += this.phys2d.velocity.y;
-        this.updateCollider();
-        this.collisionChecker(prevX, prevY);
-
+            this.kbLeft -= gameEngine.clockTick;
+        }else{
+            let velocityMod = this.state == 2 ? 1/2 : 1;
+            this.phys2d.velocity.x = this.moveIn.x * Player.MAX_VEL * gameEngine.clockTick * velocityMod;
+            this.phys2d.velocity.y = this.moveIn.y * -1 * Player.MAX_VEL * gameEngine.clockTick * velocityMod;    
+        }
+        
         gameEngine.currMap.screenEdgeTransition(this);
     };
 
-    /**
-     * Called once per tick after adjusting player position
-     * @param {*} prevX x value before velocity was applied
-     * @param {*} prevY y value before velocity was applied
-     */
-    collisionChecker(prevX, prevY) {
-        this.colliding = false;//.sort((e1, e2) => -(distance(e1, this) - distance(e2, this)))
-        gameEngine.scene.env_entities.forEach(entity => {
-            if(entity.collider != undefined && entity.collider.type === "box" && entity != this){
-                //Check to see if player is colliding with entity
-                let colliding = checkCollision(this, entity);
-                this.colliding = colliding || this.colliding;//store for later purposes
-                //check to see if the collision entity is solid and the type of entity we are looking for
-                if(colliding && entity.phys2d && entity.phys2d.static && entity.tag == "environment"){
-                    dynmStaticColHandler(this, entity, prevX, prevY);//Handle collision
-                    this.updateCollider();
-                    //prevX = this.x;
-                    //prevY = this.y;
-                }
-            }
-        });
-    }
-
     processAttack(){
         this.attackTimeLeft -= gameEngine.clockTick;
-        if(this.attackTimeLeft - gameEngine.clockTick <= 0) this.state = 0;
-        else console.log('time left: ' + this.attackTimeLeft + ' out of: ' + this.attackTime);
+        if(this.attackTimeLeft - gameEngine.clockTick <= 0) {
+            this.state = 0;
+            this.resetAnims();
+        }
+        else {
+            //console.log("Time left for attack: " + this.attackTimeLeft);
+            let hDist = this.attackHBDim.height - this.collider.height;
+            let yAdjust = hDist/2;
+
+            let xAdjust = this.facing == 0 || this.facing == 3 ? -this.attackHBDim.width : this.collider.width;
+
+            let AHBcorner = {x: this.collider.corner.x + xAdjust, y: this.collider.corner.y - yAdjust + this.attackHBOffset.y};
+            this.attackHitbox = {type: "box", corner: AHBcorner, width: this.attackHBDim.width, height: this.attackHBDim.height};
+        
+            //Attack collision det and handling
+            this.hitEnemy = false;
+            gameEngine.entities.forEach((entity) =>{
+                if(entity != this && entity.collider && entity.collider.type == "box" 
+                    && entity.tag == "enemy" && !this.attackHits.includes(entity)){
+                    let hit = boxBoxCol(this.attackHitbox, entity.collider);
+                    this.hitEnemy = hit || this.hitEnemy;//stored for debugging
+                    if(hit) {
+                        let kbDir = normalizeVector(distVect(this.collider.corner, entity.collider.corner));
+                        let kb = scaleVect(kbDir, 300 * SCALE);
+                        console.log(kb);
+                        this.dealDamage(entity, kb);
+                        this.attackHits.push(entity);
+                    }
+                }
+            });
+        }
+    }
+
+    dealDamage(entity, kb){
+        entity.takeDamage(1, kb);
+    }
+
+    takeDamage(amount, kb){
+        console.log("GYahaAAaaa: " + amount);
+        this.kbVect = {x: kb.x, y: kb.y};
+        this.kbLeft = Player.KB_DUR;
+        this.hp -= amount;
+        if(this.hp < 0){
+            this.removeFromWorld = true;
+        }
     }
 
     updateCollider(){
         this.collider = {type: "box", corner: {x: this.x+1, y: (this.y + 28)+1}, width: 14*SCALE, height: 14*SCALE};
     }
 
-    drawCollider(ctx) {
+    resetAnims(){
+        for(let i = 0; i < this.animations.length; i++){
+            for(let j = 0; j < this.animations[i].length; j++){
+                GRAPHICS.getAnimation(this.animations[i][j]).reset();
+            }
+        }
+    }
+
+    drawAttack(ctx, scale){
+        ctx.strokeStyle = this.hitEnemy ? "red" : "green";
+        //console.log(this.hitEnemy);
+        ctx.lineWidth = 2;
+        //ctx.fillRect(0, 0, 1000, 1000);
+        ctx.strokeRect(this.attackHitbox.corner.x, this.attackHitbox.corner.y, this.attackHitbox.width, this.attackHitbox.height);
+    }
+
+    draw(ctx, scale) {
+        GRAPHICS.render(this.animations[this.state][this.facing], gameEngine.clockTick, ctx, this.x, this.y, scale);
+        // this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
+        // GRAPHICS.getAnimation('ANIMA_bunny_west').animate(gameEngine.clockTick, ctx, 200, 200, scale);
+
+        
+        if(this.DEBUG) {
+            //this.drawCollider(ctx);
+            if(this.state == 2) this.drawAttack(ctx, scale);
+            /*
+            ctx.fillStyle = "#f0f";
+            let cW = this.collider.width;
+            let cH = this.collider.height;
+            let cX = this.collider.corner.x;
+            let cY = this.collider.corner.y;
+            let nX = cX + (cW/2);
+            let nY = cY + (cH/2);
+            let dS = 3;
+            ctx.fillStyle = "#f00";
+            ctx.fillRect(cX, cY, cW, cH);
+            ctx.fillStyle = "#00f";
+            ctx.fillRect(nX-dS, nY-dS, dS*scale, dS*scale);
+            ctx.fillStyle = "#333";
+            ctx.fillRect(10, ctx.canvas.height - 40, 100, 30)
+            ctx.fillStyle = "#fff";
+            ctx.font = "20px monospace";
+            ctx.fillText(`(${Math.floor(cX)},${Math.floor(cY)})`, 10, ctx.canvas.height-20);
+            */
+        }
+        
+        
+    };
+
+    /**    
+        drawCollider(ctx) {
         ctx.beginPath();
         ctx.moveTo(this.collider.corner.x, this.collider.corner.y);
         ctx.lineWidth = 5;
@@ -153,33 +259,5 @@ class Player {
         ctx.lineTo(this.collider.corner.x, this.collider.corner.y);
         ctx.stroke();
         ctx.closePath();
-    }
-
-    draw(ctx, scale) {
-        GRAPHICS.render(this.animations[this.state][this.facing], gameEngine.clockTick, ctx, this.x, this.y, scale);
-        // this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
-        // GRAPHICS.getAnimation('ANIMA_bunny_west').animate(gameEngine.clockTick, ctx, 200, 200, scale);
-        
-        
-        if(this.colliding && this.sidesAffected) this.drawCollider(ctx);
-        if(this.DEBUG) {
-            ctx.fillStyle = "#f0f";
-            let cW = this.collider.width;
-            let cH = this.collider.height;
-            let cX = this.collider.corner.x;
-            let cY = this.collider.corner.y;
-            let nX = cX + (cW/2);
-            let nY = cY + (cH/2);
-            let dS = 3;
-            ctx.fillStyle = "#f00";
-            ctx.fillRect(cX, cY, cW, cH);
-            ctx.fillStyle = "#00f";
-            ctx.fillRect(nX-dS, nY-dS, dS*scale, dS*scale);
-            ctx.fillStyle = "#333";
-            ctx.fillRect(10, ctx.canvas.height - 40, 100, 30)
-            ctx.fillStyle = "#fff";
-            ctx.font = "20px monospace";
-            ctx.fillText(`(${Math.floor(cX)},${Math.floor(cY)})`, 10, ctx.canvas.height-20);
-        }
-    };
+    } */
 }

@@ -50,6 +50,47 @@ window.requestAnimFrame = (() => {
 })();
 
 /**
+ * The core function responsible for the update loop
+ * 1. Calls each entities update function
+ * 2. Performs all of the physics updates
+ * 3. Deletes any entities marked with "removeFromWorld" as true
+ * @param {} entities the list of entities that should be updated
+ */
+const updateList = (entities) => {
+    let entitiesCount = entities.length;
+
+    for (let i = 0; i < entitiesCount; i++) {
+        let entity = entities[i];
+
+        if (!entity.removeFromWorld) {
+            entity.update();
+        }
+    }
+
+    updatePhys(entities);
+
+    for (let i = entities.length - 1; i >= 0; --i) {
+        if (entities[i].removeFromWorld) {
+            entities.splice(i, 1);
+        }
+    }
+}
+
+const drawList = (entities, ctx, scale) => {
+    // Draw latest things first
+    for (let i = entities.length - 1; i >= 0; i--) {
+        let entity = entities[i];
+        entity.draw(ctx, SCALE);
+        if(entity.DEBUG && entity.collider && entity.collider.type == 'box'){
+            
+            if(entity == undefined) console.log("happens here too");
+            console.log(entity);
+            drawBoxCollider(ctx, entity);
+        }
+    }
+}
+
+/**
  * Returns distance from two points
  * @param {Number} p1, p2 Two objects with x and y coordinates
  * @returns Distance between the two points
@@ -57,3 +98,16 @@ window.requestAnimFrame = (() => {
 const getDistance = (p1, p2) => {
     return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 };
+
+/**
+ * returns the normalized vector for the direction
+ *  0:north, 1:south, 2:east, 3:west
+ */ 
+const getDirVect = (dir) => {
+    switch(dir){
+        case 0: return {x: 0, y: 1};
+        case 1: return {x: 0, y: -1};
+        case 2: return {x: 1, y: 0};
+        case 3: return {x: -1, y: 0};
+    }
+}

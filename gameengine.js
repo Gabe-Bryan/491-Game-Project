@@ -91,29 +91,19 @@ class GameEngine {
         this.scene.draw(this.ctx, SCALE);
 
         // Draw latest things in non-scene entities first
-        for (let i = this.entities.length - 1; i >= 0; i--) {
-            this.entities[i].draw(this.ctx, SCALE);
-        }
+        /*for (let i = this.entities.length - 1; i >= 0; i--) {
+            let entity = this.entities[i];
+            entity.draw(this.ctx, SCALE);
+            if(entity.DEBUG && entity.collider && entity.collider == 'box'){
+                drawBoxCollider(entity);
+            }
+        }*/
+        drawList(this.entities, this.ctx);
     };
 
     update() {
-        let entitiesCount = this.entities.length;
-
-        for (let i = 0; i < entitiesCount; i++) {
-            let entity = this.entities[i];
-
-            if (!entity.removeFromWorld) {
-                entity.update();
-            }
-        }
-
-        for (let i = this.entities.length - 1; i >= 0; --i) {
-            if (this.entities[i].removeFromWorld) {
-                this.entities.splice(i, 1);
-            }
-        }
-
-        this.scene.update();
+        //All of the real updating takes place in this method @util.js
+        updateList(this.entities);
     };
 
     loop() {
