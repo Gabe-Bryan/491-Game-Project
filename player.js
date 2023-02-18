@@ -15,6 +15,7 @@ class Player {
 
         this.phys2d = {static: false, velocity: {x: 0, y: 0}};
         this.tag = "player";
+        this.updateCollider();
     };
 
     setupAnimations() {
@@ -103,39 +104,8 @@ class Player {
         this.phys2d.velocity.x = this.moveIn.x * Player.MAX_VEL * gameEngine.clockTick * velocityMod;
         this.phys2d.velocity.y = this.moveIn.y * -1 * Player.MAX_VEL * gameEngine.clockTick * velocityMod;
 
-        let prevX = this.x;
-        let prevY = this.y;
-
-        this.x += this.phys2d.velocity.x;
-        this.y += this.phys2d.velocity.y;
-        this.updateCollider();
-        this.collisionChecker(prevX, prevY);
-
         gameEngine.currMap.screenEdgeTransition(this);
     };
-
-    /**
-     * Called once per tick after adjusting player position
-     * @param {*} prevX x value before velocity was applied
-     * @param {*} prevY y value before velocity was applied
-     */
-    collisionChecker(prevX, prevY) {
-        this.colliding = false;//.sort((e1, e2) => -(distance(e1, this) - distance(e2, this)))
-        gameEngine.scene.env_entities.forEach(entity => {
-            if(entity.collider != undefined && entity.collider.type === "box" && entity != this){
-                //Check to see if player is colliding with entity
-                let colliding = checkCollision(this, entity);
-                this.colliding = colliding || this.colliding;//store for later purposes
-                //check to see if the collision entity is solid and the type of entity we are looking for
-                if(colliding && entity.phys2d && entity.phys2d.static && entity.tag == "environment"){
-                    dynmStaticColHandler(this, entity, prevX, prevY);//Handle collision
-                    this.updateCollider();
-                    //prevX = this.x;
-                    //prevY = this.y;
-                }
-            }
-        });
-    }
 
     processAttack(){
         this.attackTimeLeft -= gameEngine.clockTick;

@@ -97,23 +97,8 @@ class GameEngine {
     };
 
     update() {
-        let entitiesCount = this.entities.length;
-
-        for (let i = 0; i < entitiesCount; i++) {
-            let entity = this.entities[i];
-
-            if (!entity.removeFromWorld) {
-                entity.update();
-            }
-        }
-
-        for (let i = this.entities.length - 1; i >= 0; --i) {
-            if (this.entities[i].removeFromWorld) {
-                this.entities.splice(i, 1);
-            }
-        }
-
-        this.scene.update();
+        //All of the real updating takes place in this method @util.js
+        updateList(this.entities);
     };
 
     loop() {

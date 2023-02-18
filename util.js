@@ -49,6 +49,26 @@ window.requestAnimFrame = (() => {
         });
 })();
 
+const updateList = (entities) => {
+    let entitiesCount = entities.length;
+
+    for (let i = 0; i < entitiesCount; i++) {
+        let entity = entities[i];
+
+        if (!entity.removeFromWorld) {
+            entity.update();
+        }
+    }
+
+    updatePhys(entities);
+
+    for (let i = entities.length - 1; i >= 0; --i) {
+        if (entities[i].removeFromWorld) {
+            entities.splice(i, 1);
+        }
+    }
+}
+
 /**
  * Returns distance from two points
  * @param {Number} p1, p2 Two objects with x and y coordinates

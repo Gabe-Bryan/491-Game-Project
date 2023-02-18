@@ -17,6 +17,8 @@ class Bunny {
 
         this.phys2d = {static: false, velocity: {x: 0, y: 0}};
         this.tag = "enemy";
+        this.updateCollider();
+
         this.hp = Bunny.MAX_HP;
         this.kbLeft = 0;
     }
@@ -98,14 +100,6 @@ class Bunny {
         }
 
         if(this.state != 2) this.updateState();
-
-        let prevX = this.x;
-        let prevY = this.y;
-
-        this.x += this.phys2d.velocity.x;
-        this.y += this.phys2d.velocity.y;
-        this.updateCollider();
-        this.collisionChecker(prevX, prevY);
     };
 
 
@@ -117,29 +111,6 @@ class Bunny {
         if(this.hp < 0){
             this.removeFromWorld = true;
         }
-    }
-
-    /**
-     * Called once per tick after adjusting player position
-     * @param {*} prevX x value before velocity was applied
-     * @param {*} prevY y value before velocity was applied
-     */
-    collisionChecker(prevX, prevY) {
-        this.colliding = false;//.sort((e1, e2) => -(distance(e1, this) - distance(e2, this)))
-        gameEngine.scene.env_entities.forEach(entity => {
-            if(entity.collider != undefined && entity.collider.type === "box" && entity != this){
-                //Check to see if player is colliding with entity
-                let colliding = checkCollision(this, entity);
-                this.colliding = colliding || this.colliding;//store for later purposes
-                //check to see if the collision entity is solid and the type of entity we are looking for
-                if(colliding && entity.phys2d && entity.phys2d.static && entity.tag == "environment"){
-                    dynmStaticColHandler(this, entity, prevX, prevY);//Handle collision
-                    this.updateCollider();
-                    //prevX = this.x;
-                    //prevY = this.y;
-                }
-            }
-        });
     }
 
     updateCollider(){
