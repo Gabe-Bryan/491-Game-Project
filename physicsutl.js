@@ -84,17 +84,21 @@ const circleCircleCol = (circle1, circle2, callback = (dist) => dist <= circle1.
  * @param {*} callback 
  */
 const boxBoxCol = (box1, box2, callback = (whereIsB1) => {return !(whereIsB1.up || whereIsB1.down || whereIsB1.right || whereIsB1.left)}) => {
-    let xDist = box1.corner.x - box2.corner.x;
-    let yDist = box1.corner.y - box2.corner.y;
-    let maxHeight = Math.max(box1.height, box2.height);
-    let maxWidth = Math.max(box1.width, box2.width);
-    let results = { up: yDist <= -box1.height,
-                    down: yDist >= box2.height, 
-                    right: xDist >= box2.height, 
-                    left: xDist <= -box1.height};
-    //console.log(results);
+    try{
+        let xDist = box1.corner.x - box2.corner.x;
+        let yDist = box1.corner.y - box2.corner.y;
+        let maxHeight = Math.max(box1.height, box2.height);
+        let maxWidth = Math.max(box1.width, box2.width);
+        let results = { up: yDist <= -box1.height,
+                        down: yDist >= box2.height, 
+                        right: xDist >= box2.height, 
+                        left: xDist <= -box1.height};
+        //console.log(results);
 
-    return callback(results);
+        return callback(results);
+    }catch(TypeError){
+        console.error(box1);
+    }
 }
 
 /**
@@ -168,5 +172,13 @@ const normalizeVector = (vector) => {
 
 const distance = (point1, point2) => {
     return Math.sqrt((point2.x - point1.x) ** 2 + (point2.y - point1.y) ** 2);
+}
+
+const distVect = (point1, point2) => {
+    return {x: point2.x - point1.x, y: point2.y - point1.y};
+}
+
+const scaleVect = (vector, scalar) =>{
+    return {x: vector.x * scalar, y: vector.y * scalar};
 }
 

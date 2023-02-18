@@ -1,14 +1,19 @@
 class Knight {
+    static MAX_HP = 10;
+    static KB_DUR = 0.05;
+
     constructor(x, y) {
         Object.assign(this, {x, y});
 
-        this.state = 0;  // 0:idle,  1:walking, 2:attacking
+        this.state = 0;  // 0:idle,  1:walking, 2:attacking, 3: taking damage
         this.facing = 1; // 0:north, 1:south,   2:east, 3:west
         this.attackHitCollector = [];
 
         this.currButton = 1;
         this.elapsedTime = 0;
         this.nextChange = 1;
+        this.hp = Knight.MAX_HP;
+        this.kbLeft = 0;
 
         this.animations = [];
         this.setupAnimations();
@@ -74,10 +79,19 @@ class Knight {
         // if(gameEngine.keys["j"] && this.state != 2) {this.state = 2; console.log('attacking...');}
 
         // if(this.state == 2) this.processAttack();
+        if(this.kbLeft <= 0) {
+            this.phys2d.velocity = normalizeVector(this.phys2d.velocity);
+            this.phys2d.velocity.x *= Player.MAX_VEL * gameEngine.clockTick;
+            this.phys2d.velocity.y *= Player.MAX_VEL * gameEngine.clockTick;
+        }else{
+            this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
+            //console.log(this.phys2d.velocity);
+            console.log(this.kbVect);
+            this.phys2d.velocity.x *= gameEngine.clockTick;
+            this.phys2d.velocity.y *= gameEngine.clockTick;
 
-        this.phys2d.velocity = normalizeVector(this.phys2d.velocity);
-        this.phys2d.velocity.x *= Player.MAX_VEL * gameEngine.clockTick;
-        this.phys2d.velocity.y *= Player.MAX_VEL * gameEngine.clockTick;
+            this.kbLeft -= gameEngine.clockTick;
+        }
 
         // if(this.state != 2) this.updateState();
 
@@ -91,6 +105,16 @@ class Knight {
 
         // gameEngine.currMap.screenEdgeTransition(this);
     };
+
+    takeDamage(amount, kb){
+        console.log("That fleshwound hurt exactly this much: " + amount);
+        this.kbVect = {x: kb.x, y: kb.y};
+        this.kbLeft = Knight.KB_DUR;
+        this.hp -= amount;
+        if(this.hp < 0){
+            this.removeFromWorld = true;
+        }
+    }
 
     /**
      * Called once per tick after adjusting player position

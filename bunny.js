@@ -1,4 +1,6 @@
 class Bunny {
+    static MAX_HP = 3;
+    static KB_DUR = 0.1;
     constructor(x, y) {
         Object.assign(this, {x, y});
 
@@ -15,6 +17,8 @@ class Bunny {
 
         this.phys2d = {static: false, velocity: {x: 0, y: 0}};
         this.tag = "enemy";
+        this.hp = Bunny.MAX_HP;
+        this.kbLeft = 0;
     }
 
     setupAnimations() {
@@ -79,9 +83,19 @@ class Bunny {
         else if (this.currButton === 3) [this.facing, this.state, this.phys2d.velocity.x] = [3, 1, -Player.MAX_VEL];
         else                            this.phys2d.velocity.x = 0;
 
-        this.phys2d.velocity = normalizeVector(this.phys2d.velocity);
-        this.phys2d.velocity.x *= Player.MAX_VEL * gameEngine.clockTick;
-        this.phys2d.velocity.y *= Player.MAX_VEL * gameEngine.clockTick;
+        if(this.kbLeft <= 0) {
+            this.phys2d.velocity = normalizeVector(this.phys2d.velocity);
+            this.phys2d.velocity.x *= Player.MAX_VEL * gameEngine.clockTick;
+            this.phys2d.velocity.y *= Player.MAX_VEL * gameEngine.clockTick;
+        }else{
+            this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
+            //console.log(this.phys2d.velocity);
+            console.log(this.kbVect);
+            this.phys2d.velocity.x *= gameEngine.clockTick;
+            this.phys2d.velocity.y *= gameEngine.clockTick;
+
+            this.kbLeft -= gameEngine.clockTick;
+        }
 
         if(this.state != 2) this.updateState();
 
@@ -95,6 +109,15 @@ class Bunny {
     };
 
 
+    takeDamage(amount, kb){
+        console.log("Ow my leg. That hurt exactly this much: " + amount);
+        this.kbVect = {x: kb.x, y: kb.y};
+        this.kbLeft = Bunny.KB_DUR;
+        this.hp -= amount;
+        if(this.hp < 0){
+            this.removeFromWorld = true;
+        }
+    }
 
     /**
      * Called once per tick after adjusting player position
