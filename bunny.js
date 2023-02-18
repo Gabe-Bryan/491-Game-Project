@@ -4,6 +4,7 @@ class Bunny {
     constructor(x, y) {
         Object.assign(this, {x, y});
 
+        this.DEBUG = true;
         this.state = 0;  // 0:idle,  1:walking, 2:attacking
         this.facing = 1; // 0:north, 1:south,   2:east, 3:west
         this.attackHitCollector = [];
@@ -104,7 +105,7 @@ class Bunny {
 
 
     takeDamage(amount, kb){
-        console.log("Ow my leg. That hurt exactly this much: " + amount);
+        //console.log("Ow my leg. That hurt exactly this much: " + amount);
         this.kbVect = {x: kb.x, y: kb.y};
         this.kbLeft = Bunny.KB_DUR;
         this.hp -= amount;
@@ -117,40 +118,7 @@ class Bunny {
         this.collider = {type: "box", corner: {x: this.x, y: (this.y + 28)}, width: 56, height: 56};
     }
 
-    drawCollider(ctx) {
-        ctx.beginPath();
-        ctx.moveTo(this.collider.corner.x, this.collider.corner.y);
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = this.sidesAffected.down ? "green" : "red";
-        ctx.lineTo(this.collider.corner.x + this.collider.width, this.collider.corner.y);
-        ctx.stroke();
-        ctx.closePath();
-        
-        ctx.beginPath();
-        ctx.moveTo(this.collider.corner.x + this.collider.width, this.collider.corner.y);
-        ctx.strokeStyle = this.sidesAffected.left ? "green" : "red";
-        ctx.lineTo(this.collider.corner.x + this.collider.width, this.collider.corner.y + this.collider.height);
-        ctx.stroke();
-        ctx.closePath();
-
-        
-        ctx.beginPath();
-        ctx.moveTo(this.collider.corner.x + this.collider.width, this.collider.corner.y + this.collider.height);
-        ctx.strokeStyle = this.sidesAffected.up ? "green" : "red";
-        ctx.lineTo(this.collider.corner.x, this.collider.corner.y + this.collider.height);
-        ctx.stroke();
-        ctx.closePath();
-        
-        ctx.beginPath();
-        ctx.moveTo(this.collider.corner.x, this.collider.corner.y + this.collider.height);
-        ctx.strokeStyle = this.sidesAffected.right ? "green" : "red";
-        ctx.lineTo(this.collider.corner.x, this.collider.corner.y);
-        ctx.stroke();
-        ctx.closePath();
-    }
-
     draw(ctx, scale) {
         this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
-        // if(this.colliding && this.sidesAffected) this.drawCollider(ctx);
     }
 }

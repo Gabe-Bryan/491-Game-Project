@@ -1,11 +1,17 @@
 class Player {
+    
+    static MAX_HP = 10;
     static MAX_VEL = 200; //Pixels per second (I think -Gabe)
+    static KB_DUR = 0.05;
+
+    static CURR_PLAYER = undefined;
+
     constructor(x, y) {
         Object.assign(this, {x, y});
 
         this.DEBUG = true;
-        this.state = 0;     // 0:idle, 1:walking, 2:attacking
-        this.facing = 1;    // 0:north, 1:south, 2:east, 3:west
+        this.state = 0;     // 0:idle, 1:walking, 2:attacking, 3: taking damage
+        this.facing = 1;    
         this.attackHitbox = undefined;
         this.attackHBDim = {width: 20 * SCALE, height: 32 * SCALE};
         this.attackHBOffset = {x: 0, y: -3 * SCALE};
@@ -16,6 +22,9 @@ class Player {
         this.phys2d = {static: false, velocity: {x: 0, y: 0}};
         this.tag = "player";
         this.updateCollider();
+
+        this.hp = Player.MAX_HP;
+        this.kbLeft = 0;
     };
 
     setupAnimations() {
@@ -100,10 +109,20 @@ class Player {
         if(this.state != 2) this.updateDirection(this.moveIn);
         else this.processAttack();
 
-        let velocityMod = this.state == 2 ? 1/2 : 1;
-        this.phys2d.velocity.x = this.moveIn.x * Player.MAX_VEL * gameEngine.clockTick * velocityMod;
-        this.phys2d.velocity.y = this.moveIn.y * -1 * Player.MAX_VEL * gameEngine.clockTick * velocityMod;
+        if(this.kbLeft > 0){
+            this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
+            //console.log(this.phys2d.velocity);
+            console.log(this.kbVect);
+            this.phys2d.velocity.x *= gameEngine.clockTick;
+            this.phys2d.velocity.y *= gameEngine.clockTick;
 
+            this.kbLeft -= gameEngine.clockTick;
+        }else{
+            let velocityMod = this.state == 2 ? 1/2 : 1;
+            this.phys2d.velocity.x = this.moveIn.x * Player.MAX_VEL * gameEngine.clockTick * velocityMod;
+            this.phys2d.velocity.y = this.moveIn.y * -1 * Player.MAX_VEL * gameEngine.clockTick * velocityMod;    
+        }
+        
         gameEngine.currMap.screenEdgeTransition(this);
     };
 
@@ -146,6 +165,16 @@ class Player {
         entity.takeDamage(1, kb);
     }
 
+    takeDamage(amount, kb){
+        console.log("GYahaAAaaa: " + amount);
+        this.kbVect = {x: kb.x, y: kb.y};
+        this.kbLeft = Player.KB_DUR;
+        this.hp -= amount;
+        if(this.hp < 0){
+            this.removeFromWorld = true;
+        }
+    }
+
     updateCollider(){
         this.collider = {type: "box", corner: {x: this.x+1, y: (this.y + 28)+1}, width: 14*SCALE, height: 14*SCALE};
     }
@@ -156,12 +185,6 @@ class Player {
                 GRAPHICS.getAnimation(this.animations[i][j]).reset();
             }
         }
-    }
-
-    drawCollider(ctx){
-        ctx.strokeStyle = this.colliding ? "red" : "green";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(this.collider.corner.x, this.collider.corner.y, this.collider.width, this.collider.height);
     }
 
     drawAttack(ctx, scale){
@@ -179,7 +202,7 @@ class Player {
 
         
         if(this.DEBUG) {
-            this.drawCollider(ctx);
+            //this.drawCollider(ctx);
             if(this.state == 2) this.drawAttack(ctx, scale);
             /*
             ctx.fillStyle = "#f0f";

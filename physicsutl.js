@@ -227,3 +227,14 @@ const scaleVect = (vector, scalar) =>{
 }
 
 const addVect = (v1, v2) => {return {x: v1.x +v2.x, y: v1.y + v2.y}};
+
+const drawBoxCollider = (ctx, entity) => {
+    /*if(entity.colliding != undefined){
+        ctx.strokeStyle = "red";
+    } else {
+        ctx.strokeStyle = "green";
+    }*/
+    ctx.strokeStyle = entity.colliding ? "red" : "green";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(entity.collider.corner.x, entity.collider.corner.y, entity.collider.width, entity.collider.height);
+}

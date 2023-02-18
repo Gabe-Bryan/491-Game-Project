@@ -91,9 +91,14 @@ class GameEngine {
         this.scene.draw(this.ctx, SCALE);
 
         // Draw latest things in non-scene entities first
-        for (let i = this.entities.length - 1; i >= 0; i--) {
-            this.entities[i].draw(this.ctx, SCALE);
-        }
+        /*for (let i = this.entities.length - 1; i >= 0; i--) {
+            let entity = this.entities[i];
+            entity.draw(this.ctx, SCALE);
+            if(entity.DEBUG && entity.collider && entity.collider == 'box'){
+                drawBoxCollider(entity);
+            }
+        }*/
+        drawList(this.entities, this.ctx);
     };
 
     update() {
