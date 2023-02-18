@@ -25,21 +25,23 @@ class Animation {
         this.nextFrameAt = this.fTiming_mod[0] * this.tempo;
         
         this.looping = true;
-        this.isReversed = false;
+        this.reversed = false;
+        this.done = false;
         return this;
     }
 
     reset() {
         this.elapsedTime = 0;
         this.currFrame = 0;
+        this.done = false;
         this.nextFrameAt = this.fTiming_mod[0] * this.tempo;
         return this;
     }
 
-    clone(clones_id) {
+    clone(clones_id, clone_x_offset = this.x_offset, clone_y_offset = this.y_offset) {
         const copy_sprites = this.spriteSet.clone(this.spriteSet.id.concat("_clone"))
         const copy_anima = new Animation(clones_id, copy_sprites,
-            [...this.fSequence], [...this.fTiming], this.x_offset, this.y_offset);
+            [...this.fSequence], [...this.fTiming], clone_x_offset, clone_y_offset);
         return copy_anima;
     }
 
@@ -67,7 +69,8 @@ class Animation {
     getElapsedTime()  {return this.elapsedTime;}
     getNextFrameAt()  {return this.nextFrameAt;}
     isLooping() {return this.looping;}
-    isReversed() {return this.isReversed;}
+    isReversed() {return this.reversed;}
+    isDone() {return this.done;}
     //getFlags() {return {looping: this.looping, reversed: this.reversed}}
 
     getFrameDimensions(log = false) {
@@ -87,7 +90,7 @@ class Animation {
     setReverseAnima() {
         this.fTiming_mod.reverse();
         this.fSequence_mod.reverse();
-        this.isReversed = this.isReversed? false : true;
+        this.reversed = this.reversed? false : true;
         return this;
     }
 
@@ -98,7 +101,7 @@ class Animation {
                 this.nextFrameAt += this.fTiming_mod[this.currFrame] * this.tempo;
             }
             else if (this.looping) this.reset();
-            // else just keep returning the last frame
+            else this.done = true; // will keep returning the last frame if called again
         }
         return this.fSequence_mod[this.currFrame];
     }
@@ -107,7 +110,7 @@ class Animation {
         //console.log(this.spriteSet)
         let frameNum = this.calcFrame();
         //console.log(frameNum)
-        this.spriteSet.drawSprite(frameNum, ctx, dx + this.x_offset_mod, dy + this.y_offset_mod, xScale, yScale)
+        this.spriteSet.drawSprite(frameNum, ctx, dx + this.x_offset_mod * xScale, dy + this.y_offset_mod * yScale, xScale, yScale)
         
         if (1) {
             ctx.lineWidth = 1;

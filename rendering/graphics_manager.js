@@ -289,7 +289,7 @@ class GraphicsManager {
             widths, heights,  // widths, heights
             0, gaps,          // row_gaps, col_gaps
             x_ofs, y_ofs,     // x_ofs, y_ofs
-            true, true, labels
+            labels
         );
     }
     
@@ -321,7 +321,7 @@ class GraphicsManager {
             widths, heights,  // widths, heights
             gaps, 0,          // row_gaps, col_gaps
             x_ofs, y_ofs,     // x_ofs, y_ofs
-            false, false, labels
+            labels
         );
     }
 
@@ -454,8 +454,8 @@ class GraphicsManager {
      * @param {string} orig_id
      * @returns Animation clone 
      */
-    cloneAnimation(clone_id, orig_id) {
-        const clonedAnimation = this.getAnimation(orig_id).clone(clone_id);
+    cloneAnimation(clone_id, orig_id, clone_x_offset, clone_y_offset) {
+        const clonedAnimation = this.getAnimation(orig_id).clone(clone_id, clone_x_offset, clone_y_offset);
         this.add(clone_id, 'Animation', clonedAnimation);
         return clonedAnimation;
     }
