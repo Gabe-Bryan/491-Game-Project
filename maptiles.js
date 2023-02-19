@@ -61,3 +61,44 @@ class Sand {
         GRAPHICS.get('sand').drawTile(ctx, this.xLoc, this.yLoc);
     };
 }
+
+class BlueStoneFloor {
+    constructor(xLoc, yLoc) {
+        Object.assign(this, {xLoc, yLoc});
+    }
+
+    update() {
+
+    };
+
+    draw(ctx, scale) {
+        GRAPHICS.get('floor blue cobblestone').drawTile(ctx, this.xLoc, this.yLoc);
+    }
+}
+
+class BlockerYellowDoor {
+    constructor(xLoc, yLoc) {
+        Object.assign(this, {xLoc, yLoc});
+        this.locked = true;
+        this.phys2d = {static: true};
+        this.collider = {type: "box", corner: {x: xLoc, y: yLoc}, height: 16 * SCALE, width: 16 * SCALE};
+        this.tag = 'environment';
+    }
+
+    update() {
+
+        if (gameEngine.scene.interact_entities.length <= 0) {
+            this.locked = false;
+            //this.phys2d = {static: true, isSolid: false};
+            this.collider = null;
+        }
+    };
+
+    draw(ctx, scale) {
+        if (this.locked) {
+            GRAPHICS.get('blocker yellow stone').drawTile(ctx, this.xLoc, this.yLoc);
+        } else {
+            GRAPHICS.get('grass').drawTile(ctx, this.xLoc, this.yLoc);
+        }
+    }
+}

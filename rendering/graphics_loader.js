@@ -3,8 +3,9 @@ class GraphicsLoader {
 
         /// /// T I L E S /// ///
         GRAPHICS.addSpriteSheet('OW_TILES', ASSET_MANAGER.getAsset('overworld_tiles.png'));
+        GRAPHICS.addSpriteSheet('DUNGEON_TILES', ASSET_MANAGER.getAsset('dungeon_tiles.png'));
 
-        GRAPHICS.addSpriteSet (
+        GRAPHICS.addSpriteSet(
             'environment', 'OW_TILES',
             [253, 270, 287, 304, 725, 759, 776, 83],
             [ 57,  57,  57,  57,  33, 67, 67, 299],
@@ -12,12 +13,23 @@ class GraphicsLoader {
             ['grass_light', 'grass_thick', 'signpost_stump', 'bush1', 'grass_patch', 'light8block', 'dark8block', 'sand']
         );
 
+        GRAPHICS.addSpriteSet(
+            'environment', 'DUNGEON_TILES',
+            [31, 59, 391],
+            [46, 30, 712],
+            16, 16, 0, 0,
+            ['floor_blue_cobblestone', 'floor_purple_stone_tile', 'blocker_yellow_stone']
+        );
+
         const spt = GRAPHICS.get('environment');
         GRAPHICS.addTile('grass', spt.gsl('grass_thick'));
         GRAPHICS.addTile('sand', spt.gsl('sand'));
         GRAPHICS.addTile('stone on grass', spt.gsl('grass_thick'), spt.gsl('light8block')).setBackgroundColor('rgb(72,152,72)');
         GRAPHICS.addTile('stone on sand', spt.gsl('sand'), spt.gsl('light8block'));
-
+        GRAPHICS.addTile('floor blue cobblestone', spt.gsl('floor_blue_cobblestone'));
+        GRAPHICS.addTile('floor purple stone tile', spt.gsl('floor_purple_stone_tile'));
+        GRAPHICS.addTile('blocker yellow stone', spt.gsl('blocker_yellow_stone'))
+        
 
         // const theSprites = GRAPHICS.get('environment');
         // theSprites.forEach(sprite => {

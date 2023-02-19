@@ -150,7 +150,7 @@ class Player {
         
             //Attack collision det and handling
             this.hitEnemy = false;
-            gameEngine.entities.forEach((entity) =>{
+            gameEngine.scene.interact_entities.forEach((entity) =>{
                 if(entity != this && entity.collider && entity.collider.type == "box" 
                     && entity.tag == "enemy" && !this.attackHits.includes(entity)){
                     let hit = boxBoxCol(this.attackHitbox, entity.collider);
