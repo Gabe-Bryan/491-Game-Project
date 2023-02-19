@@ -27,36 +27,38 @@ class GameMap {
     }
 
     screenEdgeTransition(player) {
-        let horizBuffer = player.collider.width/2;
-        let vertBuffer = player.collider.height/2;
+        let horizBuffer = 5;
+        let vertBuffer = 10;
 
-        let cX = player.collider.corner.x;
-        let cY = player.collider.corner.y;
+        let halfWidth = player.collider.width / 2;
+        let halfHeight = player.collider.height / 2;
+        let cX = player.collider.corner.x + halfWidth;
+        let cY = player.collider.corner.y + halfHeight;
 
-        if (cX + horizBuffer < 0) {                               // WEST EDGE
+        if (cX < 0) {                                           // WEST EDGE
             gameEngine.scene.clearScene();
-            player.x = this.cellWidthInPx - horizBuffer;
+            player.x = this.cellWidthInPx - halfWidth - horizBuffer;
             this.loadMapCell(this.currCellX - 1, this.currCellY);
             this.addMapEntitiesToEngine(gameEngine);
             this.addInteractableToEngine(gameEngine);
         
-        } else if (cX + horizBuffer > this.cellWidthInPx) {       // EAST EDGE
+        } else if (cX > this.cellWidthInPx) {                   // EAST EDGE
             gameEngine.scene.clearScene();
-            player.x = 0 - horizBuffer;
+            player.x = 0 - halfWidth + horizBuffer;
             this.loadMapCell(this.currCellX + 1, this.currCellY);
             this.addMapEntitiesToEngine(gameEngine);
             this.addInteractableToEngine(gameEngine);
         
-        } else if (cY + vertBuffer < 0) {                        // NORTH EDGE
+        } else if (cY < 0) {                                    // NORTH EDGE
             gameEngine.scene.clearScene();
-            player.y = this.cellHeightInPx - (vertBuffer + 28);
+            player.y = this.cellHeightInPx - halfHeight*2 - vertBuffer;
             this.loadMapCell(this.currCellX, this.currCellY - 1);
             this.addMapEntitiesToEngine(gameEngine);
             this.addInteractableToEngine(gameEngine);
         
-        } else if (cY + vertBuffer > this.cellHeightInPx) {      // SOUTH EDGE
+        } else if (cY > this.cellHeightInPx) {                  // SOUTH EDGE
             gameEngine.scene.clearScene();
-            player.y = 0 - (vertBuffer+28);
+            player.y = 0 - halfHeight*2 + vertBuffer;
             this.loadMapCell(this.currCellX, this.currCellY + 1);
             this.addMapEntitiesToEngine(gameEngine);
             this.addInteractableToEngine(gameEngine);
