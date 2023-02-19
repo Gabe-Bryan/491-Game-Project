@@ -77,13 +77,13 @@ class Animation {
         return spriteSet.getSpriteDimensions(this.currFrame, log);
     }
 
-    setLooping(looping) {
-        this.looping = looping;
+    setLooping(the_looping) {
+        this.looping = the_looping;
         return this;
     }
 
-    setAnimaSpeed(animationSpeed) {
-        this.tempo = 100 / animationSpeed;
+    setAnimaSpeed(the_animationSpeed) {
+        this.tempo = 100 / the_animationSpeed;
         return this;
     }
 
@@ -95,7 +95,7 @@ class Animation {
     }
 
     calcFrame() {
-        if (this.elapsedTime >= this.nextFrameAt) {
+        if (!this.done && this.elapsedTime >= this.nextFrameAt ) {
             if (this.currFrame < this.fCount - 1) {
                 this.currFrame++;
                 this.nextFrameAt += this.fTiming_mod[this.currFrame] * this.tempo;
@@ -118,10 +118,10 @@ class Animation {
             ctx.strokeStyle = "rgba(50, 255, 50, 0.8)";
             ctx.font = '12px monospace';
 
-            ctx.fillText('f:' + this.fSequence[this.currFrame], dx + 35, dy - 5); // animation frame number
+            ctx.fillText('f:' + this.fSequence[this.currFrame], dx + 45, dy - 15); // animation frame number
 
             let dur = Math.floor(this.fTiming_mod[this.currFrame] * 1000);
-            ctx.fillText('ms:' + dur, dx + 60, dy - 5); // animation frame duration in milliseconds
+            ctx.fillText('ms:' + dur, dx + 70, dy - 15); // animation frame duration in milliseconds
         }
 
         this.elapsedTime += tick;

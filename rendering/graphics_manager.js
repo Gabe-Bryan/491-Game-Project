@@ -68,23 +68,6 @@ class GraphicsManager {
         }
     }
 
-    // idk how well this works?????
-    render(id, keyORtick, ctx, dx, dy, xScale, yScale) {
-        let type = this.library.get(id);
-        switch (type) {
-            case 'SpriteSet' :
-                this.spriteSets.get(id).drawSprite(keyORtick, ctx, dx, dy, xScale, yScale);
-                break;
-            case 'Animation' :
-                this.animations.get(id).animate(keyORtick, ctx, dx, dy, xScale, yScale)
-                break;
-            // case 'TileSet' :
-            //     this.TileSets.set(id, object);
-            //     break;
-        }
-    }
-
-
     // only lame people still use these old fashioned getters, use the 'get' method to become cool 😎
     /** Retrieves a Sprite Sheet from the Library
      * @param {string} id The unique ID of this Sprite Sheet */
@@ -147,28 +130,6 @@ class GraphicsManager {
         const spriteSet = new SpriteSet(id);
         this.add(id, 'SpriteSet', spriteSet);
         return spriteSet
-    }
-
-    /**
-     * Adds a new Sprite Set to the Library if 'id' doesn't already exist
-     * and puts a single Sprite in it that you specify here.
-     * 
-     * @param {string} id The unique ID of this Sprite Set
-     * @param {string | object} spriteSheet Unique ID of Sprite-Sheet or a Sprite Sheet Object
-     * @param {number} x_orig X origin coordinate of the Sprite
-     * @param {number} y_orig Y origin coordinate of the Sprite
-     * @param {number} width Width of the Sprite
-     * @param {number} height Height of the Sprite
-     * @param {number} x_ofs X offset: alters X origin coordinate when Sprite is drawn
-     * @param {number} y_ofs Y offset: alters Y origin coordinate when Sprite is drawn
-     * @param {string} label OPTIONAL! label for the sprite, only helpful if using for tiles
-     * @returns The Sprite Set
-     */
-    addSpriteSingle(id, spriteSheet, x_orig, y_orig, width, height, x_ofs = 0, y_ofs = 0, label) {
-        const spriteSet = this.spriteSetSetup(id, spriteSheet);
-        spriteSheet = this.spriteSheets.get(spriteSheet);
-        spriteSet.addSprite(spriteSheet, x_orig, y_orig, width, height, x_ofs, y_ofs, label);
-        return spriteSet;
     }
 
     /**

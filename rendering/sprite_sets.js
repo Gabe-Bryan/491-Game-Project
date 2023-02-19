@@ -14,11 +14,6 @@ class SpriteSet {
     getSprites() {return this.sprites};
     getSpriteDim(sKey) {return [this.sprites[sKey].sWidth, this.sprites[sKey].sHeight];}
 
-    // spriteIngester(spriteSheet, count, sx_s, sy_s, sWidth_s, sHeight_s, x_ofs, y_ofs) {
-    //     for (let i = 0; i < count; i++)
-    //         addSprite(spriteSheet, sx_s[i], sy_s[i], sWidth_s[i], sHeight_s[i], x_ofs[i], y_ofs[i])
-    // }
-
     addSprite(spriteSheet, sx, sy, sWidth, sHeight, x_ofs, y_ofs, label) {
         this.sprites.push(new Sprite(spriteSheet, sx, sy, sWidth, sHeight, x_ofs, y_ofs, label));
         this.count++;
@@ -70,11 +65,34 @@ class SpriteSet {
     /** Horizontally & Vertically mirrors all the sprites in this set. */
     mirrorSet_Both() {this.sprites.forEach(sprite => sprite.mirrorImg(true, true));}
 
+    addDeathFlashes(frameNum = 0) {
+        let redF = this.sprites[frameNum].clone();
+        let whiteF = this.sprites[frameNum].clone();
+        redF.pixelMorph_RGBA(255,null,null,null);
+        whiteF.pixelMorph_RGBA(255,255,255,null);
+        let i = this.count;
+        this.sprites[i-1] = redF;
+        this.count++
+        this.sprites[i] = whiteF;
+        this.count += 2;
+    }
+
     drawSprite(sKey, ctx, dx, dy, xScale, yScale) {
         if (sKey >= this.count) return;
         this.sprites[sKey].draw(ctx, dx, dy, xScale, yScale);
 
         if(0) this.sprites[sKey].drawDebug(sKey, ctx, dx, dy, xScale, yScale)
+    }
+
+    tileSprite(ctx, spriteIndex, dx, dy, numHorzTiles, numVertTiles, xScale = 1, yScale = xScale) {
+        const tileS = this.sprites[spriteIndex];
+        for (let h = 0; h < numHorzTiles; h++) {
+            for (let v = 0; v < numVertTiles; v++) {
+                let dx_t = dx + h * tileS.sWidth * xScale;
+                let dy_t = dy + v * tileS.sHeight * yScale;
+                tileS.draw(ctx, dx_t, dy_t, xScale, yScale);
+            }
+        }
     }
 
 };

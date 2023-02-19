@@ -38,6 +38,29 @@ class Sprite {
         this.isImageBitmap = true;
     }
 
+    pixelMorph_RGBA(R, G, B, A) {
+        if (!this.isImageBitmap) this.convertToImageBitmap();
+        let canvas = new OffscreenCanvas(this.sWidth, this.sHeight);
+        let ctx = canvas.getContext('2d');
+        ctx.drawImage(this.src, this.sx, this.sy, this.sWidth, this.sHeight, 0, 0, this.sWidth, this.sHeight);
+
+        let imageData = ctx.getImageData(this.sx, this.sy, this.sWidth, this.sHeight);
+        let pixels = imageData.data;
+
+        for (let i = 0; i < pixels.length; i+=4) {
+            if(typeof R === 'number') imageData.data[i+0] = R
+            if(typeof G === 'number') imageData.data[i+1] = G
+            if(typeof B === 'number') imageData.data[i+2] = B
+            if(typeof A === 'number') imageData.data[i+3] = A
+        }
+        
+        ctx.putImageData(imageData, 0, 0);
+
+        
+        this.src = canvas.transferToImageBitmap();
+        this.fitBoundsToImageBitmap();
+    }
+
     mirrorImg(horz, vert) {
         // console.log(this.src)
         if (!(this.isImageBitmap)) this.convertToImageBitmap();

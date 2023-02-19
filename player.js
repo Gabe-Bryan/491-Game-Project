@@ -208,12 +208,8 @@ class Player {
     }
 
     draw(ctx, scale) {
+        GRAPHICS.get(this.animations[this.state][this.facing]).animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
 
-        GRAPHICS.render(this.animations[this.state][this.facing], gameEngine.clockTick, ctx, this.x, this.y, scale);
-        // this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
-        // GRAPHICS.getAnimation('ANIMA_bunny_west').animate(gameEngine.clockTick, ctx, 200, 200, scale);
-
-        
         if(this.DEBUG) {
             //this.drawCollider(ctx);
             if(this.state == 2) this.drawAttack(ctx, scale);
