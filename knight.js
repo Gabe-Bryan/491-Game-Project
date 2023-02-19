@@ -7,12 +7,12 @@ class Knight {
     static CHARGE_DUR = 1;
 
     static MAX_VEL = 150;
-    static SPRINT_VEL = 400;
+    static SPRINT_VEL = 350;
 
     constructor(x, y) {
         Object.assign(this, {x, y});
 
-        this.DEBUG = true;
+        this.DEBUG = false;
         this.target = undefined;
         this.state = 0;  // 0:idle,  1:walking, 2: taking damage
         this.facing = 1; // 0:north, 1:south,   2:east, 3:west
@@ -78,6 +78,7 @@ class Knight {
             this.phys2d.velocity.y *= gameEngine.clockTick;
 
             this.kbLeft -= gameEngine.clockTick;
+            if(this.kbLeft <= 0) this.facePlayer();
         }
 
         if(Player.CURR_PLAYER) this.checkSwordCol();
@@ -187,7 +188,6 @@ class Knight {
         }
 
         this.target = undefined;
-        this.facePlayer();
     }
 
     facePlayer(){

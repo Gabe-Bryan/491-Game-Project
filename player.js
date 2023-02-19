@@ -1,7 +1,7 @@
 class Player {
     
-    static MAX_HP = 3;
-    static MAX_VEL = 200; //Pixels per second (I think -Gabe)
+    static MAX_HP = 5;
+    static MAX_VEL = 250; //Pixels per second (I think -Gabe)
     static KB_DUR = 0.1;
     static KB_STR = 300;
 
@@ -12,11 +12,11 @@ class Player {
     constructor(x, y) {
         Object.assign(this, {x, y});
 
-        this.DEBUG = true;
+        this.DEBUG = false;
         this.state = 0;     // 0:idle, 1:walking, 2:attacking, 3: taking damage
         this.facing = 1;    
         this.attackHitbox = undefined;
-        this.attackHBDim = {width: 24 * SCALE, height: 32 * SCALE};
+        this.attackHBDim = {width: 16 * SCALE, height: 32 * SCALE};
         this.attackHBOffset = {x: 0, y: -3 * SCALE};
 
         this.animations = [];
@@ -97,6 +97,8 @@ class Player {
     update() {
         let prevFacing = this.facing;
         this.sidesAffected = undefined;
+
+        gameEngine.gameDisplay.heartCount = this.hp;
         
         let walkStateChange = this.state <= 1 ? 1 : this.state;
         let moveIn = {x: 0, y: 0}
@@ -185,7 +187,7 @@ class Player {
     }
 
     updateCollider(){
-        let xOff = 1 * SCALE;
+        let xOff = 1.5 * SCALE;
         this.collider = {type: "box", corner: {x: this.x + xOff, y: (this.y + 28)}, width: 14*SCALE, height: 14*SCALE};
     }
 

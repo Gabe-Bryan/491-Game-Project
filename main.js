@@ -39,8 +39,8 @@ ASSET_MANAGER.downloadAll(() => {
 		'#008800':'blocker_yellow_stone'
 	});
 
-	testMap.addMapCellEntity(2, 2, new Knight(200, 200));
-	testMap.addMapCellEntity(2, 2, new Knight(300, 200));
+	testMap.addMapCellEntity(2, 2, new Knight(500, 600));
+	testMap.addMapCellEntity(2, 2, new Knight(600, 600));
 	testMap.addMapCellEntity(3, 2, new Knight(600, 600));
 	testMap.addMapCellEntity(3, 2, new Bunny(400,400));
 
