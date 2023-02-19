@@ -32,7 +32,7 @@ class Player {
     };
 
     setupAnimations() {
-        for (let i = 0; i < 3; i++) {           // states
+        for (let i = 0; i < 4; i++) {           // states
             this.animations.push([]);          
             for (let j = 0; j < 4; j++) {       // directions
                 this.animations[i].push([]);
@@ -59,14 +59,25 @@ class Player {
         // facing west
         this.animations[1][3] = 'ANIMA_link_run_west';
 
+        // attacking animations
         //North
-        this.animations[2][0] = 'ANIMA_link_attack_west';
+        this.animations[2][0] = 'ANIMA_link_attack_north';
         //South
-        this.animations[2][1] = 'ANIMA_link_attack_east';
+        this.animations[2][1] = 'ANIMA_link_attack_south';
         //East
         this.animations[2][2] = 'ANIMA_link_attack_east';
         //West
         this.animations[2][3] = 'ANIMA_link_attack_west';
+
+        // taking damage animations
+        //North
+        this.animations[3][0] = 'ANIMA_link_hurt_north';
+        //South
+        this.animations[3][1] = 'ANIMA_link_hurt_south';
+        //East
+        this.animations[3][2] = 'ANIMA_link_hurt_east';
+        //West
+        this.animations[3][3] = 'ANIMA_link_hurt_west';
 
         this.attackTime = GRAPHICS.getAnimation('ANIMA_link_attack_west').fTiming.reduce((a, b) => a+b);
     };
@@ -209,6 +220,7 @@ class Player {
 
     draw(ctx, scale) {
         GRAPHICS.get(this.animations[this.state][this.facing]).animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
+        // GRAPHICS.get('ANIMA_link_hurt_south').animate(gameEngine.clockTick, ctx, this.x+100, this.y, scale);
 
         if(this.DEBUG) {
             //this.drawCollider(ctx);

@@ -45,6 +45,17 @@ class GraphicsLoader {
         GRAPHICS.addSpriteRow('SET_link_north', 'LINK', 9,  3, 94, 16, 24, [11, 11,  8, 11,  7,  9,  8,  8]);
         GRAPHICS.addSpriteRow('SET_link_east' , 'LINK', 9,  4, 55, 17, 24, [10,  9, 10,  6,  8,  9,  4,  4]);
 
+        // pain game
+        GRAPHICS.get('SET_link_south').addDeathFlashes();
+        GRAPHICS.get('SET_link_north').addDeathFlashes();
+        GRAPHICS.get('SET_link_east').addDeathFlashes();
+
+        GRAPHICS.addAnimation('ANIMA_link_hurt_south', 'SET_link_south', [0,8,9,8], [0.1, 0.15, 0.1, 0.15]);
+        GRAPHICS.addAnimation('ANIMA_link_hurt_north', 'SET_link_north', [0,8,9,8], [0.1, 0.15, 0.1, 0.15]);
+        GRAPHICS.addAnimation('ANIMA_link_hurt_east', 'SET_link_east', [0,8,9,8], [0.1, 0.15, 0.1, 0.15]);
+        GRAPHICS.cloneAnimation('ANIMA_link_hurt_west', 'ANIMA_link_hurt_east').mirrorAnimation_Horz();
+
+
         GRAPHICS.addAnimation('ANIMA_link_run_south', 'SET_link_south', [1,2,3,4,5,6,7], 0.1);
         GRAPHICS.addAnimation('ANIMA_link_run_north', 'SET_link_north', [1,2,3,4,5,6,7], 0.1);
         GRAPHICS.addAnimation('ANIMA_link_run_east',  'SET_link_east',  [1,2,3,4,5,6,7], 0.1);

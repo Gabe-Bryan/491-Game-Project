@@ -74,7 +74,6 @@ class SpriteSet {
         this.sprites[i-1] = redF;
         this.count++
         this.sprites[i] = whiteF;
-        this.count += 2;
     }
 
     drawSprite(sKey, ctx, dx, dy, xScale, yScale) {
