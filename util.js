@@ -82,10 +82,7 @@ const drawList = (entities, ctx, scale) => {
         let entity = entities[i];
         entity.draw(ctx, SCALE);
         if(entity.DEBUG && entity.collider && entity.collider.type == 'box'){
-            
-            if(entity == undefined) console.log("happens here too");
-            console.log(entity);
-            drawBoxCollider(ctx, entity);
+            drawBoxCollider(ctx, entity.collider, entity.colliding);
         }
     }
 }
@@ -105,9 +102,17 @@ const getDistance = (p1, p2) => {
  */ 
 const getDirVect = (dir) => {
     switch(dir){
-        case 0: return {x: 0, y: 1};
-        case 1: return {x: 0, y: -1};
+        case 0: return {x: 0, y: -1};
+        case 1: return {x: 0, y: 1};
         case 2: return {x: 1, y: 0};
         case 3: return {x: -1, y: 0};
     }
+}
+
+const drawGameOver = (ctx) => {
+    ctx.font = "72px Zelda";
+    ctx.textAlign = "center";
+    ctx.fillStyle = "red";
+    ctx.fillText("GAME OVER", ctx.canvas.clientWidth/2, ctx.canvas.clientHeight/2);
+    ctx.textAlign = "start";
 }
