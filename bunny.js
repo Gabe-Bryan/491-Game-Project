@@ -109,13 +109,14 @@ class Bunny {
         this.kbVect = {x: kb.x, y: kb.y};
         this.kbLeft = Bunny.KB_DUR;
         this.hp -= amount;
-        if(this.hp < 0){
+        if(this.hp <= 0){
             this.removeFromWorld = true;
         }
     }
 
     updateCollider(){
-        this.collider = {type: "box", corner: {x: this.x, y: (this.y + 28)}, width: 56, height: 56};
+        let xOff = 3 * SCALE;
+        this.collider = {type: "box", corner: {x: this.x + xOff, y: (this.y + 12 * SCALE)}, width: 14 * SCALE, height: 14 * SCALE};
     }
 
     draw(ctx, scale) {

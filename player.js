@@ -1,8 +1,11 @@
 class Player {
     
-    static MAX_HP = 10;
+    static MAX_HP = 3;
     static MAX_VEL = 200; //Pixels per second (I think -Gabe)
-    static KB_DUR = 0.05;
+    static KB_DUR = 0.1;
+    static KB_STR = 300;
+
+    static SWING_CD = 0.25;
 
     static CURR_PLAYER = undefined;
 
@@ -13,7 +16,7 @@ class Player {
         this.state = 0;     // 0:idle, 1:walking, 2:attacking, 3: taking damage
         this.facing = 1;    
         this.attackHitbox = undefined;
-        this.attackHBDim = {width: 20 * SCALE, height: 32 * SCALE};
+        this.attackHBDim = {width: 24 * SCALE, height: 32 * SCALE};
         this.attackHBOffset = {x: 0, y: -3 * SCALE};
 
         this.animations = [];
@@ -25,13 +28,14 @@ class Player {
 
         this.hp = Player.MAX_HP;
         this.kbLeft = 0;
+        this.swingCD = 0;
     };
 
     setupAnimations() {
         for (let i = 0; i < 3; i++) {           // states
             this.animations.push([]);          
             for (let j = 0; j < 4; j++) {       // directions
-                this.animations[i].push([]);    
+                this.animations[i].push([]);
             }
         }
 
@@ -103,7 +107,8 @@ class Player {
         else if (gameEngine.keys["a"]) moveIn.x = -1;//[this.facing, this.state, this.phys2d.velocity.x] = [3, walkStateChange, -Player.MAX_VEL];
         
         this.moveIn = normalizeVector(moveIn);
-        this.attackIn = gameEngine.keys['j'];
+        this.swingCD -= gameEngine.clockTick;
+        this.attackIn = gameEngine.keys['j'] && this.swingCD <= 0;
         this.updateState(this.moveIn, this.attackIn);
 
         if(this.state != 2) this.updateDirection(this.moveIn);
@@ -131,6 +136,7 @@ class Player {
         if(this.attackTimeLeft - gameEngine.clockTick <= 0) {
             this.state = 0;
             this.resetAnims();
+            this.swingCD = Player.SWING_CD;
         }
         else {
             //console.log("Time left for attack: " + this.attackTimeLeft);
@@ -151,7 +157,7 @@ class Player {
                     this.hitEnemy = hit || this.hitEnemy;//stored for debugging
                     if(hit) {
                         let kbDir = normalizeVector(distVect(this.collider.corner, entity.collider.corner));
-                        let kb = scaleVect(kbDir, 300 * SCALE);
+                        let kb = scaleVect(kbDir, Player.KB_STR * SCALE);
                         console.log(kb);
                         this.dealDamage(entity, kb);
                         this.attackHits.push(entity);
@@ -170,13 +176,17 @@ class Player {
         this.kbVect = {x: kb.x, y: kb.y};
         this.kbLeft = Player.KB_DUR;
         this.hp -= amount;
-        if(this.hp < 0){
+        if(this.hp <= 0){
+            console.log("Game over!!!!!!!!!");
+            gameEngine.gameOver = true;
             this.removeFromWorld = true;
+            Player.CURR_PLAYER = undefined;
         }
     }
 
     updateCollider(){
-        this.collider = {type: "box", corner: {x: this.x+1, y: (this.y + 28)+1}, width: 14*SCALE, height: 14*SCALE};
+        let xOff = 1 * SCALE;
+        this.collider = {type: "box", corner: {x: this.x + xOff, y: (this.y + 28)}, width: 14*SCALE, height: 14*SCALE};
     }
 
     resetAnims(){
@@ -196,6 +206,7 @@ class Player {
     }
 
     draw(ctx, scale) {
+
         GRAPHICS.render(this.animations[this.state][this.facing], gameEngine.clockTick, ctx, this.x, this.y, scale);
         // this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
         // GRAPHICS.getAnimation('ANIMA_bunny_west').animate(gameEngine.clockTick, ctx, 200, 200, scale);

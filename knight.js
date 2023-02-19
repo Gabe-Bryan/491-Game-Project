@@ -1,12 +1,13 @@
 class Knight {
-    static MAX_HP = 10;
-    static KB_DUR = 0.05;
+    static MAX_HP = 5;
+    static KB_DUR = 0.13;
+    static KB_STR = 500;
     static STRIKE_DIST = 100;
     static DAMAGE_CD = 2; //Damage cooldown
-    static CHARGE_DUR = 5;
+    static CHARGE_DUR = 1;
 
     static MAX_VEL = 150;
-    static SPRINT_VEL = 300;
+    static SPRINT_VEL = 400;
 
     constructor(x, y) {
         Object.assign(this, {x, y});
@@ -30,6 +31,7 @@ class Knight {
         this.tag = "enemy";
         this.strikeDist = Knight.STRIKE_DIST * SCALE;
         this.chargeTLeft = 0;
+        this.dmgCD = 0;
         this.updateCollider();
     }
 
@@ -66,7 +68,7 @@ class Knight {
         this.sidesAffected = undefined;
 
         if(this.kbLeft <= 0) {
-            if(this.target)         this.charge();
+            if(Player.CURR_PLAYER && this.target)         this.charge();
             else                    this.pace();
         }else{
             this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
@@ -78,13 +80,13 @@ class Knight {
             this.kbLeft -= gameEngine.clockTick;
         }
 
-        
+        if(Player.CURR_PLAYER) this.checkSwordCol();
     };
 
     pace(){
         this.elapsedTime += gameEngine.clockTick;
 
-        if (this.elapsedTime > this.nextChange) {
+        if (this.elapsedTime > this.nextChange || this.colliding) {
             this.elapsedTime = 0;
             this.nextChange = Math.random() * 1.65;
             this.currButton = Math.floor(Math.random() * 4);
@@ -107,17 +109,72 @@ class Knight {
         this.phys2d.velocity = normalizeVector(this.phys2d.velocity);
         this.phys2d.velocity.x *= Knight.MAX_VEL * gameEngine.clockTick;
         this.phys2d.velocity.y *= Knight.MAX_VEL * gameEngine.clockTick;
+
+        //Check if player is in vision
+        if(Player.CURR_PLAYER && boxBoxCol(this.getPlayerDetCol(), Player.CURR_PLAYER.collider)){
+            this.target = Player.CURR_PLAYER;
+            this.chargeTLeft = Knight.CHARGE_DUR;
+        }
     }
 
     charge(){
+        //console.log("Charging");
         this.chargeTLeft -= gameEngine.clockTick;
         if(this.chargeTLeft > 0 && !this.colliding){
-            let targDir = scaleVect(normalizeVector(distVect(this, this.target)), 0.2);
-            let facing = scaleVect(getDirVect(this.facing), 0.8);
-            this.phys2d.velocity = scaleVect(addVect(targDir, facing), Knight.SPRINT_VEL);
+            let targDir = scaleVect(normalizeVector(distVect(this, this.target)), 0.25);
+            let facing = scaleVect(getDirVect(this.facing), 0.75);
+            let chargeDir = addVect(targDir, facing);
+            this.phys2d.velocity.x =  chargeDir.x * Knight.SPRINT_VEL * gameEngine.clockTick;
+            this.phys2d.velocity.y = chargeDir.y * Knight.SPRINT_VEL * gameEngine.clockTick;
         }else{
-            target = undefined;
+            this.target = undefined;
         }
+    }
+
+    checkSwordCol(){
+        if(boxBoxCol(Player.CURR_PLAYER.collider, this.getSwordCol()) && this.dmgCD <= 0) {
+            let targDir = normalizeVector(distVect(this.collider.corner, Player.CURR_PLAYER.collider.corner));
+            let kb = scaleVect(targDir, Knight.KB_STR * SCALE);
+            this.dealDamage(Player.CURR_PLAYER, kb);
+            this.dmgCD = Knight.DAMAGE_CD;
+            console.log("Hit player");
+        } else{
+            this.dmgCD -= gameEngine.clockTick;
+        }
+    }
+
+    getSwordCol(){
+        let col = this.collider;
+
+        let w = col.width;
+        let h = col.height
+        let xOff = 0;
+        let yOff = 0;
+        if(this.facing == 3)        xOff = -w; 
+        else if(this.facing == 2)   xOff = col.width;
+        if(this.facing == 0)        yOff = -h;
+        else if(this.facing == 1)   yOff = col.height;
+
+        return {type: "box", corner: {x: col.corner.x + xOff, y: col.corner.y + yOff}, width: w, height: h};
+    }
+
+    getPlayerDetCol(){
+        let col = this.collider;
+
+        let w = this.facing == 3 || this.facing == 2 ? col.width * 10 : col.width;
+        let h = this.facing == 1 || this.facing == 0 ? col.height * 10 : col.height;
+        let xOff = 0;
+        let yOff = 0;
+        if(this.facing == 3)        xOff = -w; 
+        else if(this.facing == 2)   xOff = col.width;
+        if(this.facing == 0)        yOff = -h;
+        else if(this.facing == 1)   yOff = col.height;
+
+        return {type: "box", corner: {x: col.corner.x + xOff, y: col.corner.y + yOff}, width: w, height: h};
+    }
+
+    dealDamage(entity, kb){
+        entity.takeDamage(1, kb);
     }
 
     takeDamage(amount, kb){
@@ -125,19 +182,35 @@ class Knight {
         this.kbVect = {x: kb.x, y: kb.y};
         this.kbLeft = Knight.KB_DUR;
         this.hp -= amount;
-        if(this.hp < 0){
+        if(this.hp <= 0){
             this.removeFromWorld = true;
         }
 
         this.target = undefined;
+        this.facePlayer();
+    }
+
+    facePlayer(){
+        let p = Player.CURR_PLAYER;
+        let xDiff = this.collider.corner.x - p.collider.corner.x;
+        let yDiff = this.collider.corner.y - p.collider.corner.y;
+
+        if(Math.abs(xDiff) >= Math.abs(yDiff)){
+            if(xDiff < 0)   this.facing = 2;
+            else            this.facing = 3;
+        }else{
+            if(yDiff < 0)   this.facing = 1;
+            else            this.facing = 0;
+        }
     }
 
     updateCollider(){
-        let xOff = this.facing == 3 ? 12 * SCALE : 3 * SCALE;
+        let xOff = 3*SCALE;//this.facing == 3 ? 12 * SCALE : 3 * SCALE;
         this.collider = {type: "box", corner: {x: this.x + xOff, y: (this.y + 12 * SCALE)}, width: 14 * SCALE, height: 14 * SCALE};
     }
 
     draw(ctx, scale) {
         this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
+        if(this.DEBUG) drawBoxCollider(ctx, this.getPlayerDetCol(), true);
     }
 }

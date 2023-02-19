@@ -22,6 +22,7 @@ class GameEngine {
         };
 
         this.running = false;
+        this.gameOver = false;
     };
 
     init(ctx) {
@@ -99,6 +100,10 @@ class GameEngine {
             }
         }*/
         drawList(this.entities, this.ctx);
+
+        if(this.gameOver){
+            drawGameOver(this.ctx);
+        }
     };
 
     update() {

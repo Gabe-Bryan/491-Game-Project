@@ -15,6 +15,7 @@ ASSET_MANAGER.downloadAll(() => {
 	Player.CURR_PLAYER = new Player(canvas.width/2 - 144, canvas.height/2 - 32);
 	gameEngine.addEntity(Player.CURR_PLAYER); 
 	gameEngine.addEntity(new Knight(canvas.width/4, canvas.height/2));
+	
 
 	let roomWidth = 20;
 	let roomHeight = 16;
@@ -29,8 +30,10 @@ ASSET_MANAGER.downloadAll(() => {
 	let roomIndexY = 2;
 	testMap.loadMapCell(roomIndexX, roomIndexY);
 	setInterval(bun, bt)
+	//gameEngine.scene.addEnvEntity(new TestCollisionBox(300, 300));
 	testMap.addMapEntitiesToEngine(gameEngine);
 	gameEngine.currMap = testMap;
+
 
 	gameEngine.init(ctx);
 

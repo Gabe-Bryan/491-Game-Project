@@ -48,6 +48,20 @@ correctMovement = (prevX, prevY, me) => {
             }
         }
     });
+    if(me.tag == "enemy"){
+        let centX = me.collider.corner.x + me.collider.width/2;
+        let centY = me.collider.corner.y + me.collider.height/2;
+        let canW = gameEngine.ctx.canvas.clientWidth;
+        let canH = gameEngine.ctx.canvas.clientHeight;
+
+        let xDiff = canW - centX;
+        if(xDiff < 0) me.x += xDiff;
+        else if(centX < 0) me.x -= centX;
+
+        let yDiff = canH - centY;
+        if(yDiff < 0) me.y += yDiff;
+        else if(centY < 0) me.y -= centY;
+    }
 }
 
 const checkCollision = (entity1, entity2, callback = undefined) => {
@@ -127,20 +141,20 @@ const circleCircleCol = (circle1, circle2, callback = (dist) => dist <= circle1.
  * @param {*} box2 onsists of a top left corner (box.corner) point and a width and height (cant be rotated)
  * @param {*} callback 
  */
-const boxBoxCol = (box1, box2, callback = (whereIsB1) => {return !(whereIsB1.up || whereIsB1.down || whereIsB1.right || whereIsB1.left)}) => {
+const boxBoxCol = (box1, box2, callback = (whereIsB1) => {return !(whereIsB1.up || whereIsB1.down || whereIsB1.right || whereIsB1.left)}, debug = false) => {
     try{
         let xDist = box1.corner.x - box2.corner.x;
         let yDist = box1.corner.y - box2.corner.y;
-        let maxHeight = Math.max(box1.height, box2.height);
-        let maxWidth = Math.max(box1.width, box2.width);
+
         let results = { up: yDist <= -box1.height,
                         down: yDist >= box2.height, 
-                        right: xDist >= box2.height, 
-                        left: xDist <= -box1.height};
-        //console.log(results);
+                        right: xDist >= box2.width, 
+                        left: xDist <= -box1.width};
+        if(debug) console.log(results);
 
         return callback(results);
     }catch(TypeError){
+        console.error(TypeError);
         console.error(box1);
     }
 }
@@ -228,13 +242,8 @@ const scaleVect = (vector, scalar) =>{
 
 const addVect = (v1, v2) => {return {x: v1.x +v2.x, y: v1.y + v2.y}};
 
-const drawBoxCollider = (ctx, entity) => {
-    /*if(entity.colliding != undefined){
-        ctx.strokeStyle = "red";
-    } else {
-        ctx.strokeStyle = "green";
-    }*/
-    ctx.strokeStyle = entity.colliding ? "red" : "green";
+const drawBoxCollider = (ctx, box, colliding) => {
+    ctx.strokeStyle = colliding ? "red" : "green";
     ctx.lineWidth = 2;
-    ctx.strokeRect(entity.collider.corner.x, entity.collider.corner.y, entity.collider.width, entity.collider.height);
+    ctx.strokeRect(box.corner.x, box.corner.y, box.width, box.height);
 }
