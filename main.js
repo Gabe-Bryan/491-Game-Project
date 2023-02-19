@@ -3,7 +3,7 @@ const ASSET_MANAGER = new AssetManager("./assets/");
 const GRAPHICS = new GraphicsManager();
 const SCALE = 3;
 const TILE_SIZE = 16;
-ASSET_MANAGER.queueDownload("prototype_map.png", "link.png", "overworld_tiles.png", "enemies.png", "characters.png")
+ASSET_MANAGER.queueDownload("prototype_map.png", "link.png", "overworld_tiles.png", "enemies.png", "characters.png", "death_effects.png")
 
 ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");

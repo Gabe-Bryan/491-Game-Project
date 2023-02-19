@@ -70,6 +70,10 @@ class GraphicsLoader {
     
         GRAPHICS.addAnimation('ANIMA_link_attack_south', 'SET_link_attack_south', 7, 0.2);
 
+
+        GRAPHICS.addSpriteSheet('CHARS', ASSET_MANAGER.getAsset('characters.png'));
+        GRAPHICS.addSpriteSet('link_dead', 'CHARS', 267, 388, 24, 15);
+
         /// /// E N E M I E S /// /// /// 
         GRAPHICS.addSpriteSheet('ENEMIES', ASSET_MANAGER.getAsset('enemies.png'));
         GRAPHICS.addSpriteSet('SET_blue_enemy_south', 'ENEMIES',  1, [156, 197, 235, 277], 22, 38);
@@ -106,6 +110,9 @@ class GraphicsLoader {
         GRAPHICS.addAnimation('ANIMA_red_goblin_north', 'SET_red_goblin', [3,4,5], 0.5);
         GRAPHICS.addAnimation('ANIMA_red_goblin_east', 'SET_red_goblin_east', 2, 0.5);
         GRAPHICS.cloneAnimation('ANIMA_red_goblin_west', 'ANIMA_red_goblin_east').mirrorAnimation_Horz();
+    
+        GRAPHICS.addSpriteRow('SET_skull_enemy', 'ENEMIES', 5, 602, 172, 18, 18, [3,4,4,3]);
+        GRAPHICS.addAnimation('ANIMA_skull_enemy', 'SET_skull_enemy', [0,1,2,4,3,1], 0.3);
 
         // addSpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_ofs = 0, y_ofs = 0, labels)
         // addSpriteRow(id, spriteSheet, sprite_count, x_orig, y_orig, widths, heights, gaps, x_ofs, y_ofs, labels)
@@ -118,6 +125,14 @@ class GraphicsLoader {
         GRAPHICS.addAnimation('ANIMA_bunny_east', 'SET_bunny', [0,1], 0.2);
         GRAPHICS.cloneAnimation('ANIMA_bunny_west','ANIMA_bunny_east').mirrorAnimation_Horz()
 
+        /// /// EFFECTS /// /// /// 
+        GRAPHICS.addSpriteGrid('SET_explode', 'ENEMIES', 1, 6, 441, 733, 32, 33, 0, [8, 6, 6, 5, 7])
+        GRAPHICS.addAnimation('ANIMA_explode', 'SET_explode', 
+            [   0,    1,    2,    3,    4,    1,    2,    3,    4,    5, 999],
+            [0.20, 0.15, 0.10, 0.15, 0.10, 0.15, 0.10, 0.10, 0.15,  0.3, 0]).setLooping(false);
+        
+        GRAPHICS.addSpriteSheet('DEATHFX', ASSET_MANAGER.getAsset('death_effects.png'));
+        GRAPHICS.addSpriteRow('SET_death_effects', 'DEATHFX',7, 0,4,26,23,0);
 
     }
 }
