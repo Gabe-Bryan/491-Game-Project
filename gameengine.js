@@ -104,6 +104,7 @@ class GameEngine {
     update() {
         //All of the real updating takes place in this method @util.js
         updateList(this.entities);
+        this.scene.update();
     };
 
     loop() {

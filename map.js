@@ -7,9 +7,21 @@ class GameMap {
 
         this.mapImage = ASSET_MANAGER.getAsset(this.imageFilePath);
 
+
         this.cellWidthInPx = cellWidthInTiles * pxTileWidth;
         this.cellHeightInPx = cellHeightInTiles * pxTileHeight;
         
+        // build the lists for holding per-cell entities
+        this.mapCellEntities = []
+        for (let iY = 0; iY < cellHeightInTiles; iY++) {
+            this.mapCellEntities.push([])
+            for (let iX = 0; iX < cellWidthInTiles; iX++) {
+                this.mapCellEntities[iY].push([])
+            }
+        }
+
+        // console.log(this.mapCellEntities.length, this.mapCellEntities[0].length)
+
         // setup empty array for holding map tiles in
         this.initializeMapCell();
     }
@@ -26,24 +38,28 @@ class GameMap {
             player.x = this.cellWidthInPx - horizBuffer;
             this.loadMapCell(this.currCellX - 1, this.currCellY);
             this.addMapEntitiesToEngine(gameEngine);
+            this.addInteractableToEngine(gameEngine);
         
         } else if (cX + horizBuffer > this.cellWidthInPx) {       // EAST EDGE
             gameEngine.scene.clearScene();
             player.x = 0 - horizBuffer;
             this.loadMapCell(this.currCellX + 1, this.currCellY);
             this.addMapEntitiesToEngine(gameEngine);
+            this.addInteractableToEngine(gameEngine);
         
         } else if (cY + vertBuffer < 0) {                        // NORTH EDGE
             gameEngine.scene.clearScene();
             player.y = this.cellHeightInPx - (vertBuffer + 28);
             this.loadMapCell(this.currCellX, this.currCellY - 1);
             this.addMapEntitiesToEngine(gameEngine);
+            this.addInteractableToEngine(gameEngine);
         
         } else if (cY + vertBuffer > this.cellHeightInPx) {      // SOUTH EDGE
             gameEngine.scene.clearScene();
             player.y = 0 - (vertBuffer+28);
             this.loadMapCell(this.currCellX, this.currCellY + 1);
             this.addMapEntitiesToEngine(gameEngine);
+            this.addInteractableToEngine(gameEngine);
         }
         
     }
@@ -115,8 +131,34 @@ class GameMap {
     addMapEntitiesToEngine(engine) {
         for (let y = 0; y < this.currCellTileMap.length; y++) {
             for (let x = 0; x < this.currCellTileMap[y].length; x++) {
-                 gameEngine.scene.addEnvEntity(this.currCellTileMap[y][x][0]);
-             }
+                 engine.scene.addEnvEntity(this.currCellTileMap[y][x][0]);
+            }
         }
+    }
+
+    addInteractableToEngine(engine) {
+        for (let i = 0; i < this.mapCellEntities[this.currCellY][this.currCellX].length; i++) {
+            engine.scene.addInteractable(this.mapCellEntities[this.currCellY][this.currCellX][i]);
+        }
+    }
+
+    getMapCellX() {
+        return this.currCellX;
+    }
+
+    getMapCellY() {
+        return this.currCellY;
+    }
+
+    addMapCellEntity(destCellX, destCellY, entity) {
+        this.mapCellEntities[destCellY][destCellX].push(entity);
+    }
+
+    getCurrMapCellEntities() {
+        return this.mapCellEntities[this.currCellY][this.currCellX];
+    }
+
+    getMapCellEntities(destCellX, destCellY) {
+        return this.mapCellEntities[destCellY][destCellX];
     }
 }

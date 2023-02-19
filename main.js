@@ -14,8 +14,8 @@ ASSET_MANAGER.downloadAll(() => {
 
 	Player.CURR_PLAYER = new Player(canvas.width/2 - 144, canvas.height/2 - 32);
 	gameEngine.addEntity(Player.CURR_PLAYER); 
-	gameEngine.addEntity(new Knight(canvas.width/4, canvas.height/2));
-
+	//gameEngine.addEntity(new Knight(canvas.width/4, canvas.height/2));
+	
 	let roomWidth = 20;
 	let roomHeight = 16;
 	let testMap = new GameMap("prototype_map.png", roomWidth, roomHeight, 16*SCALE, 16*SCALE, {
@@ -25,11 +25,18 @@ ASSET_MANAGER.downloadAll(() => {
 		'#ffff00':'sand'
 	});
 
+	testMap.addMapCellEntity(2, 2, new Knight(200, 200));
+	testMap.addMapCellEntity(2, 2, new Knight(300, 200));
+	testMap.addMapCellEntity(3, 2, new Knight(600, 600))
+
 	let roomIndexX = 2;
 	let roomIndexY = 2;
 	testMap.loadMapCell(roomIndexX, roomIndexY);
-	setInterval(bun, bt)
+	//setInterval(bun, bt)
+	
 	testMap.addMapEntitiesToEngine(gameEngine);
+	testMap.addInteractableToEngine(gameEngine);
+	
 	gameEngine.currMap = testMap;
 
 	gameEngine.init(ctx);

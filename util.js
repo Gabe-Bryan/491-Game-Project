@@ -84,7 +84,7 @@ const drawList = (entities, ctx, scale) => {
         if(entity.DEBUG && entity.collider && entity.collider.type == 'box'){
             
             if(entity == undefined) console.log("happens here too");
-            console.log(entity);
+            //console.log(entity);
             drawBoxCollider(ctx, entity);
         }
     }
