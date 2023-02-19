@@ -3,7 +3,15 @@ const ASSET_MANAGER = new AssetManager("./assets/");
 const GRAPHICS = new GraphicsManager();
 const SCALE = 3;
 const TILE_SIZE = 16;
-ASSET_MANAGER.queueDownload("prototype_map.png", "link.png", "overworld_tiles.png", "enemies.png", "characters.png")
+ASSET_MANAGER.queueDownload(
+	"prototype_map.png", 
+	"link.png", 
+	"overworld_tiles.png", 
+	"castle_tiles.png",
+	"dungeon_tiles.png",
+	"enemies.png", 
+	"characters.png"
+);
 
 ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");
@@ -22,12 +30,15 @@ ASSET_MANAGER.downloadAll(() => {
 		'#00ff00':'grass',
 		'#555555':'stone_grass',
 		'#333333':'stone_sand',
-		'#ffff00':'sand'
+		'#ffff00':'sand',
+		'#0000ff':'floor_blue_cobblestone',
+		'#008800':'blocker_yellow_stone'
 	});
 
 	testMap.addMapCellEntity(2, 2, new Knight(200, 200));
 	testMap.addMapCellEntity(2, 2, new Knight(300, 200));
-	testMap.addMapCellEntity(3, 2, new Knight(600, 600))
+	testMap.addMapCellEntity(3, 2, new Knight(600, 600));
+	testMap.addMapCellEntity(3, 2, new Bunny(400,400));
 
 	let roomIndexX = 2;
 	let roomIndexY = 2;
@@ -188,7 +199,7 @@ function bun() {
 	bt *= 0.95;
 	console.log(`bunny, time:${bt}`);
 	if (bc < 25000) {
-		gameEngine.addEntity(new Bunny(200 + (Math.random()*560), 200 + (Math.random()*368)));
+		gameEngine.scene.addInteractable(gameEngine.currMap.getMapCellX(), gameEngine.currMap.getMapCellY(), new Bunny(200 + (Math.random()*560), 200 + (Math.random()*368)));
 		bc++;
 	}
 	

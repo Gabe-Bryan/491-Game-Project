@@ -67,7 +67,7 @@ class Bunny {
             this.bt++;
             if (this.bt > 100) {
                 this.bt = 0;
-                gameEngine.addEntity(new Bunny(200 + (Math.random()*560), 200 + (Math.random()*368)));
+                gameEngine.scene.addInteractable(new Bunny(200 + (Math.random()*560), 200 + (Math.random()*368)));
             }           
         }
 

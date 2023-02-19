@@ -107,11 +107,20 @@ class GameMap {
                 let tileY = y * 16 * SCALE;
                 let tileColor = this.colorMappings[rgb];
 
-                if (tileColor == 'grass')           tile = new Grass(tileX, tileY);
-                else if (tileColor == 'stone_grass')tile = new Stone(tileX, tileY, 'grass');
-                else if (tileColor == 'stone_sand') tile = new Stone(tileX, tileY, 'sand');
-                else if (tileColor == 'sand')       tile = new Sand(tileX, tileY);
-                else                                tile = new Grass(tileX, tileY);
+                if (tileColor == 'grass')           
+                    tile = new Grass(tileX, tileY);
+                else if (tileColor == 'stone_grass')
+                    tile = new Stone(tileX, tileY, 'grass');
+                else if (tileColor == 'stone_sand') 
+                    tile = new Stone(tileX, tileY, 'sand');
+                else if (tileColor == 'sand')
+                    tile = new Sand(tileX, tileY);
+                else if (tileColor == 'floor_blue_cobblestone') 
+                    tile = new BlueStoneFloor(tileX, tileY);
+                else if (tileColor == 'blocker_yellow_stone')
+                    tile = new BlockerYellowDoor(tileX, tileY);
+                else
+                    tile = new Grass(tileX, tileY);
 
                 this.currCellTileMap[y][x].push(tile);
             }
