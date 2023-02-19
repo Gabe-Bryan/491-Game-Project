@@ -53,6 +53,23 @@ class GraphicsLoader {
         GRAPHICS.addAnimation('ANIMA_link_attack_west', 'SET_link_attack_west', 6, [0.1, 0.07, 0.05, 0.04, 0.07, 0.1]); 
         GRAPHICS.cloneAnimation('ANIMA_link_attack_east', 'ANIMA_link_attack_west').mirrorAnimation_Horz(0);
 
+        GRAPHICS.addSpriteSet(
+            'SET_link_attack_north', 'LINK',
+            [517, 546, 582, 611, 643, 686], [243, 235, 230, 235, 242, 239],
+            [ 22,  22,  20,  24,  32,  19], [ 22,  30,  35,  30,  23,  26],
+            [  0,   0,   0,  -4, -11,   0], [  0,  -7,  -9,  -5,   0,  -4]
+        );
+        GRAPHICS.addAnimation('ANIMA_link_attack_north', 'SET_link_attack_north', [1,2,3,4,5], 0.2);
+    
+        GRAPHICS.addSpriteSet(
+            'SET_link_attack_south', 'LINK',
+            [510, 542, 571, 598, 624, 661, 701], [282, 283, 282, 283, 284, 284, 284],
+            [ 20,  22,  20,  20,  28,  32,  19], [ 23,  24,  31,  31,  29,  27,  30],
+            [  0,  -2,   0,   0,   0,   0,   0], [  0,   0,   0,   0,   0,   0,   0]
+        );
+    
+        GRAPHICS.addAnimation('ANIMA_link_attack_south', 'SET_link_attack_south', 7, 0.2);
+
         /// /// E N E M I E S /// /// /// 
         GRAPHICS.addSpriteSheet('ENEMIES', ASSET_MANAGER.getAsset('enemies.png'));
         GRAPHICS.addSpriteSet('SET_blue_enemy_south', 'ENEMIES',  1, [156, 197, 235, 277], 22, 38);
@@ -73,6 +90,22 @@ class GraphicsLoader {
         GRAPHICS.addAnimation('ANIMA_monster_enemy_north', 'SET_monster_enemy_north', 3, 0.5, 0, 0).setReverseAnima();
         GRAPHICS.addAnimation('ANIMA_monster_enemy_west', 'SET_monster_enemy_west', 3, 1, 0, 0);
         GRAPHICS.cloneAnimation('ANIMA_monster_enemy_east', 'ANIMA_monster_enemy_west').mirrorAnimation_Horz([-2,-10,0]).setReverseAnima();
+
+        GRAPHICS.addSpriteGrid('SET_green_goblin', 'ENEMIES', 1, 6, 449, 295, 22, 25, 11, 5);
+        GRAPHICS.addSpriteSet('SET_green_goblin_east', 'ENEMIES', [402, 427], 293, 18, 25);
+    
+        GRAPHICS.addSpriteGrid('SET_red_goblins', 'ENEMIES', 1, 6, 448, 331, 22, 25, 0, [3, 4, 7, 3, 4]);
+        GRAPHICS.addSpriteSet('SET_red_goblin_east', 'ENEMIES', [402, 424], 330, 18, 25);
+
+        GRAPHICS.addAnimation('ANIMA_green_goblin_south', 'SET_green_goblin', [0,1,2], 0.5);
+        GRAPHICS.addAnimation('ANIMA_green_goblin_north', 'SET_green_goblin', [3,4,5], 0.5);
+        GRAPHICS.addAnimation('ANIMA_green_goblin_east', 'SET_green_goblin_east', 2, 0.5);
+        GRAPHICS.cloneAnimation('ANIMA_green_goblin_west', 'ANIMA_green_goblin_east').mirrorAnimation_Horz();
+    
+        GRAPHICS.addAnimation('ANIMA_red_goblin_south', 'SET_red_goblin', [0,1,2], 0.5);
+        GRAPHICS.addAnimation('ANIMA_red_goblin_north', 'SET_red_goblin', [3,4,5], 0.5);
+        GRAPHICS.addAnimation('ANIMA_red_goblin_east', 'SET_red_goblin_east', 2, 0.5);
+        GRAPHICS.cloneAnimation('ANIMA_red_goblin_west', 'ANIMA_red_goblin_east').mirrorAnimation_Horz();
 
         // addSpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_ofs = 0, y_ofs = 0, labels)
         // addSpriteRow(id, spriteSheet, sprite_count, x_orig, y_orig, widths, heights, gaps, x_ofs, y_ofs, labels)
