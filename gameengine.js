@@ -21,6 +21,8 @@ class GameEngine {
             debugging: false,
         };
 
+        this.gameDisplay = null;
+
         this.running = false;
         this.gameOver = false;
     };
@@ -29,6 +31,8 @@ class GameEngine {
         this.ctx = ctx;
         this.startInput();
         this.timer = new Timer();
+        this.gameDisplay = new GameDisplay();
+        this.gameDisplay.init(ctx);
     };
 
     start() {
@@ -90,7 +94,6 @@ class GameEngine {
 
         // Draw the scene first
         this.scene.draw(this.ctx, SCALE);
-
         // Draw latest things in non-scene entities first
         /*for (let i = this.entities.length - 1; i >= 0; i--) {
             let entity = this.entities[i];
@@ -101,6 +104,8 @@ class GameEngine {
         }*/
         drawList(this.entities, this.ctx);
 
+        this.gameDisplay.draw();
+        
         if(this.gameOver){
             drawGameOver(this.ctx);
         }
