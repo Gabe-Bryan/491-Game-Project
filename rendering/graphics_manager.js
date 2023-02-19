@@ -255,6 +255,7 @@ class GraphicsManager {
                 _x_orig += _width + (nf[2] ? col_gaps : col_gaps[col]);
             }
             // move down to the next row, same idea as above ↑
+            _x_orig = x_orig;
             _y_orig += (nf[1] ? heights : heights[row]) + (nf[3] ? row_gaps : row_gaps[col]);
         }
 
