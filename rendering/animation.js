@@ -112,7 +112,7 @@ class Animation {
         //console.log(frameNum)
         this.spriteSet.drawSprite(frameNum, ctx, dx + this.x_offset_mod * xScale, dy + this.y_offset_mod * yScale, xScale, yScale)
         
-        if (1) {
+        if (0) {
             ctx.lineWidth = 1;
             ctx.fillStyle = "rgba(100, 220, 255, 1)";
             ctx.strokeStyle = "rgba(50, 255, 50, 0.8)";

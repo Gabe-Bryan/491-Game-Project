@@ -26,11 +26,12 @@ class GameDisplay {
     draw(ctx) {
         // this.drawBorder(); // remove this
         // this.drawItemBorder(); // remove this
-        this.drawText();
-        this.drawBomb(166, 0);
+        this.ctx.fillStyle = "white";
+        //this.drawText();
+        //this.drawBomb(166, 0);
       //  this.drawLifeText();
         this.drawHearts(this.heartX, this.heartY);
-        this.drawKey(274, 14);
+        //this.drawKey(274, 14);
         this.drawLifeText();
     };
 
@@ -70,16 +71,19 @@ class GameDisplay {
     };
 
     drawLifeText = () => {
-        this.ctx.font = "32px brush script mt, Cursive";
+        this.ctx.font = "46px Zelda";
         this.drawLine(600, 33, 640, 33, undefined, 10 );
         this.ctx.beginPath();
+        this.ctx.strokeStyle = "Black";
+        this.ctx.lineWidth = 4;
+        this.ctx.strokeText("LIFE", 650, 40);
         this.ctx.fillText("LIFE", 650, 40);
         this.ctx.closePath();
         this.drawLine(730, 33, 770, 33, undefined, 10);
     };
 
     drawText = () => {
-        this.ctx.font = "60px brush script mt, Cursive";
+        this.ctx.font = "60px Zelda";
         this.ctx.fillText((this.bombCount + "").padStart(2, "0"), 180, 105);
         this.ctx.fillText((this.keyCount + "").padStart(2, "0"), 260, 105);
     };
@@ -122,7 +126,7 @@ class GameDisplay {
 
 
     drawHeart(x, y) {
-        this.ctx.drawImage(ASSET_MANAGER.getAsset("heart.png"), x, y, this.heartWidth, this.heartHeight);
+        this.ctx.drawImage(ASSET_MANAGER.getAsset("heart.png"), x, y, this.heartWidth * 1.2, this.heartHeight * 1.2);
     };
 
     drawHearts(x, y) {
