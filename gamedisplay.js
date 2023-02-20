@@ -9,16 +9,23 @@ class GameDisplay {
         this.currentWeapon;
         this.keyCount = 0;
 
-        this.heartX = 570; 
-        this.heartY = 45;
-
-        this.heartWidth = 20;
-        this.heartHeight = 20;
+        this.heartX = 600; 
+        this.heartY = 60;
+        this.heartWidth = 30;
+        this.heartHeight = 30;
+        this.spaceX = this.heartWidth * 1.1;
+        this.spaceY = this.heartHeight * 1.1;
         this.bombWidth = 90;
         this.bombHeight = 80;
         this.keyWidth = 30;
         this.keyHeight = 50;
         this.timeGO = 0;
+
+        this.textLineX = this.heartX + 2 * this.spaceX;
+        this.textLineY = this.heartY - 20;
+        this.textX = this.heartX + 4 * this.spaceX;
+        this.textY = this.heartY - 10;
+        this.textLineX2 = this.heartX + 6 * this.spaceX + 10;
     };
 
     init(ctx) {
@@ -95,15 +102,15 @@ class GameDisplay {
     };
 
     drawLifeText = () => {
-        this.ctx.font = "46px Zelda";
-        this.drawLine(600, 33, 640, 33, undefined, 10 );
+        this.ctx.font = "38px Zelda";
         this.ctx.beginPath();
         this.ctx.strokeStyle = "Black";
         this.ctx.lineWidth = 4;
-        this.ctx.strokeText("LIFE", 650, 40);
-        this.ctx.fillText("LIFE", 650, 40);
+        this.drawLine(this.textLineX, this.textLineY, this.textLineX + 2 * this.spaceX - 10, this.textLineY, undefined, 10);
+        this.ctx.strokeText("LIFE", this.textX, this.textY);
+        this.ctx.fillText("LIFE", this.textX, this.textY);
         this.ctx.closePath();
-        this.drawLine(730, 33, 770, 33, undefined, 10);
+        this.drawLine(this.textLineX2, this.textLineY, this.textLineX2 + 2 * this.spaceX - 10, this.textLineY, undefined, 10);
     };
 
     drawText = () => {
@@ -156,9 +163,9 @@ class GameDisplay {
     drawHearts(x, y) {
         for (let i = 0; i < this.heartCount; i++) {
             if (i > 9) {
-                this.drawHeart(this.heartX + (i - 10) * 22, this.heartY + 22);
+                this.drawHeart(this.heartX + (i - 10) * this.spaceX, this.heartY + this.spaceY);
             } else {
-                this.drawHeart(this.heartX + i * 22, this.heartY);
+                this.drawHeart(this.heartX + i * this.spaceX, this.heartY);
             }
         }
     };
