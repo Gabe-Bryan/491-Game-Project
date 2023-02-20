@@ -15,10 +15,10 @@ class GraphicsLoader {
 
         GRAPHICS.addSpriteSet(
             'environment', 'DUNGEON_TILES',
-            [31, 59, 391],
-            [46, 30, 712],
+            [31, 59, 391, 407],
+            [46, 30, 712, 712],
             16, 16, 0, 0,
-            ['floor_blue_cobblestone', 'floor_purple_stone_tile', 'blocker_yellow_stone']
+            ['floor_blue_cobblestone', 'floor_purple_stone_tile', 'blocker_yellow_stone', 'wall_grey_block']
         );
 
         const spt = GRAPHICS.get('environment');
@@ -28,7 +28,8 @@ class GraphicsLoader {
         GRAPHICS.addTile('stone on sand', spt.gsl('sand'), spt.gsl('light8block'));
         GRAPHICS.addTile('floor blue cobblestone', spt.gsl('floor_blue_cobblestone'));
         GRAPHICS.addTile('floor purple stone tile', spt.gsl('floor_purple_stone_tile'));
-        GRAPHICS.addTile('blocker yellow stone', spt.gsl('blocker_yellow_stone'))
+        GRAPHICS.addTile('blocker yellow stone', spt.gsl('blocker_yellow_stone'));
+        GRAPHICS.addTile('wall grey block', spt.gsl('wall_grey_block'));
         
 
         // const theSprites = GRAPHICS.get('environment');
