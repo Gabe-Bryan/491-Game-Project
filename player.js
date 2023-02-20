@@ -100,6 +100,8 @@ class Player {
         else this.state = 0;
     }
 
+
+
     updateDirection(moveIn) {
         if(moveIn.x > 0) this.facing = 2;
         else if(moveIn.x < 0) this.facing = 3;
@@ -195,6 +197,12 @@ class Player {
     setHp(newHp) {
         this.hp = newHp;
         GAMEDISPLAY.heartCount = this.hp;
+    }
+
+    heal(amount) {
+        let tempHP = this.hp + amount;
+        if (tempHP > this.MAX_HP) tempHP = this.MAX_HP;
+        this.setHp(tempHP)
     }
 
     updateCollider() {

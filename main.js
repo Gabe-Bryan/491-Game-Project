@@ -42,10 +42,20 @@ ASSET_MANAGER.downloadAll(() => {
 		'#444444':'wall_complex'
 	});
 
+	////////////////////////////////////////////////////////////
 	// testMap.addMapCellEntity(2, 2, new Knight(500, 600));
-	// testMap.addMapCellEntity(2, 2, new Knight(600, 600));
+	// testMap.addMapCellEntity(2, 2, new Knight(600, 600)); 
 	// testMap.addMapCellEntity(3, 2, new Knight(600, 600));
 	// testMap.addMapCellEntity(3, 2, new Bunny(400,400));
+	//////////////////////////////////////////////////////////
+	testMap.addMapCellEntity(1, 2, new Bunny(400,400));
+	testMap.addMapCellEntity(1, 4, new Triforce(400,300));
+	testMap.addMapCellEntity(1, 2, new HeartDrop(80,80));
+	testMap.addMapCellEntity(1, 2, new HeartDrop(80,650));
+	testMap.addMapCellEntity(1, 2, new HeartDrop(850,80));
+	testMap.addMapCellEntity(1, 2, new HeartDrop(850,650));
+	//////////////////////////////////////////////////////////
+
 
 	let r1_KnightXY = tileToScreenCoord(14, 2);
 	let r1_SkullXY = tileToScreenCoord(1, 3);
