@@ -24,7 +24,10 @@ class Knight {
         this.nextChange = 1;
         this.hp = Knight.MAX_HP;
         this.kbLeft = 0;
-        this.pain = {hurting : false, timer: 0, cooldown: 0.5} // cooldown in sec
+
+        // animation state settings
+        this.pain = {hurting: false, timer: 0, cooldown: 0.5} // cooldown in sec
+        this.hitstop = {hitting: false, timer: 0, cooldown: 0.6}
 
         this.animations = [];
         this.setupAnimations();
@@ -66,10 +69,7 @@ class Knight {
         else this.state = 0;
     }
 
-    update() {
-        let prevFacing = this.facing;
-        this.sidesAffected = undefined;
-
+    updateAnimationState() {
         if (this.pain.hurting) { // damage animation stuff
             this.pain.timer -= gameEngine.clockTick;
             if (this.pain.timer <= 0) {
@@ -78,6 +78,23 @@ class Knight {
             }
         }
 
+        //this.hitstop = {hitting: false, timer: 0, cooldown: 0.25}
+        
+
+        if (this.hitstop.hitting) {
+            this.hitstop.timer -= gameEngine.clockTick;
+            if (this.hitstop.timer <= 0) {
+                this.hitstop.hitting = false;
+                this.hitstop.timer = 0;
+            }
+        }
+    }
+
+    update() {
+        console.log(this.hitstop.hitting + " " + this.hitstop.timer);
+        this.updateAnimationState();
+        let prevFacing = this.facing;
+        this.sidesAffected = undefined;
         this.chargeTLeft -= gameEngine.clockTick;
 
         if(this.kbLeft <= 0) {
@@ -92,13 +109,8 @@ class Knight {
                 //console.log(this.kbVect);
                 this.phys2d.velocity.x *= gameEngine.clockTick;
                 this.phys2d.velocity.y *= gameEngine.clockTick;
-            }
-
-            
-
-            
+            }           
         }
-
         if(Player.CURR_PLAYER.alive) this.checkSwordCol();
     };
 
@@ -154,7 +166,8 @@ class Knight {
             let kb = scaleVect(targDir, Knight.KB_STR * SCALE);
             this.dealDamage(Player.CURR_PLAYER, kb);
             this.dmgCD = Knight.DAMAGE_CD;
-            //console.log("Hit player");
+            this.hitstop.hitting = true;
+            this.hitstop.timer = this.hitstop.cooldown;
         } else{
             this.dmgCD -= gameEngine.clockTick;
         }
@@ -234,7 +247,7 @@ class Knight {
 
     draw(ctx, scale) {
         this.animations[this.state][this.facing].setAnimaSpeed(this.target ? 300 : 100);
-        this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale, this.pain.hurting);
+        this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale, this.pain.hurting, this.hitstop.hitting);
         if(this.DEBUG) drawBoxCollider(ctx, this.getSwordCol(), true);
     }
 }

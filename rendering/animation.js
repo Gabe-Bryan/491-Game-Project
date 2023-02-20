@@ -155,10 +155,9 @@ class Animation {
         return this.done;
     }
 
-    animate(tick, ctx, dx, dy, scale = 1, damage) {
+    animate(tick, ctx, dx, dy, scale = 1, damage, freezeFrame) {
         if(damage) return this.animateDamage(tick, ctx, dx, dy, scale);
-
-        let frameNum = this.calcFrame();
+        let frameNum = freezeFrame ? this.currFrame : this.calcFrame();
         this.spriteSet.drawSprite(frameNum, ctx, dx + this.x_offset_mod * scale, dy + this.y_offset_mod * scale, scale, scale)
         
         if (0) {
