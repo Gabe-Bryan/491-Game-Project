@@ -4,6 +4,7 @@ class GraphicsLoader {
         /// /// T I L E S /// ///
         GRAPHICS.addSpriteSheet('OW_TILES', ASSET_MANAGER.getAsset('overworld_tiles.png'));
         GRAPHICS.addSpriteSheet('DUNGEON_TILES', ASSET_MANAGER.getAsset('dungeon_tiles.png'));
+        GRAPHICS.addSpriteSheet('CASTLE_TILES', ASSET_MANAGER.getAsset('castle_tiles.png'));
 
         GRAPHICS.addSpriteSet(
             'environment', 'OW_TILES',
@@ -15,10 +16,18 @@ class GraphicsLoader {
 
         GRAPHICS.addSpriteSet(
             'environment', 'DUNGEON_TILES',
-            [31, 59, 391],
-            [46, 30, 712],
+            [31, 59, 391, 407],
+            [46, 30, 712, 712],
             16, 16, 0, 0,
-            ['floor_blue_cobblestone', 'floor_purple_stone_tile', 'blocker_yellow_stone']
+            ['floor_blue_cobblestone', 'floor_purple_stone_tile', 'blocker_yellow_stone', 'wall_grey_block']
+        );
+
+        GRAPHICS.addSpriteSet(
+            'environment', 'CASTLE_TILES',
+            [238, 255, 272, 238, 255, 272],
+            [0, 0, 0, 17, 17, 17],
+            16, 16, 0, 0, 
+            ['wall_NW', 'wall_NE', 'wall_VERT', 'wall_SW', 'wall_SE', 'wall_HORIZ']
         );
 
         const spt = GRAPHICS.get('environment');
@@ -28,8 +37,15 @@ class GraphicsLoader {
         GRAPHICS.addTile('stone on sand', spt.gsl('sand'), spt.gsl('light8block'));
         GRAPHICS.addTile('floor blue cobblestone', spt.gsl('floor_blue_cobblestone'));
         GRAPHICS.addTile('floor purple stone tile', spt.gsl('floor_purple_stone_tile'));
-        GRAPHICS.addTile('blocker yellow stone', spt.gsl('blocker_yellow_stone'))
-        
+        GRAPHICS.addTile('blocker yellow stone', spt.gsl('blocker_yellow_stone'));
+        GRAPHICS.addTile('wall grey block', spt.gsl('wall_grey_block'));
+
+        GRAPHICS.addTile('wall_NW', spt.gsl('wall_NW'));
+        GRAPHICS.addTile('wall_NE', spt.gsl('wall_NE'));
+        GRAPHICS.addTile('wall_VERT', spt.gsl('wall_VERT'));
+        GRAPHICS.addTile('wall_SW', spt.gsl('wall_SW'));
+        GRAPHICS.addTile('wall_SE', spt.gsl('wall_SE'));
+        GRAPHICS.addTile('wall_HORIZ', spt.gsl('wall_HORIZ'));
 
         // const theSprites = GRAPHICS.get('environment');
         // theSprites.forEach(sprite => {
@@ -50,9 +66,9 @@ class GraphicsLoader {
         GRAPHICS.get('SET_link_north').addDeathFlashes();
         GRAPHICS.get('SET_link_east').addDeathFlashes();
 
-        GRAPHICS.addAnimation('ANIMA_link_hurt_south', 'SET_link_south', [0,8,9,8], [0.1, 0.15, 0.1, 0.15]);
-        GRAPHICS.addAnimation('ANIMA_link_hurt_north', 'SET_link_north', [0,8,9,8], [0.1, 0.15, 0.1, 0.15]);
-        GRAPHICS.addAnimation('ANIMA_link_hurt_east', 'SET_link_east', [0,8,9,8], [0.1, 0.15, 0.1, 0.15]);
+        GRAPHICS.addAnimation('ANIMA_link_hurt_south', 'SET_link_south', [0,8,9,8], [0.05, 0.08, 0.05, 0.08]);
+        GRAPHICS.addAnimation('ANIMA_link_hurt_north', 'SET_link_north', [0,8,9,8], [0.05, 0.08, 0.05, 0.08]);
+        GRAPHICS.addAnimation('ANIMA_link_hurt_east', 'SET_link_east', [0,8,9,8], [0.05, 0.08, 0.05, 0.08]);
         GRAPHICS.cloneAnimation('ANIMA_link_hurt_west', 'ANIMA_link_hurt_east').mirrorAnimation_Horz();
 
 
@@ -169,7 +185,7 @@ class GraphicsLoader {
             'SET_end_game', 'LINK',
             [742, 835, 789, 765], [297, 225, 241, 235], 
             [ 80,  41,  24,  21], [ 80,  61,  15,  21],
-            [  0,   0,   0,   3], [  0,   0,  10,   3]
+            [  0, -12,   0,   3], [  0, -38,  10,   3]
         );
 
     }
