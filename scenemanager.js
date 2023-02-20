@@ -41,11 +41,19 @@ class SceneManager{
     }
 
     getNeighborTiles(xTileCoord, yTileCoord) {
-        let (tilesWide, tilesHigh) = (gameEngine.currMap.cellWidthInTiles, gameEngine.currMap.cellHeightInTiles);
-        let (northTile, southTile, westTile, eastTile) = (null, null, null, null);
+        let tilesWide = gameEngine.currMap.cellWidthInTiles,
+            tilesHigh = gameEngine.currMap.cellHeightInTiles;
+            
+        let northTile = null,
+            southTile = null,
+            westTile = null,
+            eastTile = null;
+            
         if (yTileCoord > 0)         northTile = this.getEnvEntityAtCoord(xTileCoord, yTileCoord - 1);
         if (yTileCoord < tilesWide) southTile = this.getEnvEntityAtCoord(xTileCoord, yTileCoord + 1);
         if (xTileCoord > 0)         westTile = this.getEnvEntityAtCoord(xTileCoord - 1, yTileCoord);
         if (xTileCoord < tilesHigh) eastTile = this.getEnvEntityAtCoord(xTileCoord + 1, yTileCoord);
+
+        return {'north':northTile, 'south':southTile, 'west':westTile, 'east':eastTile};
     }
 }
