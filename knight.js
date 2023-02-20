@@ -69,6 +69,8 @@ class Knight {
         let prevFacing = this.facing;
         this.sidesAffected = undefined;
 
+        this.chargeTLeft -= gameEngine.clockTick;
+
         if(this.kbLeft <= 0) {
             if (Player.CURR_PLAYER.alive && this.target)         this.charge();
             else                    this.pace();
@@ -94,7 +96,7 @@ class Knight {
     pace(){
         this.elapsedTime += gameEngine.clockTick;
 
-        if (this.elapsedTime > this.nextChange || (this.colliding && this.kbLeft <= 0)) {
+        if (this.elapsedTime > this.nextChange || (this.colliding && !this.target)) {
             this.elapsedTime = 0;
             this.nextChange = 1 + Math.random() * 0.65;
             let newDir = this.facing < 2 ? Math.floor(Math.random()*2)+2 : Math.floor(Math.random()*2);
@@ -125,7 +127,6 @@ class Knight {
 
     charge(){
         //console.log("Charging");
-        this.chargeTLeft -= gameEngine.clockTick;
         if(this.chargeTLeft > 0 && !this.colliding){
             let targDir = scaleVect(normalizeVector(distVect(this, this.target)), 0.25);
             let facing = scaleVect(getDirVect(this.facing), 0.75);
@@ -193,12 +194,12 @@ class Knight {
             this.removeFromWorld = true;
         }
 
-        this.target = undefined;
+        this.chargeTLeft /= 2;
     }
 
     facePlayer(){
         this.elapsedTime = 0;
-        this.nextChange = 1 + Math.random() * 0.65;
+        this.nextChange = 0.9 + Math.random() * 0.2;
 
         let p = Player.CURR_PLAYER;
         let xDiff = this.collider.corner.x - p.collider.corner.x;
