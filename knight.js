@@ -80,7 +80,7 @@ class Knight {
             else {
                 this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
                 //console.log(this.phys2d.velocity);
-                console.log(this.kbVect);
+                //console.log(this.kbVect);
                 this.phys2d.velocity.x *= gameEngine.clockTick;
                 this.phys2d.velocity.y *= gameEngine.clockTick;
             }
@@ -145,7 +145,7 @@ class Knight {
             let kb = scaleVect(targDir, Knight.KB_STR * SCALE);
             this.dealDamage(Player.CURR_PLAYER, kb);
             this.dmgCD = Knight.DAMAGE_CD;
-            console.log("Hit player");
+            //console.log("Hit player");
         } else{
             this.dmgCD -= gameEngine.clockTick;
         }
@@ -195,6 +195,7 @@ class Knight {
         }
 
         this.chargeTLeft /= 2;
+        this.elapsedTime += this.nextChange * 0.2;
     }
 
     facePlayer(){

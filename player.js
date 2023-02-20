@@ -1,6 +1,6 @@
 class Player {
     
-    static MAX_HP = 5;
+    static MAX_HP = 10;
     static MAX_VEL = 250; //Pixels per second (I think -Gabe)
     static KB_DUR = 0.1;
     static KB_STR = 300;
@@ -133,7 +133,7 @@ class Player {
         if (this.kbLeft > 0){
             this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
             //console.log(this.phys2d.velocity);
-            console.log(this.kbVect);
+            //console.log(this.kbVect);
             this.phys2d.velocity.x *= gameEngine.clockTick;
             this.phys2d.velocity.y *= gameEngine.clockTick;
 
@@ -167,7 +167,7 @@ class Player {
                     if (hit) {
                         let kbDir = normalizeVector(distVect(this.collider.corner, entity.collider.corner));
                         let kb = scaleVect(kbDir, Player.KB_STR * SCALE);
-                        console.log(kb);
+                        //console.log(kb);
                         this.dealDamage(entity, kb);
                         this.attackHits.push(entity);
                     }
@@ -181,12 +181,12 @@ class Player {
     }
 
     takeDamage(amount, kb) {
-        console.log("GYahaAAaaa: " + amount);
+        //console.log("GYahaAAaaa: " + amount);
         this.kbVect = {x: kb.x, y: kb.y};
         this.kbLeft = Player.KB_DUR;
         this.setHp(this.hp - amount);
         if(this.hp <= 0){
-            console.log("Game over!!!!!!!!!");
+            //console.log("Game over!!!!!!!!!");
             gameEngine.gameOver = true;
             this.alive = false
             this.phys2d = {static: false, velocity: {x: 0, y: 0}};
