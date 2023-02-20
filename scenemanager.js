@@ -47,5 +47,6 @@ class SceneManager{
         if (yTileCoord < tilesWide) southTile = this.getEnvEntityAtCoord(xTileCoord, yTileCoord+1);
         if (xTileCoord > 0)         westTile = this.getEnvEntityAtCoord(xTileCoord-1, yTileCoord);
         if (xTileCoord < tilesHigh) eastTile = this.getEnvEntityAtCoord(xTileCoord+1, yTileCoord);
+        // comment to test stupid git stuff
     }
 }
