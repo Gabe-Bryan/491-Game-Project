@@ -15,6 +15,8 @@ class GraphicsManager {
         // should work like a look up table, ie get me <name of any valid type object> --> returns that object
         this.library = new Map();  // <string: id, object: valid type>
         // valid types are: SpriteSheet, SpriteSet, Animation, Tile
+        this.spriteSet_cloneCount = 0;
+        this.animation_cloneCount = 0;
     }
 
     /**
@@ -58,9 +60,9 @@ class GraphicsManager {
             case 'SpriteSheet' :
                 return this.spriteSheets.get(id);
             case 'SpriteSet' :
-                return this.spriteSets.get(id);
+                return this.spriteSets.get(id).clone(id.concat('_clone_'+this.spriteSet_cloneCount++));
             case 'Animation' :
-                return this.animations.get(id);
+                return this.animations.get(id).clone(id.concat('_clone_'+this.animation_cloneCount++));
             // case 'TileSet' :
             //     return this.TileSets.get(id);
             case 'Tile' :

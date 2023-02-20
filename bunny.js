@@ -4,7 +4,7 @@ class Bunny {
     constructor(x, y) {
         Object.assign(this, {x, y});
 
-        this.DEBUG = true;
+        this.DEBUG = false;
         this.state = 0;  // 0:idle,  1:walking, 2:attacking
         this.facing = 1; // 0:north, 1:south,   2:east, 3:west
         this.attackHitCollector = [];
@@ -21,29 +21,18 @@ class Bunny {
         this.updateCollider();
 
         this.hp = Bunny.MAX_HP;
+        this.pain = {hurting : false, timer: 0, cooldown: 0.5} // cooldown in sec
         this.kbLeft = 0;
     }
 
-    setupAnimations() {
-        this.animations = Array(1);
-        this.animations[0] = [
-            GRAPHICS.getAnimation('ANIMA_bunny_north'),
-            GRAPHICS.getAnimation('ANIMA_bunny_south'),
-            GRAPHICS.getAnimation('ANIMA_bunny_east'),
-            GRAPHICS.getAnimation('ANIMA_bunny_west')
+    setupAnimations() { // this.currButton --> 0 = north  | 1 = south  |  2 = east  |  3 = west
+        this.animations = [
+            GRAPHICS.get('ANIMA_bunny_north'),
+            GRAPHICS.get('ANIMA_bunny_south'),
+            GRAPHICS.get('ANIMA_bunny_east'),
+            GRAPHICS.get('ANIMA_bunny_west'),
         ]
-        this.animations[1] = [
-            GRAPHICS.getAnimation('ANIMA_bunny_north'),
-            GRAPHICS.getAnimation('ANIMA_bunny_south'),
-            GRAPHICS.getAnimation('ANIMA_bunny_east'),
-            GRAPHICS.getAnimation('ANIMA_bunny_west')
-        ]
-        this.animations[2] = [
-            GRAPHICS.getAnimation('ANIMA_bunny_north'),
-            GRAPHICS.getAnimation('ANIMA_bunny_south'),
-            GRAPHICS.getAnimation('ANIMA_bunny_east'),
-            GRAPHICS.getAnimation('ANIMA_bunny_west')
-        ]
+
     }
 
     updateState() {
@@ -58,6 +47,14 @@ class Bunny {
     update() {
         this.elapsedTime += gameEngine.clockTick;
 
+        if (this.pain.hurting) { // damage animation stuff
+            this.pain.timer -= gameEngine.clockTick;
+            if (this.pain.timer <= 0) {
+                this.pain.hurting = false;
+                this.pain.timer = 0;
+            }
+        }
+
         if (this.elapsedTime > this.nextChange) {
             this.nextChange += 0.2 + Math.random() * 1.82;
             this.currButton = Math.floor(Math.random() * 4);
@@ -65,18 +62,18 @@ class Bunny {
 
         if (gameEngine.keys["b"]) {
             this.bt++;
-            if (this.bt > 100) {
+            if (this.bt > 50) {
                 this.bt = 0;
                 gameEngine.scene.addInteractable(new Bunny(200 + (Math.random()*560), 200 + (Math.random()*368)));
             }           
         }
 
 
-        if (this.x > 960) this.currButton = 3;
+        if (this.x > 950) this.currButton = 3;
         if (this.x < 10) this.currButton = 2;
-        if (this.y < 10) this.currButton = 0;
-        if (this.y > 770) this.currButton = 1;
-        // this.currButton --> 0 = w  | 1 = s  |  2 = d  |  3 = a
+        if (this.y < 10) this.currButton = 1;
+        if (this.y > 760) this.currButton = 0;
+        // this.currButton --> 0 = north  | 1 = south  |  2 = east  |  3 = west
         
         if (this.currButton === 0)      [this.facing, this.state, this.phys2d.velocity.y] = [0, 1, -Player.MAX_VEL];
         else if (this.currButton === 1) [this.facing, this.state, this.phys2d.velocity.y] = [1, 1, Player.MAX_VEL];
@@ -111,7 +108,12 @@ class Bunny {
         this.hp -= amount;
         if(this.hp <= 0){
             this.removeFromWorld = true;
+            gameEngine.scene.addInteractable(new Bunny(100 + (Math.random()*560), 300 + (Math.random()*368)));
+            gameEngine.scene.addInteractable(new Bunny(300 + (Math.random()*560), 100 + (Math.random()*368)));
         }
+
+        this.pain.hurting = true;
+        this.pain.timer = this.pain.cooldown;
     }
 
     updateCollider(){
@@ -120,6 +122,6 @@ class Bunny {
     }
 
     draw(ctx, scale) {
-        this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
+        this.animations[this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale, this.pain.hurting);
     }
 }

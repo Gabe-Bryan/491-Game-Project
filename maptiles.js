@@ -98,7 +98,41 @@ class BlockerYellowDoor {
         if (this.locked) {
             GRAPHICS.get('blocker yellow stone').drawTile(ctx, this.xLoc, this.yLoc);
         } else {
-            GRAPHICS.get('grass').drawTile(ctx, this.xLoc, this.yLoc);
+            GRAPHICS.get('floor blue cobblestone').drawTile(ctx, this.xLoc, this.yLoc);
         }
+    }
+}
+
+class WallGreyBlock {
+    constructor(xLoc, yLoc) {
+        Object.assign(this, { xLoc, yLoc });
+        this.typeName = "WallGreyBlock";
+    }
+
+    update() {
+
+    };
+
+    draw(ctx, scale) {
+        GRAPHICS.get('wall grey block').drawTile(ctx, this.xLoc, this.yLoc);
+    }
+}
+
+class WallComplex {
+    constructor(xLoc, yLoc) {
+        Object.assign(this, { xLoc, yLoc });
+        this.phys2d = {static: true};
+        this.collider = {type: "box", corner: {x: xLoc, y: yLoc}, height: 16 * SCALE, width: 16 * SCALE};
+        this.tag = 'environment';
+        this.typeName = "WallComplex";
+        this.tileString = 'wall grey block';
+    }
+
+    update() {
+
+    };
+
+    draw(ctx, scale) {
+        GRAPHICS.get(this.tileString).drawTile(ctx, this.xLoc, this.yLoc);
     }
 }

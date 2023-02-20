@@ -8,7 +8,6 @@ class Animation {
             throw new Error('Animation: fSequence and fTiming are not same length');
             
         Object.assign(this, {id, spriteSet, fSequence, fTiming, x_offset, y_offset });
-
         this.fCount = this.fSequence.length;
         this.init();
     }
@@ -23,25 +22,36 @@ class Animation {
         this.elapsedTime = 0;
         this.currFrame = 0;
         this.nextFrameAt = this.fTiming_mod[0] * this.tempo;
-        
+
         this.looping = true;
         this.reversed = false;
         this.done = false;
+        
+        this.hasDamSprites = false;
+        this.damSpriteType = 0;
+        this.damElapsTime = 0;
+        this.damFreq = 0.07;
+
         return this;
     }
 
     reset() {
         this.elapsedTime = 0;
         this.currFrame = 0;
+        this.damSpriteType = 0;
+        this.damElapsTime = 0;
         this.done = false;
         this.nextFrameAt = this.fTiming_mod[0] * this.tempo;
         return this;
     }
 
     clone(clones_id, clone_x_offset = this.x_offset, clone_y_offset = this.y_offset) {
-        const copy_sprites = this.spriteSet.clone(this.spriteSet.id.concat("_clone"))
+        const copy_sprites = this.spriteSet.clone(this.spriteSet.id.concat("_clone"));
+
         const copy_anima = new Animation(clones_id, copy_sprites,
             [...this.fSequence], [...this.fTiming], clone_x_offset, clone_y_offset);
+
+        if (this.hasDamSprites) copy_anima.addDamageSprites();
         return copy_anima;
     }
 
@@ -94,6 +104,21 @@ class Animation {
         return this;
     }
 
+    setDamageSpriteFrequency(frequency) {this.damFreq = frequency;}
+
+    addDamageSprites(frequency) {
+        if (this.hasDamSprites) {
+            console.error("this animation already has damage sprites!!!!")
+            return;
+        }
+        if (typeof frequency === 'number') this.damFreq = frequency;
+        this.damSpriteSets = new Array(3);
+        this.damSpriteSets[0] = this.spriteSet;                                                       //   R     G     B     A
+        this.damSpriteSets[1] = this.spriteSet.clone(this.spriteSet.id.concat("_DAMAGE_red"  )).colorMod( 255, null, null, null);
+        this.damSpriteSets[2] = this.spriteSet.clone(this.spriteSet.id.concat("_DAMAGE_white")).colorMod( 255,  255,  255, null);
+        this.hasDamSprites = true;
+    }
+
     calcFrame() {
         if (!this.done && this.elapsedTime >= this.nextFrameAt ) {
             if (this.currFrame < this.fCount - 1) {
@@ -106,25 +131,48 @@ class Animation {
         return this.fSequence_mod[this.currFrame];
     }
 
-    animate(tick, ctx, dx, dy, xScale = 1, yScale = xScale) {
-        //console.log(this.spriteSet)
+    animateDamage(tick, ctx, dx, dy, scale) {
+        if (!this.hasDamSprites) {
+            console.error(`You should add .addDamageSprites() for ${this.id} in Graphics Loader so the damage sprites will be pre-drawn when the game loads. I will create them now for you, but that's not ideal because it could add lag to the game!`)
+            this.addDamageSprites();
+        }
+
         let frameNum = this.calcFrame();
-        //console.log(frameNum)
-        this.spriteSet.drawSprite(frameNum, ctx, dx + this.x_offset_mod * xScale, dy + this.y_offset_mod * yScale, xScale, yScale)
+        this.damElapsTime += tick;
+        
+
+        if (this.damElapsTime > this.damFreq) {
+            this.damSpriteType = (this.damSpriteType + 1) % 3
+            this.damElapsTime = 0;
+        }
+
+        // console.log("time: " + this.damElapsTime)
+        // console.log("sprite: " + this.damSpriteType)
+        // console.log(this.damSpriteSets[this.damSpriteType])
+
+        this.damSpriteSets[this.damSpriteType].drawSprite(frameNum, ctx, dx + this.x_offset_mod * scale, dy + this.y_offset_mod * scale, scale, scale)
+        this.elapsedTime += tick;
+        return this.done;
+    }
+
+    animate(tick, ctx, dx, dy, scale = 1, damage) {
+        if(damage) return this.animateDamage(tick, ctx, dx, dy, scale);
+
+        let frameNum = this.calcFrame();
+        this.spriteSet.drawSprite(frameNum, ctx, dx + this.x_offset_mod * scale, dy + this.y_offset_mod * scale, scale, scale)
         
         if (0) {
             ctx.lineWidth = 1;
             ctx.fillStyle = "rgba(100, 220, 255, 1)";
             ctx.strokeStyle = "rgba(50, 255, 50, 0.8)";
             ctx.font = '12px monospace';
-
             ctx.fillText('f:' + this.fSequence[this.currFrame], dx + 45, dy - 15); // animation frame number
-
             let dur = Math.floor(this.fTiming_mod[this.currFrame] * 1000);
             ctx.fillText('ms:' + dur, dx + 70, dy - 15); // animation frame duration in milliseconds
         }
 
         this.elapsedTime += tick;
 
+        return this.done;
     }
 }

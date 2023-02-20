@@ -1,5 +1,5 @@
 class GameDisplay {
-    static TIME_TO_GO = 3;
+    static TIME_TO_FADE = 2;
     constructor() {
         
         this.ctx = null;
@@ -20,6 +20,7 @@ class GameDisplay {
         this.keyWidth = 30;
         this.keyHeight = 50;
         this.timeGO = 0;
+        this.timeV = 0;
 
         this.textLineX = this.heartX + 2 * this.spaceX;
         this.textLineY = this.heartY - 20;
@@ -33,7 +34,10 @@ class GameDisplay {
     };
 
     draw(ctx) {
-        if(gameEngine.gameOver){
+        if(gameEngine.victory){
+            this.drawVictory();
+            this.timeV += gameEngine.clockTick;
+        }else if(gameEngine.gameOver){
             this.drawGameOver();
             this.timeGO += gameEngine.clockTick;
         }else{
@@ -50,20 +54,37 @@ class GameDisplay {
         
     };
 
-    drawGameOver () {
+    drawEndScreen(text, completion, fontSize, fontColor, fontOutLine, backgroundAlpha = 1){
         let ctx = this.ctx;
+        backgroundAlpha = Math.min(1, backgroundAlpha);
         //Draw the transparent black "filter"
-        let completion = Math.min(1.0, this.timeGO/GameDisplay.TIME_TO_GO)
-        ctx.globalAlpha = completion;
+        ctx.globalAlpha = Math.log2(completion + 1)  * backgroundAlpha;//2/(1 + Math.E ** (-7 * completion)) - 0.5 + completion * 0.5;
         ctx.fillStyle = "black";
         ctx.fillRect(0,0,ctx.canvas.clientWidth,ctx.canvas.clientHeight);
-        ctx.globalAlpha = 1.0;
+        ctx.globalAlpha = Math.min(1.0, (0.1 + completion * 2));
         //Draw the text
-        ctx.font = "72px Zelda";
+        ctx.font = `${fontSize * Math.min(1.0, 0.8 + completion * 0.275)}px Zelda`;
         ctx.textAlign = "center";
-        ctx.fillStyle = "red";
-        ctx.fillText("GAME OVER", ctx.canvas.clientWidth/2, ctx.canvas.clientHeight/2);
+        ctx.fillStyle = fontColor;
+        ctx.strokeStyle = fontOutLine;
+        ctx.lineWidth = 5;
+        ctx.fillText(text, ctx.canvas.clientWidth/2, ctx.canvas.clientHeight/2);
+        ctx.strokeText(text, ctx.canvas.clientWidth/2, ctx.canvas.clientHeight/2);
         ctx.textAlign = "start";
+        ctx.globalAlpha = 1;
+    }
+
+    drawGameOver () {
+        //Draw the transparent black "filter"
+        let completion = Math.min(1.0, this.timeGO/GameDisplay.TIME_TO_FADE)
+        this.drawEndScreen("GAME OVER", completion, 128, "rgb(165, 20, 45)", "black");
+        
+    }
+
+    drawVictory () {
+        //Draw the transparent black "filter"
+        let completion = Math.min(1.0, this.timeV/GameDisplay.TIME_TO_FADE)
+        this.drawEndScreen("Victory", completion, 164, "rgb(237, 175, 59)", "black", 0);
     }
 
 

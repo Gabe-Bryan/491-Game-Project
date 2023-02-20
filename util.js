@@ -71,6 +71,10 @@ const updateList = (entities) => {
 
     for (let i = entities.length - 1; i >= 0; --i) {
         if (entities[i].removeFromWorld) {
+            if (entities[i].tag === "enemy") {
+                console.log("YO!")
+                entities.push(new DeathCloud(entities[i].x, entities[i].y))
+            }
             entities.splice(i, 1);
         }
     }
@@ -117,4 +121,16 @@ const getEnemiesLeft = (entities) => {
         }
     }
     return eLeft;
+}
+
+const screenToTileCoord = (x, y) => {
+    let tileWidth = 16*SCALE,
+        tileHeight = 16*SCALE;
+    return {'x':(Math.floor(x/tileWidth)), 'y':(Math.floor(y/tileHeight))};
+}
+
+const tileToScreenCoord = (x, y) => {
+    let tileWidth = 16*SCALE,
+        tileHeight = 16*SCALE;
+    return {'x':(x*tileWidth), 'y':(y*tileHeight)};
 }

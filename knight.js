@@ -4,16 +4,16 @@ class Knight {
     static KB_STR = 500;
     static STRIKE_DIST = 100;
     static DAMAGE_CD = 2; //Damage cooldown
-    static CHARGE_DUR = 0.9;
+    static CHARGE_DUR = 1;
     static CHARGE_CD = 0.3;
 
-    static MAX_VEL = 150;
+    static MAX_VEL = 125;
     static SPRINT_VEL = 310;
 
     constructor(x, y) {
         Object.assign(this, {x, y});
 
-        this.DEBUG = true;
+        this.DEBUG = false;
         this.target = undefined;
         this.state = 0;  // 0:idle,  1:walking, 2: taking damage
         this.facing = 1; // 0:north, 1:south,   2:east, 3:west
@@ -24,6 +24,7 @@ class Knight {
         this.nextChange = 1;
         this.hp = Knight.MAX_HP;
         this.kbLeft = 0;
+        this.pain = {hurting : false, timer: 0, cooldown: 0.5} // cooldown in sec
 
         this.animations = [];
         this.setupAnimations();
@@ -40,22 +41,22 @@ class Knight {
     setupAnimations() {
         this.animations = Array(1);
         this.animations[0] = [
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_north'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_south'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_east'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_west')
+            GRAPHICS.get('ANIMA_blue_enemy_north'),
+            GRAPHICS.get('ANIMA_blue_enemy_south'),
+            GRAPHICS.get('ANIMA_blue_enemy_east'),
+            GRAPHICS.get('ANIMA_blue_enemy_west')
         ]
         this.animations[1] = [
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_north'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_south'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_east'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_west')
+            GRAPHICS.get('ANIMA_blue_enemy_north'),
+            GRAPHICS.get('ANIMA_blue_enemy_south'),
+            GRAPHICS.get('ANIMA_blue_enemy_east'),
+            GRAPHICS.get('ANIMA_blue_enemy_west')
         ]
         this.animations[2] = [
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_north'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_south'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_east'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_west')
+            GRAPHICS.get('ANIMA_blue_enemy_north'),
+            GRAPHICS.get('ANIMA_blue_enemy_south'),
+            GRAPHICS.get('ANIMA_blue_enemy_east'),
+            GRAPHICS.get('ANIMA_blue_enemy_west')
         ]
     }
 
@@ -69,45 +70,54 @@ class Knight {
         let prevFacing = this.facing;
         this.sidesAffected = undefined;
 
-        if(this.kbLeft <= 0) {
-            if(Player.CURR_PLAYER && this.target)         this.charge();
-            else                    this.pace();
-        }else{
-            this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
-            //console.log(this.phys2d.velocity);
-            console.log(this.kbVect);
-            this.phys2d.velocity.x *= gameEngine.clockTick;
-            this.phys2d.velocity.y *= gameEngine.clockTick;
-
-            this.kbLeft -= gameEngine.clockTick;
-            if(this.kbLeft <= 0) this.facePlayer();
+        if (this.pain.hurting) { // damage animation stuff
+            this.pain.timer -= gameEngine.clockTick;
+            if (this.pain.timer <= 0) {
+                this.pain.hurting = false;
+                this.pain.timer = 0;
+            }
         }
 
-        if(Player.CURR_PLAYER) this.checkSwordCol();
+        this.chargeTLeft -= gameEngine.clockTick;
+
+        if(this.kbLeft <= 0) {
+            if (Player.CURR_PLAYER.alive && this.target)         this.charge();
+            else                    this.pace();
+        } else{
+            this.kbLeft -= gameEngine.clockTick;
+            if(this.kbLeft <= 0) {/*this.facePlayer()*/}
+            else {
+                this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
+                //console.log(this.phys2d.velocity);
+                //console.log(this.kbVect);
+                this.phys2d.velocity.x *= gameEngine.clockTick;
+                this.phys2d.velocity.y *= gameEngine.clockTick;
+            }
+
+            
+
+            
+        }
+
+        if(Player.CURR_PLAYER.alive) this.checkSwordCol();
     };
 
     pace(){
         this.elapsedTime += gameEngine.clockTick;
 
-        if (this.elapsedTime > this.nextChange || this.colliding) {
+        if (this.elapsedTime > this.nextChange || (this.colliding && !this.target)) {
             this.elapsedTime = 0;
-            this.nextChange = Math.random() * 1.65;
-            this.currButton = Math.floor(Math.random() * 4);
+            this.nextChange = 1 + Math.random() * 0.65;
+            let newDir = this.facing < 2 ? Math.floor(Math.random()*2)+2 : Math.floor(Math.random()*2);
+            this.facing = newDir;
         }
 
-        if (this.x > 960) this.currButton = 3;
-        if (this.x < 10) this.currButton = 2;
-        if (this.y < 10) this.currButton = 0;
-        if (this.y > 770) this.currButton = 1;
-        // this.currButton --> 0 = w  | 1 = s  |  2 = d  |  3 = a
+        // this.facing --> 0 = n  | 1 = s  |  2 = e  |  3 = w
         
-        if (this.currButton === 0)      [this.facing, this.state, this.phys2d.velocity.y] = [0, 1, -Player.MAX_VEL];
-        else if (this.currButton === 1) [this.facing, this.state, this.phys2d.velocity.y] = [1, 1, Player.MAX_VEL];
-        else                            this.phys2d.velocity.y = 0;
-        
-        if (this.currButton === 2)      [this.facing, this.state, this.phys2d.velocity.x] = [2, 1, Player.MAX_VEL];
-        else if (this.currButton === 3) [this.facing, this.state, this.phys2d.velocity.x] = [3, 1, -Player.MAX_VEL];
-        else                            this.phys2d.velocity.x = 0;
+        if(this.facing == 0) this.phys2d.velocity.y = -1;
+        else if(this.facing == 1) this.phys2d.velocity.y = 1;
+        else if(this.facing == 2) this.phys2d.velocity.x = 1;
+        else if(this.facing == 3) this.phys2d.velocity.x = -1;
 
         this.phys2d.velocity = normalizeVector(this.phys2d.velocity);
         this.phys2d.velocity.x *= Knight.MAX_VEL * gameEngine.clockTick;
@@ -122,10 +132,11 @@ class Knight {
         }
     }
 
+    
+
     charge(){
         //console.log("Charging");
-        this.chargeTLeft -= gameEngine.clockTick;
-        if(this.chargeTLeft > 0 && !this.colliding){
+        if(this.chargeTLeft > 0 /*&& !this.colliding*/){
             let targDir = scaleVect(normalizeVector(distVect(this, this.target)), 0.25);
             let facing = scaleVect(getDirVect(this.facing), 0.75);
             let chargeDir = addVect(targDir, facing);
@@ -143,7 +154,7 @@ class Knight {
             let kb = scaleVect(targDir, Knight.KB_STR * SCALE);
             this.dealDamage(Player.CURR_PLAYER, kb);
             this.dmgCD = Knight.DAMAGE_CD;
-            console.log("Hit player");
+            //console.log("Hit player");
         } else{
             this.dmgCD -= gameEngine.clockTick;
         }
@@ -192,10 +203,17 @@ class Knight {
             this.removeFromWorld = true;
         }
 
-        this.target = undefined;
+        this.pain.hurting = true;
+        this.pain.timer = this.pain.cooldown;
+
+        this.chargeTLeft /= 2;
+        this.elapsedTime += this.nextChange * 0.2;
     }
 
     facePlayer(){
+        this.elapsedTime = 0;
+        this.nextChange = 0.9 + Math.random() * 0.2;
+
         let p = Player.CURR_PLAYER;
         let xDiff = this.collider.corner.x - p.collider.corner.x;
         let yDiff = this.collider.corner.y - p.collider.corner.y;
@@ -209,14 +227,14 @@ class Knight {
         }
     }
 
-    updateCollider(){
-        let xOff = 3*SCALE;//this.facing == 3 ? 12 * SCALE : 3 * SCALE;
+    updateCollider() {
+        let xOff = 3 * SCALE; //this.facing == 3 ? 12 * SCALE : 3 * SCALE;
         this.collider = {type: "box", corner: {x: this.x + xOff, y: (this.y + 12 * SCALE)}, width: 14 * SCALE, height: 14 * SCALE};
     }
 
     draw(ctx, scale) {
         this.animations[this.state][this.facing].setAnimaSpeed(this.target ? 300 : 100);
-        this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
+        this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale, this.pain.hurting);
         if(this.DEBUG) drawBoxCollider(ctx, this.getSwordCol(), true);
     }
 }

@@ -7,6 +7,7 @@ class GameMap {
 
         this.mapImage = ASSET_MANAGER.getAsset(this.imageFilePath);
 
+        this.currMap = null;
 
         this.cellWidthInPx = cellWidthInTiles * pxTileWidth;
         this.cellHeightInPx = cellHeightInTiles * pxTileHeight;
@@ -121,6 +122,10 @@ class GameMap {
                     tile = new BlueStoneFloor(tileX, tileY);
                 else if (tileColor == 'blocker_yellow_stone')
                     tile = new BlockerYellowDoor(tileX, tileY);
+                else if (tileColor == 'wall_grey_block')
+                    tile = new WallGreyBlock(tileX, tileY);
+                else if (tileColor == 'wall_complex')
+                    tile = new WallComplex(tileX, tileY);
                 else
                     tile = new Grass(tileX, tileY);
 
@@ -142,14 +147,15 @@ class GameMap {
     addMapEntitiesToEngine(engine) {
         for (let y = 0; y < this.currCellTileMap.length; y++) {
             for (let x = 0; x < this.currCellTileMap[y].length; x++) {
-                 engine.scene.addEnvEntity(this.currCellTileMap[y][x][0]);
+                engine.scene.addEnvEntity(this.currCellTileMap[y][x][0]);
             }
         }
     }
 
     addInteractableToEngine(engine) {
         for (let i = 0; i < this.mapCellEntities[this.currCellY][this.currCellX].length; i++) {
-            engine.scene.addInteractable(this.mapCellEntities[this.currCellY][this.currCellX][i]);
+            let entity = this.mapCellEntities[this.currCellY][this.currCellX][i];
+            if (entity.removeFromWorld !== true) engine.scene.addInteractable(entity);
         }
     }
 
