@@ -66,9 +66,9 @@ class GraphicsLoader {
         GRAPHICS.get('SET_link_north').addDeathFlashes();
         GRAPHICS.get('SET_link_east').addDeathFlashes();
 
-        GRAPHICS.addAnimation('ANIMA_link_hurt_south', 'SET_link_south', [0,8,9,8], [0.1, 0.15, 0.1, 0.15]);
-        GRAPHICS.addAnimation('ANIMA_link_hurt_north', 'SET_link_north', [0,8,9,8], [0.1, 0.15, 0.1, 0.15]);
-        GRAPHICS.addAnimation('ANIMA_link_hurt_east', 'SET_link_east', [0,8,9,8], [0.1, 0.15, 0.1, 0.15]);
+        GRAPHICS.addAnimation('ANIMA_link_hurt_south', 'SET_link_south', [0,8,9,8], [0.05, 0.08, 0.05, 0.08]);
+        GRAPHICS.addAnimation('ANIMA_link_hurt_north', 'SET_link_north', [0,8,9,8], [0.05, 0.08, 0.05, 0.08]);
+        GRAPHICS.addAnimation('ANIMA_link_hurt_east', 'SET_link_east', [0,8,9,8], [0.05, 0.08, 0.05, 0.08]);
         GRAPHICS.cloneAnimation('ANIMA_link_hurt_west', 'ANIMA_link_hurt_east').mirrorAnimation_Horz();
 
 

@@ -26,6 +26,7 @@ class Player {
         this.tag = "player";
         this.updateCollider();
         this.alive = true;
+        this.hurting = false;
 
         this.setHp(Player.MAX_HP);
         this.kbLeft = 0;
@@ -83,13 +84,13 @@ class Player {
         this.attackTime = GRAPHICS.getAnimation('ANIMA_link_attack_west').fTiming.reduce((a, b) => a+b);
     };
 
-    /*updateState() {
-        if (this.phys2d.velocity.x != 0 || this.phys2d.velocity.y != 0) this.state = 1;
-        else this.state = 0;
-    }*/
     updateState(moveIn, attackIn) {
-        if(attackIn || this.state == 2) {
-            if(this.state != 2) {
+        if (this.hurting > 0) {
+            this.hurting -= 20 * gameEngine.clockTick; //?
+            this.state = 3;
+        }
+        else if (attackIn || this.state == 2) {
+            if (this.state != 2) {
                 this.attackTimeLeft = this.attackTime;
                 this.attackHits = [];
             }
@@ -124,10 +125,10 @@ class Player {
         this.attackIn = gameEngine.keys['j'] && this.swingCD <= 0;
         this.updateState(this.moveIn, this.attackIn);
 
-        if(this.state != 2) this.updateDirection(this.moveIn);
+        if (this.state != 2) this.updateDirection(this.moveIn);
         else this.processAttack();
 
-        if(this.kbLeft > 0){
+        if (this.kbLeft > 0){
             this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
             //console.log(this.phys2d.velocity);
             console.log(this.kbVect);
@@ -135,7 +136,7 @@ class Player {
             this.phys2d.velocity.y *= gameEngine.clockTick;
 
             this.kbLeft -= gameEngine.clockTick;
-        }else{
+        } else {
             let velocityMod = this.state == 2 ? 1/2 : 1;
             this.phys2d.velocity.x = this.moveIn.x * Player.MAX_VEL * gameEngine.clockTick * velocityMod;
             this.phys2d.velocity.y = this.moveIn.y * -1 * Player.MAX_VEL * gameEngine.clockTick * velocityMod;    
@@ -144,7 +145,7 @@ class Player {
         gameEngine.currMap.screenEdgeTransition(this);
     };
 
-    processAttack(){
+    processAttack() {
         this.attackTimeLeft -= gameEngine.clockTick;
         if(this.attackTimeLeft - gameEngine.clockTick <= 0) {
             this.state = 0;
@@ -161,7 +162,7 @@ class Player {
                     && entity.tag == "enemy" && !this.attackHits.includes(entity)){
                     let hit = boxBoxCol(this.attackHitbox, entity.collider);
                     this.hitEnemy = hit || this.hitEnemy;//stored for debugging
-                    if(hit) {
+                    if (hit) {
                         let kbDir = normalizeVector(distVect(this.collider.corner, entity.collider.corner));
                         let kb = scaleVect(kbDir, Player.KB_STR * SCALE);
                         console.log(kb);
@@ -173,11 +174,11 @@ class Player {
         }
     }
 
-    dealDamage(entity, kb){
+    dealDamage(entity, kb) {
         entity.takeDamage(1, kb);
     }
 
-    takeDamage(amount, kb){
+    takeDamage(amount, kb) {
         console.log("GYahaAAaaa: " + amount);
         this.kbVect = {x: kb.x, y: kb.y};
         this.kbLeft = Player.KB_DUR;
@@ -187,23 +188,22 @@ class Player {
             gameEngine.gameOver = true;
             this.alive = false
             this.phys2d = {static: false, velocity: {x: 0, y: 0}};
-            // this.removeFromWorld = true;
-            // Player.CURR_PLAYER = undefined;
         }
+        this.hurting = 10;
     }
 
-    setHp(newHp){
+    setHp(newHp) {
         this.hp = newHp;
         GAMEDISPLAY.heartCount = this.hp;
     }
 
-    updateCollider(){
+    updateCollider() {
         let xOff = 1.5 * SCALE;
         this.collider = {type: "box", corner: {x: this.x + xOff, y: (this.y + 28)}, width: 14*SCALE, height: 14*SCALE};
     }
 
-    setAttackHB(){
-        if(this.facing == 2 || this.facing == 3){
+    setAttackHB() {
+        if (this.facing == 2 || this.facing == 3){
             let hDist = this.attackHBDim.height - this.collider.height;
             let yAdjust = hDist/2;
     
@@ -211,7 +211,7 @@ class Player {
     
             let AHBcorner = {x: this.collider.corner.x + xAdjust, y: this.collider.corner.y - yAdjust + this.attackHBOffset.y};
             this.attackHitbox = {type: "box", corner: AHBcorner, width: this.attackHBDim.width, height: this.attackHBDim.height};    
-        }else{
+        } else {
             let wDist = this.attackHBDim.height - this.collider.width;
             let xAdjust = wDist/2;
 
@@ -221,7 +221,7 @@ class Player {
         }
     }
 
-    resetAnims(){
+    resetAnims() {
         for(let i = 0; i < this.animations.length; i++){
             for(let j = 0; j < this.animations[i].length; j++){
                 GRAPHICS.getAnimation(this.animations[i][j]).reset();
@@ -237,7 +237,7 @@ class Player {
         ctx.strokeRect(this.attackHitbox.corner.x, this.attackHitbox.corner.y, this.attackHitbox.width, this.attackHitbox.height);
     }
 
-    draw(ctx, scale) {
+    draw (ctx, scale) {
         if (!this.alive) GRAPHICS.get('SET_end_game').drawSprite(2, ctx, this.x, this.y, scale);
         else if(gameEngine.victory) GRAPHICS.get('SET_end_game').drawSprite(1, ctx, this.x, this.y, scale);
         else GRAPHICS.get(this.animations[this.state][this.facing]).animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
