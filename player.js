@@ -235,7 +235,8 @@ class Player {
 
     draw(ctx, scale) {
         GRAPHICS.get(this.animations[this.state][this.facing]).animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
-        // GRAPHICS.get('SET_triforce').drawSprite(1, ctx, this.x+100, this.y, scale);
+        GRAPHICS.get('SET_triforce').drawSprite(2, ctx, this.x+100, this.y, scale);
+        // GRAPHICS.get('ANIMA_link_dead').animate(gameEngine.clockTick, ctx, this.x +100, this.y, scale);
 
         if(this.DEBUG) {
             //this.drawCollider(ctx);

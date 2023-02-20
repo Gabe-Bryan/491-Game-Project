@@ -158,14 +158,18 @@ class GraphicsLoader {
         GRAPHICS.addAnimation('ANIMA_enemy_death_cloud', 'SET_death_effects', [3,4,5,6,7], 0.3).setLooping(false);
 
         GRAPHICS.addSpriteSheet('OW_ITEMS', ASSET_MANAGER.getAsset('items.png'));
-        GRAPHICS.addSpriteSet("SET_ow_heart", 'OW_ITEMS',
+        GRAPHICS.addSpriteSet(
+            "SET_ow_heart", 'OW_ITEMS',
             [88, 104, 85, 100], 280,
             [ 8, 8, 11, 12], [7, 7, 26, 26]
         );
         // GRAPHICS.addAnimation('ANIMA_ow_heart', 'SET_ow_heart', 2, 0.3)
 
-
-        GRAPHICS.addSpriteSet('SET_triforce', 'LINK', [742, 835], [297, 225], [80, 41], [80, 61])
+        GRAPHICS.addSpriteSet(
+            'SET_end_game', 'LINK',
+            [742, 835, 789, 765], [297, 225, 241, 235], 
+            [80,   41,  24,  18], [ 80,  61,  15,  21]
+        );
 
     }
 
