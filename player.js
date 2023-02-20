@@ -28,7 +28,6 @@ class Player {
         this.alive = true;
 
         this.setHp(Player.MAX_HP);
-        this.setHp(1);
         this.kbLeft = 0;
         this.swingCD = 0;
     };
