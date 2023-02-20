@@ -201,7 +201,7 @@ class Player {
 
     heal(amount) {
         let tempHP = this.hp + amount;
-        if (tempHP > 10) tempHP = 10;          
+        if (tempHP > Player.MAX_HP) tempHP = Player.MAX_HP;          
         this.setHp(tempHP);
     }
 
