@@ -15,7 +15,8 @@ ASSET_MANAGER.queueDownload(
 	"characters.png",
 	"heart.png", 
 	"bomb.png", 
-	"key.png"
+	"key.png",
+	"items.png"
 );
 
 ASSET_MANAGER.downloadAll(() => {
