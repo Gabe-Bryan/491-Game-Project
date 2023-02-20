@@ -201,8 +201,8 @@ class Player {
 
     heal(amount) {
         let tempHP = this.hp + amount;
-        if (tempHP > this.MAX_HP) tempHP = this.MAX_HP;
-        this.setHp(tempHP)
+        if (tempHP > 10) tempHP = 10;          
+        this.setHp(tempHP);
     }
 
     updateCollider() {
