@@ -1,7 +1,7 @@
 class Skull{
     static MAX_VEL = 125;
     static KB_STR = 100;
-    static DMG_CD = 1.33;
+    static DMG_CD = 1.1;
     constructor(x, y){
         Object.assign(this, {x, y});
         this.updateCollider();

@@ -127,7 +127,7 @@ class Knight {
 
     charge(){
         //console.log("Charging");
-        if(this.chargeTLeft > 0 && !this.colliding){
+        if(this.chargeTLeft > 0 /*&& !this.colliding*/){
             let targDir = scaleVect(normalizeVector(distVect(this, this.target)), 0.25);
             let facing = scaleVect(getDirVect(this.facing), 0.75);
             let chargeDir = addVect(targDir, facing);
