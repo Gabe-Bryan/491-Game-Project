@@ -12,7 +12,7 @@ class Player {
     constructor(x, y) {
         Object.assign(this, {x, y});
 
-        this.DEBUG = false;
+        this.DEBUG = true;
         this.state = 0;     // 0:idle, 1:walking, 2:attacking, 3: taking damage
         this.facing = 1;    
         this.attackHitbox = undefined;
@@ -153,14 +153,7 @@ class Player {
         }
         else {
             //console.log("Time left for attack: " + this.attackTimeLeft);
-            let hDist = this.attackHBDim.height - this.collider.height;
-            let yAdjust = hDist/2;
-
-            let xAdjust = this.facing == 0 || this.facing == 3 ? -this.attackHBDim.width : this.collider.width;
-
-            let AHBcorner = {x: this.collider.corner.x + xAdjust, y: this.collider.corner.y - yAdjust + this.attackHBOffset.y};
-            this.attackHitbox = {type: "box", corner: AHBcorner, width: this.attackHBDim.width, height: this.attackHBDim.height};
-        
+            this.setAttackHB();
             //Attack collision det and handling
             this.hitEnemy = false;
             gameEngine.scene.interact_entities.forEach((entity) =>{
@@ -200,6 +193,25 @@ class Player {
     updateCollider(){
         let xOff = 1.5 * SCALE;
         this.collider = {type: "box", corner: {x: this.x + xOff, y: (this.y + 28)}, width: 14*SCALE, height: 14*SCALE};
+    }
+
+    setAttackHB(){
+        if(this.facing == 2 || this.facing == 3){
+            let hDist = this.attackHBDim.height - this.collider.height;
+            let yAdjust = hDist/2;
+    
+            let xAdjust = this.facing == 3 ? -this.attackHBDim.width : this.collider.width;
+    
+            let AHBcorner = {x: this.collider.corner.x + xAdjust, y: this.collider.corner.y - yAdjust + this.attackHBOffset.y};
+            this.attackHitbox = {type: "box", corner: AHBcorner, width: this.attackHBDim.width, height: this.attackHBDim.height};    
+        }else{
+            let wDist = this.attackHBDim.height - this.collider.width;
+            let xAdjust = wDist/2;
+
+            let yAdjust = this.facing == 1 ? -this.collider.height : this.attackHBDim.width;
+            let AHBcorner = {x: this.collider.corner.x - xAdjust /*+ this.attackHBOffset.y*/, y: this.collider.corner.y - yAdjust};
+            this.attackHitbox = {type: "box", corner: AHBcorner, width: this.attackHBDim.height, height: this.attackHBDim.width}; 
+        }
     }
 
     resetAnims(){

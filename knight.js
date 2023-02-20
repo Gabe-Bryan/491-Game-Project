@@ -7,12 +7,12 @@ class Knight {
     static CHARGE_DUR = 1;
 
     static MAX_VEL = 150;
-    static SPRINT_VEL = 350;
+    static SPRINT_VEL = 320;
 
     constructor(x, y) {
         Object.assign(this, {x, y});
 
-        this.DEBUG = false;
+        this.DEBUG = true;
         this.target = undefined;
         this.state = 0;  // 0:idle,  1:walking, 2: taking damage
         this.facing = 1; // 0:north, 1:south,   2:east, 3:west
@@ -147,8 +147,8 @@ class Knight {
     getSwordCol(){
         let col = this.collider;
 
-        let w = col.width;
-        let h = col.height
+        let w = this.facing == 0 || this.facing == 1 ? col.width : col.width/2;
+        let h = this.facing == 2 || this.facing == 3 ? col.height : col.height/2;
         let xOff = 0;
         let yOff = 0;
         if(this.facing == 3)        xOff = -w; 
@@ -211,6 +211,6 @@ class Knight {
 
     draw(ctx, scale) {
         this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
-        if(this.DEBUG) drawBoxCollider(ctx, this.getPlayerDetCol(), true);
+        if(this.DEBUG) drawBoxCollider(ctx, this.getSwordCol(), true);
     }
 }
