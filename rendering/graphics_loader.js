@@ -135,7 +135,7 @@ class GraphicsLoader {
         GRAPHICS.cloneAnimation('ANIMA_red_goblin_west', 'ANIMA_red_goblin_east').mirrorAnimation_Horz();
     
         GRAPHICS.addSpriteRow('SET_skull_enemy', 'ENEMIES', 5, 602, 172, 18, 18, [3,4,4,3]);
-        GRAPHICS.addAnimation('ANIMA_skull_enemy', 'SET_skull_enemy', [0,1,2,4,3,1], 0.3);
+        GRAPHICS.addAnimation('ANIMA_skull_enemy', 'SET_skull_enemy', [0,1,2,4,3,1], 0.3, -3, -2);
 
         // addSpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_ofs = 0, y_ofs = 0, labels)
         // addSpriteRow(id, spriteSheet, sprite_count, x_orig, y_orig, widths, heights, gaps, x_ofs, y_ofs, labels)

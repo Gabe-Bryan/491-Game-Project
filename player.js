@@ -26,7 +26,7 @@ class Player {
         this.tag = "player";
         this.updateCollider();
 
-        this.hp = Player.MAX_HP;
+        this.setHp(Player.MAX_HP);
         this.kbLeft = 0;
         this.swingCD = 0;
     };
@@ -108,8 +108,6 @@ class Player {
     update() {
         let prevFacing = this.facing;
         this.sidesAffected = undefined;
-
-        gameEngine.gameDisplay.heartCount = this.hp;
         
         let walkStateChange = this.state <= 1 ? 1 : this.state;
         let moveIn = {x: 0, y: 0}
@@ -181,13 +179,18 @@ class Player {
         console.log("GYahaAAaaa: " + amount);
         this.kbVect = {x: kb.x, y: kb.y};
         this.kbLeft = Player.KB_DUR;
-        this.hp -= amount;
+        this.setHp(this.hp - amount);
         if(this.hp <= 0){
             console.log("Game over!!!!!!!!!");
             gameEngine.gameOver = true;
             this.removeFromWorld = true;
             Player.CURR_PLAYER = undefined;
         }
+    }
+
+    setHp(newHp){
+        this.hp = newHp;
+        GAMEDISPLAY.heartCount = this.hp;
     }
 
     updateCollider(){

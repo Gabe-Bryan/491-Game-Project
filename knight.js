@@ -4,10 +4,11 @@ class Knight {
     static KB_STR = 500;
     static STRIKE_DIST = 100;
     static DAMAGE_CD = 2; //Damage cooldown
-    static CHARGE_DUR = 1;
+    static CHARGE_DUR = 0.9;
+    static CHARGE_CD = 0.3;
 
     static MAX_VEL = 150;
-    static SPRINT_VEL = 320;
+    static SPRINT_VEL = 310;
 
     constructor(x, y) {
         Object.assign(this, {x, y});
@@ -32,6 +33,7 @@ class Knight {
         this.strikeDist = Knight.STRIKE_DIST * SCALE;
         this.chargeTLeft = 0;
         this.dmgCD = 0;
+        this.chargeCD = 0;
         this.updateCollider();
     }
 
@@ -112,9 +114,11 @@ class Knight {
         this.phys2d.velocity.y *= Knight.MAX_VEL * gameEngine.clockTick;
 
         //Check if player is in vision
-        if(Player.CURR_PLAYER && boxBoxCol(this.getPlayerDetCol(), Player.CURR_PLAYER.collider)){
+        if(this.chargeCD <= 0 && Player.CURR_PLAYER && boxBoxCol(this.getPlayerDetCol(), Player.CURR_PLAYER.collider)){
             this.target = Player.CURR_PLAYER;
             this.chargeTLeft = Knight.CHARGE_DUR;
+        }else{
+            this.chargeCD -= gameEngine.clockTick;
         }
     }
 
@@ -129,6 +133,7 @@ class Knight {
             this.phys2d.velocity.y = chargeDir.y * Knight.SPRINT_VEL * gameEngine.clockTick;
         }else{
             this.target = undefined;
+            this.chargeCD = Knight.CHARGE_CD;
         }
     }
 
@@ -210,6 +215,7 @@ class Knight {
     }
 
     draw(ctx, scale) {
+        this.animations[this.state][this.facing].setAnimaSpeed(this.target ? 300 : 100);
         this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
         if(this.DEBUG) drawBoxCollider(ctx, this.getSwordCol(), true);
     }
