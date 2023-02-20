@@ -70,9 +70,9 @@ class Knight {
         this.sidesAffected = undefined;
 
         if(this.kbLeft <= 0) {
-            if(Player.CURR_PLAYER && this.target)         this.charge();
+            if (Player.CURR_PLAYER.alive && this.target)         this.charge();
             else                    this.pace();
-        }else{
+        } else{
             this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
             //console.log(this.phys2d.velocity);
             console.log(this.kbVect);
@@ -83,10 +83,10 @@ class Knight {
             if(this.kbLeft <= 0) this.facePlayer();
         }
 
-        if(Player.CURR_PLAYER) this.checkSwordCol();
+        if(Player.CURR_PLAYER.alive) this.checkSwordCol();
     };
 
-    pace(){
+    pace() {
         this.elapsedTime += gameEngine.clockTick;
 
         if (this.elapsedTime > this.nextChange || this.colliding) {
@@ -209,8 +209,8 @@ class Knight {
         }
     }
 
-    updateCollider(){
-        let xOff = 3*SCALE;//this.facing == 3 ? 12 * SCALE : 3 * SCALE;
+    updateCollider() {
+        let xOff = 3 * SCALE; //this.facing == 3 ? 12 * SCALE : 3 * SCALE;
         this.collider = {type: "box", corner: {x: this.x + xOff, y: (this.y + 12 * SCALE)}, width: 14 * SCALE, height: 14 * SCALE};
     }
 

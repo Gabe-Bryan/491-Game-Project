@@ -137,8 +137,7 @@ class GraphicsLoader {
         GRAPHICS.addSpriteRow('SET_skull_enemy', 'ENEMIES', 5, 602, 172, 18, 18, [3,4,4,3]);
         GRAPHICS.addAnimation('ANIMA_skull_enemy', 'SET_skull_enemy', [0,1,2,4,3,1], 0.3, -3, -2);
 
-        // addSpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_ofs = 0, y_ofs = 0, labels)
-        // addSpriteRow(id, spriteSheet, sprite_count, x_orig, y_orig, widths, heights, gaps, x_ofs, y_ofs, labels)
+
         /// /// B U N N Y /./././././././././
         GRAPHICS.addSpriteSheet('CHARTR1', ASSET_MANAGER.getAsset('characters.png'))
         GRAPHICS.addSpriteSet('SET_bunny', 'CHARTR1', [4, 28, 52, 76, 100, 125, 149, 174], 419, 17, 25, 0, [0,0,0,0,0,0,0,-1]);
@@ -158,5 +157,23 @@ class GraphicsLoader {
         GRAPHICS.addSpriteRow('SET_death_effects', 'DEATHFX',7, 0,4,26,23,0);
         GRAPHICS.addAnimation('ANIMA_enemy_death_cloud', 'SET_death_effects', [3,4,5,6,7], 0.3).setLooping(false);
 
+        GRAPHICS.addSpriteSheet('OW_ITEMS', ASSET_MANAGER.getAsset('items.png'));
+        GRAPHICS.addSpriteSet(
+            "SET_ow_heart", 'OW_ITEMS',
+            [88, 104, 85, 100], 280,
+            [ 8, 8, 11, 12], [7, 7, 26, 26]
+        );
+        // GRAPHICS.addAnimation('ANIMA_ow_heart', 'SET_ow_heart', 2, 0.3)
+
+        GRAPHICS.addSpriteSet(
+            'SET_end_game', 'LINK',
+            [742, 835, 789, 765], [297, 225, 241, 235], 
+            [ 80,  41,  24,  21], [ 80,  61,  15,  21],
+            [  0,   0,   0,   3], [  0,   0,  10,   3]
+        );
+
     }
+
+    // addSpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_ofs = 0, y_ofs = 0, labels)
+    // addSpriteRow(id, spriteSheet, sprite_count, x_orig, y_orig, widths, heights, gaps, x_ofs, y_ofs, labels)
 }
