@@ -34,7 +34,7 @@ class GameDisplay {
     };
 
     draw(ctx) {
-        if(gameEngine.victory){
+        if(true || gameEngine.victory){
             this.drawVictory();
             this.timeV += gameEngine.clockTick;
         }else if(gameEngine.gameOver){
@@ -54,13 +54,14 @@ class GameDisplay {
         
     };
 
-    drawEndScreen(text, completion, fontSize, fontColor, fontOutLine){
+    drawEndScreen(text, completion, fontSize, fontColor, fontOutLine, backgroundAlpha = 1){
         let ctx = this.ctx;
+        backgroundAlpha = Math.min(1, backgroundAlpha);
         //Draw the transparent black "filter"
-        ctx.globalAlpha = Math.log2(completion + 1);//2/(1 + Math.E ** (-7 * completion)) - 0.5 + completion * 0.5;
+        ctx.globalAlpha = Math.log2(completion + 1)  * backgroundAlpha;//2/(1 + Math.E ** (-7 * completion)) - 0.5 + completion * 0.5;
         ctx.fillStyle = "black";
         ctx.fillRect(0,0,ctx.canvas.clientWidth,ctx.canvas.clientHeight);
-        ctx.globalAlpha = Math.min(1.0, 0.1 + completion * 2);
+        ctx.globalAlpha = Math.min(1.0, (0.1 + completion * 2));
         //Draw the text
         ctx.font = `${fontSize * Math.min(1.0, 0.8 + completion * 0.275)}px Zelda`;
         ctx.textAlign = "center";
@@ -83,7 +84,7 @@ class GameDisplay {
     drawVictory () {
         //Draw the transparent black "filter"
         let completion = Math.min(1.0, this.timeV/GameDisplay.TIME_TO_FADE)
-        this.drawEndScreen("Victory", completion, 164, "rgb(237, 175, 59)", "black");
+        this.drawEndScreen("Victory", completion, 164, "rgb(237, 175, 59)", "black", 0);
     }
 
 
