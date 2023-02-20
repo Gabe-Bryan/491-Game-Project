@@ -24,6 +24,7 @@ class Knight {
         this.nextChange = 1;
         this.hp = Knight.MAX_HP;
         this.kbLeft = 0;
+        this.pain = {hurting : false, timer: 0, cooldown: 0.5} // cooldown in sec
 
         this.animations = [];
         this.setupAnimations();
@@ -40,22 +41,22 @@ class Knight {
     setupAnimations() {
         this.animations = Array(1);
         this.animations[0] = [
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_north').clone(),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_south').clone(),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_east').clone(),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_west').clone()
+            GRAPHICS.get('ANIMA_blue_enemy_north'),
+            GRAPHICS.get('ANIMA_blue_enemy_south'),
+            GRAPHICS.get('ANIMA_blue_enemy_east'),
+            GRAPHICS.get('ANIMA_blue_enemy_west')
         ]
         this.animations[1] = [
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_north').clone(),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_south').clone(),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_east').clone(),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_west').clone()
+            GRAPHICS.get('ANIMA_blue_enemy_north'),
+            GRAPHICS.get('ANIMA_blue_enemy_south'),
+            GRAPHICS.get('ANIMA_blue_enemy_east'),
+            GRAPHICS.get('ANIMA_blue_enemy_west')
         ]
         this.animations[2] = [
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_north').clone(),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_south').clone(),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_east').clone(),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_west').clone()
+            GRAPHICS.get('ANIMA_blue_enemy_north'),
+            GRAPHICS.get('ANIMA_blue_enemy_south'),
+            GRAPHICS.get('ANIMA_blue_enemy_east'),
+            GRAPHICS.get('ANIMA_blue_enemy_west')
         ]
     }
 
@@ -68,6 +69,14 @@ class Knight {
     update() {
         let prevFacing = this.facing;
         this.sidesAffected = undefined;
+
+        if (this.pain.hurting) { // damage animation stuff
+            this.pain.timer -= gameEngine.clockTick;
+            if (this.pain.timer <= 0) {
+                this.pain.hurting = false;
+                this.pain.timer = 0;
+            }
+        }
 
         this.chargeTLeft -= gameEngine.clockTick;
 
@@ -194,6 +203,9 @@ class Knight {
             this.removeFromWorld = true;
         }
 
+        this.pain.hurting = true;
+        this.pain.timer = this.pain.cooldown;
+
         this.chargeTLeft /= 2;
         this.elapsedTime += this.nextChange * 0.2;
     }
@@ -222,7 +234,7 @@ class Knight {
 
     draw(ctx, scale) {
         this.animations[this.state][this.facing].setAnimaSpeed(this.target ? 300 : 100);
-        this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
+        this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale, this.pain.hurting);
         if(this.DEBUG) drawBoxCollider(ctx, this.getSwordCol(), true);
     }
 }

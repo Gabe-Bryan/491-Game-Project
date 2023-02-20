@@ -26,7 +26,7 @@ class Player {
         this.tag = "player";
         this.updateCollider();
         this.alive = true;
-        this.hurting = false;
+        this.pain = {hurting : false, timer: 0, cooldown: 0.5} // cooldown in sec
 
         this.setHp(Player.MAX_HP);
         this.kbLeft = 0;
@@ -34,62 +34,45 @@ class Player {
     };
 
     setupAnimations() {
-        for (let i = 0; i < 4; i++) {           // states
-            this.animations.push([]);          
-            for (let j = 0; j < 4; j++) {       // directions
-                this.animations[i].push([]);
-            }
-        }
+        // Animation array: [state][facing]
+        this.animations = new Array(4)
 
         // idle animations
-        // facing north
-        this.animations[0][0] = 'ANIMA_link_Idle_north';
-        // facing south
-        this.animations[0][1] = 'ANIMA_link_Idle_south';
-        // facing east
-        this.animations[0][2] = 'ANIMA_link_Idle_east';
-        // facing west
-        this.animations[0][3] = 'ANIMA_link_Idle_west';
-
+        this.animations[0] = [
+            GRAPHICS.get('ANIMA_link_Idle_north'),
+            GRAPHICS.get('ANIMA_link_Idle_south'),
+            GRAPHICS.get('ANIMA_link_Idle_east'),
+            GRAPHICS.get('ANIMA_link_Idle_west'),
+        ]
         //walking animations
-        //facing north
-        this.animations[1][0] = 'ANIMA_link_run_north';
-        // facing south
-        this.animations[1][1] = 'ANIMA_link_run_south';
-        // facing east
-        this.animations[1][2] = 'ANIMA_link_run_east';
-        // facing west
-        this.animations[1][3] = 'ANIMA_link_run_west';
-
+        this.animations[1] = [
+            GRAPHICS.get('ANIMA_link_run_north'),
+            GRAPHICS.get('ANIMA_link_run_south'),
+            GRAPHICS.get('ANIMA_link_run_east'),
+            GRAPHICS.get('ANIMA_link_run_west')
+        ]
         // attacking animations
-        //North
-        this.animations[2][0] = 'ANIMA_link_attack_north';
-        //South
-        this.animations[2][1] = 'ANIMA_link_attack_south';
-        //East
-        this.animations[2][2] = 'ANIMA_link_attack_east';
-        //West
-        this.animations[2][3] = 'ANIMA_link_attack_west';
-
+        this.animations[2] = [
+            GRAPHICS.get('ANIMA_link_attack_north'),
+            GRAPHICS.get('ANIMA_link_attack_south'),
+            GRAPHICS.get('ANIMA_link_attack_east'),
+            GRAPHICS.get('ANIMA_link_attack_west')
+        ]
         // taking damage animations
-        //North
-        this.animations[3][0] = 'ANIMA_link_hurt_north';
-        //South
-        this.animations[3][1] = 'ANIMA_link_hurt_south';
-        //East
-        this.animations[3][2] = 'ANIMA_link_hurt_east';
-        //West
-        this.animations[3][3] = 'ANIMA_link_hurt_west';
+        this.animations[3] = [
+            GRAPHICS.get('ANIMA_link_hurt_north'),
+            GRAPHICS.get('ANIMA_link_hurt_south'),
+            GRAPHICS.get('ANIMA_link_hurt_east'),
+            GRAPHICS.get('ANIMA_link_hurt_west')
+        ]
 
+        // other animations / sprites
         this.attackTime = GRAPHICS.getAnimation('ANIMA_link_attack_west').fTiming.reduce((a, b) => a+b);
+        this.endSprites = GRAPHICS.getSpriteSet('SET_end_game');
     };
 
     updateState(moveIn, attackIn) {
-        if (this.hurting > 0) {
-            this.hurting -= 20 * gameEngine.clockTick; //?
-            this.state = 3;
-        }
-        else if (attackIn || this.state == 2) {
+        if (attackIn || this.state == 2) {
             if (this.state != 2) {
                 this.attackTimeLeft = this.attackTime;
                 this.attackHits = [];
@@ -109,11 +92,19 @@ class Player {
         else if (moveIn.y < 0) this.facing = 1;
     }
 
-    update() {
+    update() { // this.pain = {hurting : false, timer: 0, cooldown: 20}
         if (!this.alive) return;
         let prevFacing = this.facing;
         this.sidesAffected = undefined;
         
+        if (this.pain.hurting) { // damage animation stuff
+            this.pain.timer -= gameEngine.clockTick;
+            if (this.pain.timer <= 0) {
+                this.pain.hurting = false;
+                this.pain.timer = 0;
+            }
+        }
+
         let walkStateChange = this.state <= 1 ? 1 : this.state;
         let moveIn = {x: 0, y: 0}
         if (gameEngine.keys["w"])      moveIn.y = 1;//[this.facing, this.state, this.phys2d.velocity.y] = [0, walkStateChange, -Player.MAX_VEL];
@@ -191,7 +182,9 @@ class Player {
             this.alive = false
             this.phys2d = {static: false, velocity: {x: 0, y: 0}};
         }
-        this.hurting = 10;
+
+        this.pain.hurting = true;
+        this.pain.timer = this.pain.cooldown;
     }
 
     setHp(newHp) {
@@ -232,7 +225,7 @@ class Player {
     resetAnims() {
         for(let i = 0; i < this.animations.length; i++){
             for(let j = 0; j < this.animations[i].length; j++){
-                GRAPHICS.getAnimation(this.animations[i][j]).reset();
+                this.animations[i][j].reset();
             }
         }
     }
@@ -246,9 +239,12 @@ class Player {
     }
 
     draw (ctx, scale) {
-        if (!this.alive) GRAPHICS.get('SET_end_game').drawSprite(2, ctx, this.x, this.y, scale);
-        else if(gameEngine.victory) GRAPHICS.get('SET_end_game').drawSprite(1, ctx, this.x, this.y, scale);
-        else GRAPHICS.get(this.animations[this.state][this.facing]).animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
+        // game has ended
+        if (!this.alive) this.endSprites.drawSprite(2, ctx, this.x, this.y, scale);
+        else if(gameEngine.victory) this.endSprites.drawSprite(1, ctx, this.x, this.y, scale);
+        // Game is still going 
+        else this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale, this.pain.hurting);
+
         // GRAPHICS.get('SET_end_game').drawSprite(0, ctx, this.x+100, this.y, scale);
         // GRAPHICS.get('ANIMA_link_dead').animate(gameEngine.clockTick, ctx, this.x +100, this.y, scale);
 
