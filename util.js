@@ -116,4 +116,5 @@ const getEnemiesLeft = (entities) => {
             eLeft++;
         }
     }
+    return eLeft;
 }
