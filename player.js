@@ -16,7 +16,7 @@ class Player {
         this.state = 0;     // 0:idle, 1:walking, 2:attacking, 3: taking damage
         this.facing = 1;    
         this.attackHitbox = undefined;
-        this.attackHBDim = {width: 16 * SCALE, height: 32 * SCALE};
+        this.attackHBDim = {width: 15 * SCALE, height: 30 * SCALE};
         this.attackHBOffset = {x: 0, y: -3 * SCALE};
 
         this.animations = [];

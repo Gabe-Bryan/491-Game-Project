@@ -23,6 +23,7 @@ class GameEngine {
 
         this.running = false;
         this.gameOver = false;
+        this.victory = false;
     };
 
     init(ctx) {
