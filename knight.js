@@ -27,7 +27,7 @@ class Knight {
 
         // animation state settings
         this.pain = {hurting: false, timer: 0, cooldown: 0.5} // cooldown in sec
-        this.hitstop = {hitting: false, timer: 0, cooldown: 0.6}
+        this.hitstop = {hitting: false, timer: 0, cooldown: 0.1}
 
         this.animations = [];
         this.setupAnimations();
@@ -96,7 +96,10 @@ class Knight {
         let prevFacing = this.facing;
         this.sidesAffected = undefined;
         this.chargeTLeft -= gameEngine.clockTick;
-
+        if(this.hitstop.hitting){
+            this.phys2d.velocity = {x: 0, y: 0};
+            return;
+        }
         if(this.kbLeft <= 0) {
             if (Player.CURR_PLAYER.alive && this.target)         this.charge();
             else                    this.pace();
