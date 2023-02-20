@@ -11,7 +11,7 @@ class Skull{
         this.attackCD = 0;
     }
     setupAnimations() {
-        this.animation = "ANIMA_skull_enemy";
+        this.animation = GRAPHICS.get("ANIMA_skull_enemy").clone();
     }
     checkAttack(dir){
         let p = Player.CURR_PLAYER;
@@ -43,6 +43,6 @@ class Skull{
     }
     
     draw(ctx){
-        GRAPHICS.get(this.animation).animate(gameEngine.clockTick, ctx, this.x, this.y, SCALE);
+        this.animation.animate(gameEngine.clockTick, ctx, this.x, this.y, SCALE);
     }
 }

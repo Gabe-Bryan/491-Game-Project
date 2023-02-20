@@ -7,7 +7,7 @@ class Knight {
     static CHARGE_DUR = 0.9;
     static CHARGE_CD = 0.3;
 
-    static MAX_VEL = 150;
+    static MAX_VEL = 125;
     static SPRINT_VEL = 310;
 
     constructor(x, y) {
@@ -40,22 +40,22 @@ class Knight {
     setupAnimations() {
         this.animations = Array(1);
         this.animations[0] = [
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_north'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_south'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_east'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_west')
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_north').clone(),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_south').clone(),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_east').clone(),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_west').clone()
         ]
         this.animations[1] = [
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_north'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_south'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_east'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_west')
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_north').clone(),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_south').clone(),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_east').clone(),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_west').clone()
         ]
         this.animations[2] = [
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_north'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_south'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_east'),
-            GRAPHICS.getAnimation('ANIMA_blue_enemy_west')
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_north').clone(),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_south').clone(),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_east').clone(),
+            GRAPHICS.getAnimation('ANIMA_blue_enemy_west').clone()
         ]
     }
 
