@@ -34,7 +34,7 @@ class GameDisplay {
     };
 
     draw(ctx) {
-        if(true || gameEngine.victory){
+        if(gameEngine.victory){
             this.drawVictory();
             this.timeV += gameEngine.clockTick;
         }else if(gameEngine.gameOver){
