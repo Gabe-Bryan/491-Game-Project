@@ -7,6 +7,7 @@ class GameMap {
 
         this.mapImage = ASSET_MANAGER.getAsset(this.imageFilePath);
 
+        this.currMap = null;
 
         this.cellWidthInPx = cellWidthInTiles * pxTileWidth;
         this.cellHeightInPx = cellHeightInTiles * pxTileHeight;
@@ -121,6 +122,10 @@ class GameMap {
                     tile = new BlueStoneFloor(tileX, tileY);
                 else if (tileColor == 'blocker_yellow_stone')
                     tile = new BlockerYellowDoor(tileX, tileY);
+                else if (tileColor == 'wall_grey_block')
+                    tile = new WallGreyBlock(tileX, tileY);
+                else if (tileColor == 'wall_complex')
+                    tile = new WallComplex(tileX, tileY);
                 else
                     tile = new Grass(tileX, tileY);
 

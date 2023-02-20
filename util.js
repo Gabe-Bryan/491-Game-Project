@@ -123,3 +123,14 @@ const getEnemiesLeft = (entities) => {
     return eLeft;
 }
 
+const screenToTileCoord = (x, y) => {
+    let tileWidth = 16*SCALE,
+        tileHeight = 16*SCALE;
+    return {'x':(Math.floor(x/tileWidth)), 'y':(Math.floor(y/tileHeight))};
+}
+
+const tileToScreenCoord = (x, y) => {
+    let tileWidth = 16*SCALE,
+        tileHeight = 16*SCALE;
+    return {'x':(x*tileWidth), 'y':(y*tileHeight)};
+}

@@ -1,5 +1,5 @@
 class Skull{
-    static MAX_VEL = 75;
+    static MAX_VEL = 100;
     static KB_STR = 100;
     static DMG_CD = 1.25;
     constructor(x, y){

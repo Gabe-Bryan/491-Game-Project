@@ -4,7 +4,7 @@ class Knight {
     static KB_STR = 500;
     static STRIKE_DIST = 100;
     static DAMAGE_CD = 2; //Damage cooldown
-    static CHARGE_DUR = 0.9;
+    static CHARGE_DUR = 1;
     static CHARGE_CD = 0.3;
 
     static MAX_VEL = 125;
@@ -13,7 +13,7 @@ class Knight {
     constructor(x, y) {
         Object.assign(this, {x, y});
 
-        this.DEBUG = true;
+        this.DEBUG = false;
         this.target = undefined;
         this.state = 0;  // 0:idle,  1:walking, 2: taking damage
         this.facing = 1; // 0:north, 1:south,   2:east, 3:west
