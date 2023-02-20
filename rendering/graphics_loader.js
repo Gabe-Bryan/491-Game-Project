@@ -73,7 +73,7 @@ class GraphicsLoader {
             [0, -7, -13, -14, -12, -7, 0], [0, -1, 0, 0, 0, 0, 0]
         );
 
-        GRAPHICS.addAnimation('ANIMA_link_attack_west', 'SET_link_attack_west', 6, [0.1, 0.07, 0.05, 0.04, 0.07, 0.1]); 
+        GRAPHICS.addAnimation('ANIMA_link_attack_west', 'SET_link_attack_west', 6, [0.095, 0.06, 0.04, 0.03, 0.06, 0.095]); 
         GRAPHICS.cloneAnimation('ANIMA_link_attack_east', 'ANIMA_link_attack_west').mirrorAnimation_Horz(0);
 
         GRAPHICS.addSpriteSet(
@@ -82,7 +82,7 @@ class GraphicsLoader {
             [ 22,  22,  20,  24,  32,  19], [ 22,  30,  35,  30,  23,  26],
             [  0,   0,   0,  -4, -11,   0], [  0,  -7,  -9,  -5,   0,  -4]
         );
-        GRAPHICS.addAnimation('ANIMA_link_attack_north', 'SET_link_attack_north', [0,1,2,3,4], [0.11, 0.08, 0.05, 0.08, 0.11]);
+        GRAPHICS.addAnimation('ANIMA_link_attack_north', 'SET_link_attack_north', [0,1,2,3,4], [0.10, 0.07, 0.04, 0.07, 0.10]);
     
         GRAPHICS.addSpriteSet(
             'SET_link_attack_south', 'LINK',
@@ -91,7 +91,7 @@ class GraphicsLoader {
             [  0,  -2,   0,   0,   0,   0,   0], [  0,   0,   0,   0,   0,   0,   0]
         );
     
-        GRAPHICS.addAnimation('ANIMA_link_attack_south', 'SET_link_attack_south', 6, [0.1, 0.07, 0.05, 0.04, 0.07, 0.1], -3, 3);
+        GRAPHICS.addAnimation('ANIMA_link_attack_south', 'SET_link_attack_south', 6, [0.095, 0.06, 0.04, 0.03, 0.06, 0.095], -3, 3);
 
 
         GRAPHICS.addSpriteSheet('CHARS', ASSET_MANAGER.getAsset('characters.png'));
