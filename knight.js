@@ -4,7 +4,7 @@ class Knight {
     static KB_STR = 500;
     static STRIKE_DIST = 100;
     static DAMAGE_CD = 2; //Damage cooldown
-    static CHARGE_DUR = 0.9;
+    static CHARGE_DUR = 1;
     static CHARGE_CD = 0.3;
 
     static MAX_VEL = 125;

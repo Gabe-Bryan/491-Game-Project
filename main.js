@@ -63,7 +63,7 @@ ASSET_MANAGER.downloadAll(() => {
 	
 	// actual starting room is (1, 2)
 	let startMapCellX = 1,
-		startMapCellY = 4;
+		startMapCellY = 2;
 
 	testMap.loadMapCell(startMapCellX, startMapCellY);
 	//setInterval(bun, bt)
