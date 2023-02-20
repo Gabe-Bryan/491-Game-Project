@@ -98,7 +98,35 @@ class BlockerYellowDoor {
         if (this.locked) {
             GRAPHICS.get('blocker yellow stone').drawTile(ctx, this.xLoc, this.yLoc);
         } else {
-            GRAPHICS.get('grass').drawTile(ctx, this.xLoc, this.yLoc);
+            GRAPHICS.get('floor blue cobblestone').drawTile(ctx, this.xLoc, this.yLoc);
         }
+    }
+}
+
+class WallGreyBlock {
+    constructor(xLoc, yLoc) {
+        Object.assign(this, { xLoc, yLoc });
+    }
+
+    update() {
+
+    };
+
+    draw(ctx, scale) {
+        GRAPHICS.get('wall grey block').drawTile(ctx, this.xLoc, this.yLoc);
+    }
+}
+
+class WallComplex {
+    constructor(xLoc, yLoc) {
+        Object.assign(this, { xLoc, yLoc });
+    }
+
+    update() {
+
+    };
+
+    draw(ctx, scale) {
+        let tileAbove = gameEngine.scene.env_
     }
 }

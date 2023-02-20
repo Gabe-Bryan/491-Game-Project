@@ -24,7 +24,7 @@ ASSET_MANAGER.downloadAll(() => {
 
 	new GraphicsLoader(); // <- just to build the sprites & animations into GRAPHICS
 
-	Player.CURR_PLAYER = new Player(canvas.width/2 - 144, canvas.height/2 - 32);
+	Player.CURR_PLAYER = new Player(canvas.width/2 - 16, canvas.height/2 - 32);
 	gameEngine.addEntity(Player.CURR_PLAYER); 
 	//gameEngine.addEntity(new Knight(canvas.width/4, canvas.height/2));
 	
@@ -36,7 +36,8 @@ ASSET_MANAGER.downloadAll(() => {
 		'#333333':'stone_sand',
 		'#ffff00':'sand',
 		'#0000ff':'floor_blue_cobblestone',
-		'#008800':'blocker_yellow_stone'
+		'#008800':'blocker_yellow_stone',
+		'#444444':'wall_grey_block'
 	});
 
 	testMap.addMapCellEntity(2, 2, new Knight(500, 600));
@@ -44,7 +45,7 @@ ASSET_MANAGER.downloadAll(() => {
 	//testMap.addMapCellEntity(3, 2, new Knight(600, 600));
 	testMap.addMapCellEntity(3, 2, new Bunny(400,400));
 
-	let roomIndexX = 3;
+	let roomIndexX = 1;
 	let roomIndexY = 2;
 	testMap.loadMapCell(roomIndexX, roomIndexY);
 	//setInterval(bun, bt)
