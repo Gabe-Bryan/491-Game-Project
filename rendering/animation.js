@@ -126,5 +126,6 @@ class Animation {
 
         this.elapsedTime += tick;
 
+        return this.done;
     }
 }

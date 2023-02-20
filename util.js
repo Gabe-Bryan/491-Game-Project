@@ -71,6 +71,8 @@ const updateList = (entities) => {
 
     for (let i = entities.length - 1; i >= 0; --i) {
         if (entities[i].removeFromWorld) {
+            if (entities[i].tag === "enemy")
+                entities.push(new EnemyDeath(entities[i].x, entities[i].y))
             entities.splice(i, 1);
         }
     }
@@ -115,4 +117,29 @@ const drawGameOver = (ctx) => {
     ctx.fillStyle = "red";
     ctx.fillText("GAME OVER", ctx.canvas.clientWidth/2, ctx.canvas.clientHeight/2);
     ctx.textAlign = "start";
+}
+
+class EnemyDeath {
+    constructor(x, y, type) {
+        Object.assign(this, {x, y, type});
+        this.spawn = null;
+        this.cloudDone = false;
+        // type is not used rn, added for possible future use
+    }
+
+    update() {
+        if (this.cloudDone && this.spawn === null) {
+            this.removeFromWorld = true;
+        }
+    }
+
+    draw(ctx) {
+        if (this.spawn !== null) GRAPHICS.get(this.spawn).animate(gameEngine.clockTick, ctx, this.x, this.y, 3);
+        this.cloudDone = GRAPHICS.get('ANIMA_enemy_death_cloud').animate(gameEngine.clockTick, ctx, this.x, this.y, 3);
+    }
+
+    spawn() {
+        // fix to
+        // this.spawn = GRAPHICS.get('hearts or something')
+    }
 }

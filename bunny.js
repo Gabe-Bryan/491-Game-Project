@@ -1,5 +1,5 @@
 class Bunny {
-    static MAX_HP = 3;
+    static MAX_HP = 1;
     static KB_DUR = 0.1;
     constructor(x, y) {
         Object.assign(this, {x, y});
@@ -27,22 +27,22 @@ class Bunny {
     setupAnimations() {
         this.animations = Array(1);
         this.animations[0] = [
-            GRAPHICS.getAnimation('ANIMA_bunny_north'),
-            GRAPHICS.getAnimation('ANIMA_bunny_south'),
-            GRAPHICS.getAnimation('ANIMA_bunny_east'),
-            GRAPHICS.getAnimation('ANIMA_bunny_west')
+            'ANIMA_bunny_north',
+            'ANIMA_bunny_south',
+            'ANIMA_bunny_east',
+            'ANIMA_bunny_west'
         ]
         this.animations[1] = [
-            GRAPHICS.getAnimation('ANIMA_bunny_north'),
-            GRAPHICS.getAnimation('ANIMA_bunny_south'),
-            GRAPHICS.getAnimation('ANIMA_bunny_east'),
-            GRAPHICS.getAnimation('ANIMA_bunny_west')
+            'ANIMA_bunny_north',
+            'ANIMA_bunny_south',
+            'ANIMA_bunny_east',
+            'ANIMA_bunny_west'
         ]
         this.animations[2] = [
-            GRAPHICS.getAnimation('ANIMA_bunny_north'),
-            GRAPHICS.getAnimation('ANIMA_bunny_south'),
-            GRAPHICS.getAnimation('ANIMA_bunny_east'),
-            GRAPHICS.getAnimation('ANIMA_bunny_west')
+            'ANIMA_bunny_north',
+            'ANIMA_bunny_south',
+            'ANIMA_bunny_east',
+            'ANIMA_bunny_west'
         ]
     }
 
@@ -65,18 +65,18 @@ class Bunny {
 
         if (gameEngine.keys["b"]) {
             this.bt++;
-            if (this.bt > 100) {
+            if (this.bt > 50) {
                 this.bt = 0;
                 gameEngine.scene.addInteractable(new Bunny(200 + (Math.random()*560), 200 + (Math.random()*368)));
             }           
         }
 
 
-        if (this.x > 960) this.currButton = 3;
+        if (this.x > 950) this.currButton = 3;
         if (this.x < 10) this.currButton = 2;
-        if (this.y < 10) this.currButton = 0;
-        if (this.y > 770) this.currButton = 1;
-        // this.currButton --> 0 = w  | 1 = s  |  2 = d  |  3 = a
+        if (this.y < 10) this.currButton = 1;
+        if (this.y > 760) this.currButton = 0;
+        // this.currButton --> 0 = north  | 1 = south  |  2 = east  |  3 = west
         
         if (this.currButton === 0)      [this.facing, this.state, this.phys2d.velocity.y] = [0, 1, -Player.MAX_VEL];
         else if (this.currButton === 1) [this.facing, this.state, this.phys2d.velocity.y] = [1, 1, Player.MAX_VEL];
@@ -120,6 +120,6 @@ class Bunny {
     }
 
     draw(ctx, scale) {
-        this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
+        GRAPHICS.getAnimation(this.animations[this.state][this.facing]).animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
     }
 }
