@@ -48,18 +48,24 @@ ASSET_MANAGER.downloadAll(() => {
 	// testMap.addMapCellEntity(3, 2, new Bunny(400,400));
 
 	let r1_KnightXY = tileToScreenCoord(14, 2);
+	let r1_SkullXY = tileToScreenCoord(1, 3);
 	testMap.addMapCellEntity(1, 3, new Knight(r1_KnightXY.x, r1_KnightXY.y));
+	testMap.addMapCellEntity(1, 3, new Skull(r1_SkullXY.x, r1_SkullXY.y));
 
 	let r2_Knight1XY = tileToScreenCoord(6, 2);
 	let r2_Knight2XY = tileToScreenCoord(10, 13);
+	let r2_SkullXY = tileToScreenCoord(14, 1);
 	testMap.addMapCellEntity(2, 3, new Knight(r2_Knight1XY.x, r2_Knight1XY.y));
 	testMap.addMapCellEntity(2, 3, new Knight(r2_Knight2XY.x, r2_Knight2XY.y));
+	testMap.addMapCellEntity(2, 3, new Skull(r2_SkullXY.x, r2_SkullXY.y));
 	
 	let r3_Knight1XY = tileToScreenCoord(6, 13),
-		r3_Knight2XY = tileToScreenCoord(13, 13);
+		r3_Knight2XY = tileToScreenCoord(13, 13),
+		r3_SkullXY = tileToScreenCoord(17, 1);
 	
 	testMap.addMapCellEntity(2, 4, new Knight(r3_Knight1XY.x, r3_Knight1XY.y));
 	testMap.addMapCellEntity(2, 4, new Knight(r3_Knight2XY.x, r3_Knight2XY.y));
+	testMap.addMapCellEntity(2, 4, new Skull(r3_SkullXY.x, r3_SkullXY.y));
 	
 	// actual starting room is (1, 2)
 	let startMapCellX = 1,
