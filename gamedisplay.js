@@ -1,4 +1,5 @@
 class GameDisplay {
+    static TIME_TO_GO = 3;
     constructor() {
         
         this.ctx = null;
@@ -17,6 +18,7 @@ class GameDisplay {
         this.bombHeight = 80;
         this.keyWidth = 30;
         this.keyHeight = 50;
+        this.timeGO = 0;
     };
 
     init(ctx) {
@@ -24,16 +26,38 @@ class GameDisplay {
     };
 
     draw(ctx) {
-        // this.drawBorder(); // remove this
-        // this.drawItemBorder(); // remove this
-        this.ctx.fillStyle = "white";
-        //this.drawText();
-        //this.drawBomb(166, 0);
-      //  this.drawLifeText();
-        this.drawHearts(this.heartX, this.heartY);
-        //this.drawKey(274, 14);
-        this.drawLifeText();
+        if(gameEngine.gameOver){
+            this.drawGameOver();
+            this.timeGO += gameEngine.clockTick;
+        }else{
+            // this.drawBorder(); // remove this
+            // this.drawItemBorder(); // remove this
+            this.ctx.fillStyle = "white";
+            //this.drawText();
+            //this.drawBomb(166, 0);
+            //  this.drawLifeText();
+            this.drawHearts(this.heartX, this.heartY);
+            //this.drawKey(274, 14);
+            this.drawLifeText();
+        }
+        
     };
+
+    drawGameOver () {
+        let ctx = this.ctx;
+        //Draw the transparent black "filter"
+        let completion = Math.min(1.0, this.timeGO/GameDisplay.TIME_TO_GO)
+        ctx.globalAlpha = completion;
+        ctx.fillStyle = "black";
+        ctx.fillRect(0,0,ctx.canvas.clientWidth,ctx.canvas.clientHeight);
+        ctx.globalAlpha = 1.0;
+        //Draw the text
+        ctx.font = "72px Zelda";
+        ctx.textAlign = "center";
+        ctx.fillStyle = "red";
+        ctx.fillText("GAME OVER", ctx.canvas.clientWidth/2, ctx.canvas.clientHeight/2);
+        ctx.textAlign = "start";
+    }
 
 
     drawLine(sx, sy, dx, dy, stroke = "Black", width = 2) {
