@@ -73,7 +73,7 @@ const updateList = (entities) => {
         if (entities[i].removeFromWorld) {
             if (entities[i].tag === "enemy") {
                 console.log("YO!")
-                entities.push(new EnemyDeath(entities[i].x, entities[i].y))
+                entities.push(new DeathCloud(entities[i].x, entities[i].y))
             }
             entities.splice(i, 1);
         }
@@ -123,28 +123,3 @@ const getEnemiesLeft = (entities) => {
     return eLeft;
 }
 
-class EnemyDeath {
-    constructor(x, y, type) {
-        Object.assign(this, {x, y, type});
-        this.spawn = null;
-        this.cloudDone = false;
-        this.cloudAnimation = GRAPHICS.get('ANIMA_enemy_death_cloud').clone().setLooping(false);
-        // type is not used rn, added for possible future use
-    }
-
-    update() {
-        if (this.cloudDone && this.spawn === null) {
-            this.removeFromWorld = true;
-        }
-    }
-
-    draw(ctx) {
-        if (this.spawn !== null) this.spawn.animate(gameEngine.clockTick, ctx, this.x, this.y, 3);
-        this.cloudDone = this.cloudAnimation.animate(gameEngine.clockTick, ctx, this.x, this.y, 3);
-    }
-
-    spawn() {
-        // fix to
-        // this.spawn = GRAPHICS.get('hearts or something')
-    }
-}

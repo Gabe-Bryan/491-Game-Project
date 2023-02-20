@@ -5,18 +5,16 @@ class SpriteSet {
     /** don't use this! Instead use the Animation Manager to build SpriteSet. */
     constructor(the_id) {
         this.id = the_id;
-        this.count = 0;
         this.sprites = new Array();
     }
 
     get_id() {return this.id;}
-    getCount() {return this.count;}
+    getCount() {return this.sprites.length;}
     getSprites() {return this.sprites};
     getSpriteDim(sKey) {return [this.sprites[sKey].sWidth, this.sprites[sKey].sHeight];}
 
     addSprite(spriteSheet, sx, sy, sWidth, sHeight, x_ofs, y_ofs, label) {
         this.sprites.push(new Sprite(spriteSheet, sx, sy, sWidth, sHeight, x_ofs, y_ofs, label));
-        this.count++;
     }
 
     getSprite_byIndex(index) {return this.sprites[index];}
@@ -37,14 +35,13 @@ class SpriteSet {
 
     clone(clones_id) {
         const clone = new SpriteSet(clones_id);
-        clone.count = this.count;
         clone.sprites = this.spriteSetClone();
         return clone;
     }
 
     spriteSetClone() {
         const cloneSet = new Array();
-        for (let i = 0; i < this.count; i++)
+        for (let i = 0; i < this.getCount(); i++)
             cloneSet.push(this.sprites[i].clone());
         return cloneSet;
     }
@@ -70,14 +67,22 @@ class SpriteSet {
         let whiteF = this.sprites[frameNum].clone();
         redF.pixelMorph_RGBA(255,null,null,null);
         whiteF.pixelMorph_RGBA(255,255,255,null);
-        let i = this.count;
+        let i = this.getCount();
         this.sprites[i-1] = redF;
-        this.count++
         this.sprites[i] = whiteF;
     }
 
+    addDeathFlashesForAll() {
+        count = this.getCount();
+        this.flashSpritesA = new Array(this.getCount())
+        this.flashSpritesB = new Array(this.getCount())
+        for (let i = 0; i < count; i++) {
+
+        }
+    }
+
     drawSprite(sKey, ctx, dx, dy, xScale, yScale) {
-        if (sKey >= this.count) return;
+        if (sKey >= this.getCount()) return;
         this.sprites[sKey].draw(ctx, dx, dy, xScale, yScale);
 
         if(0) this.sprites[sKey].drawDebug(sKey, ctx, dx, dy, xScale, yScale)
