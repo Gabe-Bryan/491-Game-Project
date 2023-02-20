@@ -24,26 +24,14 @@ class Bunny {
         this.kbLeft = 0;
     }
 
-    setupAnimations() {
-        this.animations = Array(1);
-        this.animations[0] = [
-            'ANIMA_bunny_north',
-            'ANIMA_bunny_south',
-            'ANIMA_bunny_east',
-            'ANIMA_bunny_west'
+    setupAnimations() { // this.currButton --> 0 = north  | 1 = south  |  2 = east  |  3 = west
+        this.animations = [
+            GRAPHICS.get('ANIMA_bunny_north').clone(),
+            GRAPHICS.get('ANIMA_bunny_south').clone(),
+            GRAPHICS.get('ANIMA_bunny_east').clone(),
+            GRAPHICS.get('ANIMA_bunny_west').clone(),
         ]
-        this.animations[1] = [
-            'ANIMA_bunny_north',
-            'ANIMA_bunny_south',
-            'ANIMA_bunny_east',
-            'ANIMA_bunny_west'
-        ]
-        this.animations[2] = [
-            'ANIMA_bunny_north',
-            'ANIMA_bunny_south',
-            'ANIMA_bunny_east',
-            'ANIMA_bunny_west'
-        ]
+
     }
 
     updateState() {
@@ -120,6 +108,6 @@ class Bunny {
     }
 
     draw(ctx, scale) {
-        GRAPHICS.getAnimation(this.animations[this.state][this.facing]).animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
+        this.animations[this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
     }
 }

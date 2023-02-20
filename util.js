@@ -124,6 +124,7 @@ class EnemyDeath {
         Object.assign(this, {x, y, type});
         this.spawn = null;
         this.cloudDone = false;
+        this.cloudAnimation = GRAPHICS.get('ANIMA_enemy_death_cloud').clone().setLooping(false);
         // type is not used rn, added for possible future use
     }
 
@@ -134,8 +135,8 @@ class EnemyDeath {
     }
 
     draw(ctx) {
-        if (this.spawn !== null) GRAPHICS.get(this.spawn).animate(gameEngine.clockTick, ctx, this.x, this.y, 3);
-        this.cloudDone = GRAPHICS.get('ANIMA_enemy_death_cloud').animate(gameEngine.clockTick, ctx, this.x, this.y, 3);
+        // if (this.spawn !== null) GRAPHICS.get(this.spawn).animate(gameEngine.clockTick, ctx, this.x, this.y, 3);
+        this.cloudDone = this.cloudAnimation.animate(gameEngine.clockTick, ctx, this.x, this.y, 3);
     }
 
     spawn() {
