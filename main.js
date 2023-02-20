@@ -39,25 +39,39 @@ ASSET_MANAGER.downloadAll(() => {
 		'#ffff00':'sand',
 		'#0000ff':'floor_blue_cobblestone',
 		'#008800':'blocker_yellow_stone',
-		'#444444':'wall_grey_block'
+		'#444444':'wall_complex'
 	});
 
-	testMap.addMapCellEntity(2, 2, new Knight(500, 600));
-	testMap.addMapCellEntity(2, 2, new Knight(600, 600));
-	//testMap.addMapCellEntity(3, 2, new Knight(600, 600));
-	testMap.addMapCellEntity(2, 2, new Skull(100,400));
-	testMap.addMapCellEntity(3, 2, new Bunny(100,400));
+	// testMap.addMapCellEntity(2, 2, new Knight(500, 600));
+	// testMap.addMapCellEntity(2, 2, new Knight(600, 600));
+	// testMap.addMapCellEntity(3, 2, new Knight(600, 600));
+	// testMap.addMapCellEntity(3, 2, new Bunny(400,400));
 
-	let roomIndexX = 1;
-	let roomIndexY = 2;
-	testMap.loadMapCell(roomIndexX, roomIndexY);
+	let r1_KnightXY = tileToScreenCoord(14, 2);
+	testMap.addMapCellEntity(1, 3, new Knight(r1_KnightXY.x, r1_KnightXY.y));
+
+	let r2_Knight1XY = tileToScreenCoord(6, 2);
+	let r2_Knight2XY = tileToScreenCoord(10, 13);
+	testMap.addMapCellEntity(2, 3, new Knight(r2_Knight1XY.x, r2_Knight1XY.y));
+	testMap.addMapCellEntity(2, 3, new Knight(r2_Knight2XY.x, r2_Knight2XY.y));
+	
+	let r3_Knight1XY = tileToScreenCoord(6, 13),
+		r3_Knight2XY = tileToScreenCoord(13, 13);
+	
+	testMap.addMapCellEntity(2, 4, new Knight(r3_Knight1XY.x, r3_Knight1XY.y));
+	testMap.addMapCellEntity(2, 4, new Knight(r3_Knight2XY.x, r3_Knight2XY.y));
+	
+	// actual starting room is (1, 2)
+	let startMapCellX = 1,
+		startMapCellY = 4;
+
+	testMap.loadMapCell(startMapCellX, startMapCellY);
 	//setInterval(bun, bt)
 	
 	testMap.addMapEntitiesToEngine(gameEngine);
 	testMap.addInteractableToEngine(gameEngine);
 	
 	gameEngine.currMap = testMap;
-
 
 	gameEngine.init(ctx);
 

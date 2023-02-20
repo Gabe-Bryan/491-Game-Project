@@ -33,7 +33,7 @@ class SceneManager{
         return this.env_entities[yTileCoord*tilesWide + xTileCoord];
     }
 
-    getNeighborTiles(xTileCoord, yTileCoord) {
+    getEnvNeighborTiles(xTileCoord, yTileCoord) {
         let tilesWide = gameEngine.currMap.cellWidthInTiles,
             tilesHigh = gameEngine.currMap.cellHeightInTiles;
             
@@ -47,6 +47,58 @@ class SceneManager{
         if (xTileCoord > 0)         westTile = this.getEnvEntityAtCoord(xTileCoord - 1, yTileCoord);
         if (xTileCoord < tilesHigh) eastTile = this.getEnvEntityAtCoord(xTileCoord + 1, yTileCoord);
 
+        //console.log(northTile)
+
         return {'north':northTile, 'south':southTile, 'west':westTile, 'east':eastTile};
+    }
+
+    getEnvNeighborTilesSameType(xTileCoord, yTileCoord) {
+        let currTile = this.getEnvEntityAtCoord(xTileCoord, yTileCoord);
+        let neighbors = this.getEnvNeighborTiles(xTileCoord, yTileCoord);
+        
+        let northSame = false,
+            southSame = false,
+            westSame = false,
+            eastSame = false;
+
+        if (neighbors.north) northSame = neighbors.north.typeName == currTile.typeName;
+        if (neighbors.south) southSame = neighbors.south.typeName == currTile.typeName;
+        if (neighbors.east)  eastSame = neighbors.east.typeName == currTile.typeName;
+        if (neighbors.west)  westSame = neighbors.west.typeName == currTile.typeName;
+
+        return {
+                'northSame': northSame,
+                'southSame': southSame,
+                'westSame':  westSame,
+                'eastSame':  eastSame
+            };
+    }
+
+    fixMultiblockEnvEntities() {
+        for (let i = 0; i < this.env_entities.length; i++) {
+            
+            let tile = this.env_entities[i];
+            if (tile.typeName=="WallComplex") {
+                let tileX = tile.xLoc / gameEngine.currMap.pxTileWidth,
+                    tileY = tile.yLoc / gameEngine.currMap.pxTileHeight;
+                let neighbors = gameEngine.scene.getEnvNeighborTilesSameType(tileX, tileY);
+
+                //console.log(tileX, tileY, neighbors)
+                
+                if (neighbors.southSame && neighbors.eastSame) {            // NW CORNER
+                    tile.tileString = 'wall_NW';
+                } else if (neighbors.southSame && neighbors.westSame) {     // NE CORNER
+                    tile.tileString = 'wall_NE';
+                } else if (neighbors.westSame && neighbors.eastSame) {      // HORIZ
+                    tile.tileString = 'wall_HORIZ';
+                } else if (neighbors.northSame && neighbors.eastSame) {     // SW CORNER
+                    tile.tileString = 'wall_SW';
+                } else if (neighbors.northSame && neighbors.westSame) {     // SE CORNER
+                    tile.tileString = 'wall_SE';
+                } else if (neighbors.northSame && neighbors.southSame) {    // VERT
+                    tile.tileString = 'wall_VERT';
+                }
+            }
+        }
     }
 }
