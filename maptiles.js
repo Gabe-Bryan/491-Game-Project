@@ -106,6 +106,7 @@ class BlockerYellowDoor {
 class WallGreyBlock {
     constructor(xLoc, yLoc) {
         Object.assign(this, { xLoc, yLoc });
+        this.typeName = "WallGreyBlock";
     }
 
     update() {
@@ -120,6 +121,11 @@ class WallGreyBlock {
 class WallComplex {
     constructor(xLoc, yLoc) {
         Object.assign(this, { xLoc, yLoc });
+        this.phys2d = {static: true};
+        this.collider = {type: "box", corner: {x: xLoc, y: yLoc}, height: 16 * SCALE, width: 16 * SCALE};
+        this.tag = 'environment';
+        this.typeName = "WallComplex";
+        this.tileString = 'wall grey block';
     }
 
     update() {
@@ -127,6 +133,6 @@ class WallComplex {
     };
 
     draw(ctx, scale) {
-        let tileAbove = gameEngine.scene.env_
+        GRAPHICS.get(this.tileString).drawTile(ctx, this.xLoc, this.yLoc);
     }
 }

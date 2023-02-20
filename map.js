@@ -124,6 +124,8 @@ class GameMap {
                     tile = new BlockerYellowDoor(tileX, tileY);
                 else if (tileColor == 'wall_grey_block')
                     tile = new WallGreyBlock(tileX, tileY);
+                else if (tileColor == 'wall_complex')
+                    tile = new WallComplex(tileX, tileY);
                 else
                     tile = new Grass(tileX, tileY);
 
