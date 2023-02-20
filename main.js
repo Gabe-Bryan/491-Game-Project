@@ -61,11 +61,13 @@ ASSET_MANAGER.downloadAll(() => {
 	
 	let r3_Knight1XY = tileToScreenCoord(6, 13),
 		r3_Knight2XY = tileToScreenCoord(13, 13),
-		r3_SkullXY = tileToScreenCoord(17, 1);
+		r3_SkullXY = tileToScreenCoord(17, 1),
+		r3_Skull2XY = tileToScreenCoord(2, 2);
 	
 	testMap.addMapCellEntity(2, 4, new Knight(r3_Knight1XY.x, r3_Knight1XY.y));
 	testMap.addMapCellEntity(2, 4, new Knight(r3_Knight2XY.x, r3_Knight2XY.y));
 	testMap.addMapCellEntity(2, 4, new Skull(r3_SkullXY.x, r3_SkullXY.y));
+	testMap.addMapCellEntity(2, 4, new Skull(r3_Skull2XY.x, r3_Skull2XY.y));
 	
 	// actual starting room is (1, 2)
 	let startMapCellX = 1,
