@@ -8,8 +8,8 @@ class GameDisplay {
         this.currentWeapon;
         this.keyCount = 0;
 
-        this.heartX = 570; 
-        this.heartY = 45;
+        this.heartX = 600; 
+        this.heartY = 60;
 
         this.heartWidth = 20;
         this.heartHeight = 20;
