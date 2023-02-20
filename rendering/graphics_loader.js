@@ -164,6 +164,9 @@ class GraphicsLoader {
         );
         // GRAPHICS.addAnimation('ANIMA_ow_heart', 'SET_ow_heart', 2, 0.3)
 
+
+        GRAPHICS.addSpriteSet('SET_triforce', 'LINK', [742, 835], [297, 225], [80, 41], [80, 61])
+
     }
 
     // addSpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_ofs = 0, y_ofs = 0, labels)
