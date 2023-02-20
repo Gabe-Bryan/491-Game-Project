@@ -109,10 +109,12 @@ const getDirVect = (dir) => {
     }
 }
 
-const drawGameOver = (ctx) => {
-    ctx.font = "72px Zelda";
-    ctx.textAlign = "center";
-    ctx.fillStyle = "red";
-    ctx.fillText("GAME OVER", ctx.canvas.clientWidth/2, ctx.canvas.clientHeight/2);
-    ctx.textAlign = "start";
+const getEnemiesLeft = (entities) => {
+    let eLeft = 0;
+    for(let i = 0; i < entities.length; i++){
+        if(entities[i].tag == "enemy" && !(entities[i] instanceof Skull)){
+            eLeft++;
+        }
+    }
+    return eLeft;
 }

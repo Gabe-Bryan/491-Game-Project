@@ -1,6 +1,7 @@
 const gameEngine = new GameEngine();
 const ASSET_MANAGER = new AssetManager("./assets/");
 const GRAPHICS = new GraphicsManager();
+const GAMEDISPLAY = new GameDisplay();
 const SCALE = 3;
 const TILE_SIZE = 16;
 ASSET_MANAGER.queueDownload(
@@ -42,7 +43,7 @@ ASSET_MANAGER.downloadAll(() => {
 	testMap.addMapCellEntity(2, 2, new Knight(500, 600));
 	testMap.addMapCellEntity(2, 2, new Knight(600, 600));
 	//testMap.addMapCellEntity(3, 2, new Knight(600, 600));
-	testMap.addMapCellEntity(3, 2, new Bunny(400,400));
+	testMap.addMapCellEntity(2, 2, new Skull(100,400));
 
 	let roomIndexX = 3;
 	let roomIndexY = 2;
