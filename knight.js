@@ -73,41 +73,40 @@ class Knight {
             if (Player.CURR_PLAYER.alive && this.target)         this.charge();
             else                    this.pace();
         } else{
-            this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
-            //console.log(this.phys2d.velocity);
-            console.log(this.kbVect);
-            this.phys2d.velocity.x *= gameEngine.clockTick;
-            this.phys2d.velocity.y *= gameEngine.clockTick;
-
             this.kbLeft -= gameEngine.clockTick;
-            if(this.kbLeft <= 0) this.facePlayer();
+            if(this.kbLeft <= 0) {/*this.facePlayer()*/}
+            else {
+                this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
+                //console.log(this.phys2d.velocity);
+                console.log(this.kbVect);
+                this.phys2d.velocity.x *= gameEngine.clockTick;
+                this.phys2d.velocity.y *= gameEngine.clockTick;
+            }
+
+            
+
+            
         }
 
         if(Player.CURR_PLAYER.alive) this.checkSwordCol();
     };
 
-    pace() {
+    pace(){
         this.elapsedTime += gameEngine.clockTick;
 
-        if (this.elapsedTime > this.nextChange || this.colliding) {
+        if (this.elapsedTime > this.nextChange || (this.colliding && this.kbLeft <= 0)) {
             this.elapsedTime = 0;
-            this.nextChange = Math.random() * 1.65;
-            this.currButton = Math.floor(Math.random() * 4);
+            this.nextChange = 1 + Math.random() * 0.65;
+            let newDir = this.facing < 2 ? Math.floor(Math.random()*2)+2 : Math.floor(Math.random()*2);
+            this.facing = newDir;
         }
 
-        if (this.x > 960) this.currButton = 3;
-        if (this.x < 10) this.currButton = 2;
-        if (this.y < 10) this.currButton = 0;
-        if (this.y > 770) this.currButton = 1;
-        // this.currButton --> 0 = w  | 1 = s  |  2 = d  |  3 = a
+        // this.facing --> 0 = n  | 1 = s  |  2 = e  |  3 = w
         
-        if (this.currButton === 0)      [this.facing, this.state, this.phys2d.velocity.y] = [0, 1, -Player.MAX_VEL];
-        else if (this.currButton === 1) [this.facing, this.state, this.phys2d.velocity.y] = [1, 1, Player.MAX_VEL];
-        else                            this.phys2d.velocity.y = 0;
-        
-        if (this.currButton === 2)      [this.facing, this.state, this.phys2d.velocity.x] = [2, 1, Player.MAX_VEL];
-        else if (this.currButton === 3) [this.facing, this.state, this.phys2d.velocity.x] = [3, 1, -Player.MAX_VEL];
-        else                            this.phys2d.velocity.x = 0;
+        if(this.facing == 0) this.phys2d.velocity.y = -1;
+        else if(this.facing == 1) this.phys2d.velocity.y = 1;
+        else if(this.facing == 2) this.phys2d.velocity.x = 1;
+        else if(this.facing == 3) this.phys2d.velocity.x = -1;
 
         this.phys2d.velocity = normalizeVector(this.phys2d.velocity);
         this.phys2d.velocity.x *= Knight.MAX_VEL * gameEngine.clockTick;
@@ -121,6 +120,8 @@ class Knight {
             this.chargeCD -= gameEngine.clockTick;
         }
     }
+
+    
 
     charge(){
         //console.log("Charging");
@@ -196,6 +197,9 @@ class Knight {
     }
 
     facePlayer(){
+        this.elapsedTime = 0;
+        this.nextChange = 1 + Math.random() * 0.65;
+
         let p = Player.CURR_PLAYER;
         let xDiff = this.collider.corner.x - p.collider.corner.x;
         let yDiff = this.collider.corner.y - p.collider.corner.y;

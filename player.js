@@ -1,6 +1,6 @@
 class Player {
     
-    static MAX_HP = 10;
+    static MAX_HP = 5;
     static MAX_VEL = 250; //Pixels per second (I think -Gabe)
     static KB_DUR = 0.1;
     static KB_STR = 300;
@@ -100,6 +100,8 @@ class Player {
         else this.state = 0;
     }
 
+
+
     updateDirection(moveIn) {
         if(moveIn.x > 0) this.facing = 2;
         else if(moveIn.x < 0) this.facing = 3;
@@ -195,6 +197,12 @@ class Player {
     setHp(newHp) {
         this.hp = newHp;
         GAMEDISPLAY.heartCount = this.hp;
+    }
+
+    heal(amount) {
+        let tempHP = this.hp + amount;
+        if (tempHP > Player.MAX_HP) tempHP = Player.MAX_HP;          
+        this.setHp(tempHP);
     }
 
     updateCollider() {

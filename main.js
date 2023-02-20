@@ -42,10 +42,20 @@ ASSET_MANAGER.downloadAll(() => {
 		'#444444':'wall_complex'
 	});
 
+	////////////////////////////////////////////////////////////
 	// testMap.addMapCellEntity(2, 2, new Knight(500, 600));
-	// testMap.addMapCellEntity(2, 2, new Knight(600, 600));
+	// testMap.addMapCellEntity(2, 2, new Knight(600, 600)); 
 	// testMap.addMapCellEntity(3, 2, new Knight(600, 600));
 	// testMap.addMapCellEntity(3, 2, new Bunny(400,400));
+	//////////////////////////////////////////////////////////
+	testMap.addMapCellEntity(1, 2, new Bunny(400,400));
+	testMap.addMapCellEntity(1, 4, new Triforce(400,300));
+	testMap.addMapCellEntity(1, 2, new HeartDrop(80,80));
+	testMap.addMapCellEntity(1, 2, new HeartDrop(80,650));
+	testMap.addMapCellEntity(1, 2, new HeartDrop(850,80));
+	testMap.addMapCellEntity(1, 2, new HeartDrop(850,650));
+	//////////////////////////////////////////////////////////
+
 
 	let r1_KnightXY = tileToScreenCoord(14, 2);
 	let r1_SkullXY = tileToScreenCoord(1, 3);
@@ -61,11 +71,13 @@ ASSET_MANAGER.downloadAll(() => {
 	
 	let r3_Knight1XY = tileToScreenCoord(6, 13),
 		r3_Knight2XY = tileToScreenCoord(13, 13),
-		r3_SkullXY = tileToScreenCoord(17, 1);
+		r3_SkullXY = tileToScreenCoord(17, 1),
+		r3_Skull2XY = tileToScreenCoord(2, 2);
 	
 	testMap.addMapCellEntity(2, 4, new Knight(r3_Knight1XY.x, r3_Knight1XY.y));
 	testMap.addMapCellEntity(2, 4, new Knight(r3_Knight2XY.x, r3_Knight2XY.y));
 	testMap.addMapCellEntity(2, 4, new Skull(r3_SkullXY.x, r3_SkullXY.y));
+	testMap.addMapCellEntity(2, 4, new Skull(r3_Skull2XY.x, r3_Skull2XY.y));
 	
 	// actual starting room is (1, 2)
 	let startMapCellX = 1,
