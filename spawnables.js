@@ -2,7 +2,7 @@ class HeartDrop {
     constructor(x, y){
         Object.assign(this, {x, y});
         this.collider = {type: "box", corner: {x: this.x+4, y: this.y+4}, width: 8 * SCALE, height: 8 * SCALE}
-        this.DEBUG = true
+        this.DEBUG = false
     }
 
     update() {
@@ -21,7 +21,7 @@ class Triforce {
     constructor(x, y) {
         Object.assign(this, {x,y});
         this.collider = {type: "box", corner: {x: this.x, y: this.y}, width: 79 * (SCALE - 1), height: 79 * (SCALE - 1)};
-        this.DEBUG = true;
+        this.DEBUG = false;
     }
 
     update() {
@@ -42,7 +42,7 @@ class DeathCloud {
         this.spawn = null;
         this.cloudDone = false;
         this.cloudAnimation = GRAPHICS.get('ANIMA_enemy_death_cloud').clone().setLooping(false);
-        gameEngine.addEntity(new HeartDrop(this.x, this.y))
+        if(Math.random() < 0.334)    gameEngine.scene.addInteractable(new HeartDrop(this.x+7.5*SCALE, this.y+7*SCALE));
     }
 
     update() {

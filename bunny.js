@@ -4,7 +4,7 @@ class Bunny {
     constructor(x, y) {
         Object.assign(this, {x, y});
 
-        this.DEBUG = true;
+        this.DEBUG = false;
         this.state = 0;  // 0:idle,  1:walking, 2:attacking
         this.facing = 1; // 0:north, 1:south,   2:east, 3:west
         this.attackHitCollector = [];
