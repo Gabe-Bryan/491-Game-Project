@@ -71,6 +71,10 @@ const updateList = (entities) => {
 
     for (let i = entities.length - 1; i >= 0; --i) {
         if (entities[i].removeFromWorld) {
+            if (entities[i].tag === "enemy") {
+                console.log("YO!")
+                entities.push(new EnemyDeath(entities[i].x, entities[i].y))
+            }
             entities.splice(i, 1);
         }
     }
@@ -109,10 +113,38 @@ const getDirVect = (dir) => {
     }
 }
 
-const drawGameOver = (ctx) => {
-    ctx.font = "72px Zelda";
-    ctx.textAlign = "center";
-    ctx.fillStyle = "red";
-    ctx.fillText("GAME OVER", ctx.canvas.clientWidth/2, ctx.canvas.clientHeight/2);
-    ctx.textAlign = "start";
+const getEnemiesLeft = (entities) => {
+    let eLeft = 0;
+    for(let i = 0; i < entities.length; i++){
+        if(entities[i].tag == "enemy" && !(entities[i] instanceof Skull)){
+            eLeft++;
+        }
+    }
+    return eLeft;
+}
+
+class EnemyDeath {
+    constructor(x, y, type) {
+        Object.assign(this, {x, y, type});
+        this.spawn = null;
+        this.cloudDone = false;
+        this.cloudAnimation = GRAPHICS.get('ANIMA_enemy_death_cloud').clone().setLooping(false);
+        // type is not used rn, added for possible future use
+    }
+
+    update() {
+        if (this.cloudDone && this.spawn === null) {
+            this.removeFromWorld = true;
+        }
+    }
+
+    draw(ctx) {
+        if (this.spawn !== null) this.spawn.animate(gameEngine.clockTick, ctx, this.x, this.y, 3);
+        this.cloudDone = this.cloudAnimation.animate(gameEngine.clockTick, ctx, this.x, this.y, 3);
+    }
+
+    spawn() {
+        // fix to
+        // this.spawn = GRAPHICS.get('hearts or something')
+    }
 }

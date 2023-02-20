@@ -16,7 +16,7 @@ class Player {
         this.state = 0;     // 0:idle, 1:walking, 2:attacking, 3: taking damage
         this.facing = 1;    
         this.attackHitbox = undefined;
-        this.attackHBDim = {width: 16 * SCALE, height: 32 * SCALE};
+        this.attackHBDim = {width: 15 * SCALE, height: 30 * SCALE};
         this.attackHBOffset = {x: 0, y: -3 * SCALE};
 
         this.animations = [];
@@ -25,8 +25,9 @@ class Player {
         this.phys2d = {static: false, velocity: {x: 0, y: 0}};
         this.tag = "player";
         this.updateCollider();
+        this.alive = true;
 
-        this.hp = Player.MAX_HP;
+        this.setHp(Player.MAX_HP);
         this.kbLeft = 0;
         this.swingCD = 0;
     };
@@ -86,7 +87,7 @@ class Player {
         if (this.phys2d.velocity.x != 0 || this.phys2d.velocity.y != 0) this.state = 1;
         else this.state = 0;
     }*/
-    updateState(moveIn, attackIn){
+    updateState(moveIn, attackIn) {
         if(attackIn || this.state == 2) {
             if(this.state != 2) {
                 this.attackTimeLeft = this.attackTime;
@@ -98,7 +99,7 @@ class Player {
         else this.state = 0;
     }
 
-    updateDirection(moveIn){
+    updateDirection(moveIn) {
         if(moveIn.x > 0) this.facing = 2;
         else if(moveIn.x < 0) this.facing = 3;
         else if(moveIn.y > 0) this.facing = 0;
@@ -106,10 +107,9 @@ class Player {
     }
 
     update() {
+        if (!this.alive) return;
         let prevFacing = this.facing;
         this.sidesAffected = undefined;
-
-        gameEngine.gameDisplay.heartCount = this.hp;
         
         let walkStateChange = this.state <= 1 ? 1 : this.state;
         let moveIn = {x: 0, y: 0}
@@ -181,13 +181,20 @@ class Player {
         console.log("GYahaAAaaa: " + amount);
         this.kbVect = {x: kb.x, y: kb.y};
         this.kbLeft = Player.KB_DUR;
-        this.hp -= amount;
+        this.setHp(this.hp - amount);
         if(this.hp <= 0){
             console.log("Game over!!!!!!!!!");
             gameEngine.gameOver = true;
-            this.removeFromWorld = true;
-            Player.CURR_PLAYER = undefined;
+            this.alive = false
+            this.phys2d = {static: false, velocity: {x: 0, y: 0}};
+            // this.removeFromWorld = true;
+            // Player.CURR_PLAYER = undefined;
         }
+    }
+
+    setHp(newHp){
+        this.hp = newHp;
+        GAMEDISPLAY.heartCount = this.hp;
     }
 
     updateCollider(){
@@ -231,8 +238,11 @@ class Player {
     }
 
     draw(ctx, scale) {
-        GRAPHICS.get(this.animations[this.state][this.facing]).animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
-        // GRAPHICS.get('ANIMA_link_hurt_south').animate(gameEngine.clockTick, ctx, this.x+100, this.y, scale);
+        if (!this.alive) GRAPHICS.get('SET_end_game').drawSprite(2, ctx, this.x, this.y, scale);
+        else if(gameEngine.victory) GRAPHICS.get('SET_end_game').drawSprite(1, ctx, this.x, this.y, scale);
+        else GRAPHICS.get(this.animations[this.state][this.facing]).animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
+        // GRAPHICS.get('SET_end_game').drawSprite(0, ctx, this.x+100, this.y, scale);
+        // GRAPHICS.get('ANIMA_link_dead').animate(gameEngine.clockTick, ctx, this.x +100, this.y, scale);
 
         if(this.DEBUG) {
             //this.drawCollider(ctx);

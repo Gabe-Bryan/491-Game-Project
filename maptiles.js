@@ -87,7 +87,7 @@ class BlockerYellowDoor {
 
     update() {
 
-        if (gameEngine.scene.interact_entities.length <= 0) {
+        if (getEnemiesLeft(gameEngine.scene.interact_entities) <= 0) {
             this.locked = false;
             //this.phys2d = {static: true, isSolid: false};
             this.collider = null;

@@ -21,18 +21,16 @@ class GameEngine {
             debugging: false,
         };
 
-        this.gameDisplay = null;
-
         this.running = false;
         this.gameOver = false;
+        this.victory = false;
     };
 
     init(ctx) {
         this.ctx = ctx;
         this.startInput();
         this.timer = new Timer();
-        this.gameDisplay = new GameDisplay();
-        this.gameDisplay.init(ctx);
+        GAMEDISPLAY.init(ctx);
     };
 
     start() {
@@ -104,11 +102,7 @@ class GameEngine {
         }*/
         drawList(this.entities, this.ctx);
 
-        this.gameDisplay.draw();
-        
-        if(this.gameOver){
-            drawGameOver(this.ctx);
-        }
+        GAMEDISPLAY.draw();
     };
 
     update() {
