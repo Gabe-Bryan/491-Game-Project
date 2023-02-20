@@ -28,6 +28,7 @@ class Player {
         this.alive = true;
 
         this.setHp(Player.MAX_HP);
+        this.setHp(1);
         this.kbLeft = 0;
         this.swingCD = 0;
     };
@@ -239,7 +240,7 @@ class Player {
 
     draw(ctx, scale) {
         if (!this.alive) GRAPHICS.get('SET_end_game').drawSprite(2, ctx, this.x, this.y, scale);
-        // else if()
+        else if(gameEngine.victory) GRAPHICS.get('SET_end_game').drawSprite(1, ctx, this.x, this.y, scale);
         else GRAPHICS.get(this.animations[this.state][this.facing]).animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
         // GRAPHICS.get('SET_end_game').drawSprite(0, ctx, this.x+100, this.y, scale);
         // GRAPHICS.get('ANIMA_link_dead').animate(gameEngine.clockTick, ctx, this.x +100, this.y, scale);
