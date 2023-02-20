@@ -72,13 +72,9 @@ class SpriteSet {
         this.sprites[i] = whiteF;
     }
 
-    addDeathFlashesForAll() {
-        count = this.getCount();
-        this.flashSpritesA = new Array(this.getCount())
-        this.flashSpritesB = new Array(this.getCount())
-        for (let i = 0; i < count; i++) {
-
-        }
+    colorMod(R, G, B, A) {
+        this.sprites.forEach(sprt => sprt.pixelMorph_RGBA(R, G, B, A))
+        return this;
     }
 
     drawSprite(sKey, ctx, dx, dy, xScale, yScale) {

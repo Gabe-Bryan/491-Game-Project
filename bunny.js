@@ -1,5 +1,5 @@
 class Bunny {
-    static MAX_HP = 1;
+    static MAX_HP = 3;
     static KB_DUR = 0.1;
     constructor(x, y) {
         Object.assign(this, {x, y});
@@ -21,15 +21,16 @@ class Bunny {
         this.updateCollider();
 
         this.hp = Bunny.MAX_HP;
+        this.pain = {hurting : false, timer: 0, cooldown: 0.5} // cooldown in sec
         this.kbLeft = 0;
     }
 
     setupAnimations() { // this.currButton --> 0 = north  | 1 = south  |  2 = east  |  3 = west
         this.animations = [
-            GRAPHICS.get('ANIMA_bunny_north').clone(),
-            GRAPHICS.get('ANIMA_bunny_south').clone(),
-            GRAPHICS.get('ANIMA_bunny_east').clone(),
-            GRAPHICS.get('ANIMA_bunny_west').clone(),
+            GRAPHICS.get('ANIMA_bunny_north'),
+            GRAPHICS.get('ANIMA_bunny_south'),
+            GRAPHICS.get('ANIMA_bunny_east'),
+            GRAPHICS.get('ANIMA_bunny_west'),
         ]
 
     }
@@ -45,6 +46,14 @@ class Bunny {
 
     update() {
         this.elapsedTime += gameEngine.clockTick;
+
+        if (this.pain.hurting) { // damage animation stuff
+            this.pain.timer -= gameEngine.clockTick;
+            if (this.pain.timer <= 0) {
+                this.pain.hurting = false;
+                this.pain.timer = 0;
+            }
+        }
 
         if (this.elapsedTime > this.nextChange) {
             this.nextChange += 0.2 + Math.random() * 1.82;
@@ -102,6 +111,9 @@ class Bunny {
             gameEngine.scene.addInteractable(new Bunny(100 + (Math.random()*560), 300 + (Math.random()*368)));
             gameEngine.scene.addInteractable(new Bunny(300 + (Math.random()*560), 100 + (Math.random()*368)));
         }
+
+        this.pain.hurting = true;
+        this.pain.timer = this.pain.cooldown;
     }
 
     updateCollider(){
@@ -110,6 +122,6 @@ class Bunny {
     }
 
     draw(ctx, scale) {
-        this.animations[this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
+        this.animations[this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale, this.pain.hurting);
     }
 }
