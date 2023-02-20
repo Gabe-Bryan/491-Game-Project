@@ -31,7 +31,7 @@ class Skull{
     }
 
     update(){
-        if(Player.CURR_PLAYER){
+        if(Player.alive){
             let dir = normalizeVector(distVect(this, Player.CURR_PLAYER));
             this.phys2d.velocity = scaleVect(dir, Skull.MAX_VEL * gameEngine.clockTick);
             this.checkAttack(dir);
