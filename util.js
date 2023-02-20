@@ -71,8 +71,10 @@ const updateList = (entities) => {
 
     for (let i = entities.length - 1; i >= 0; --i) {
         if (entities[i].removeFromWorld) {
-            if (entities[i].tag === "enemy")
+            if (entities[i].tag === "enemy") {
+                console.log("YO!")
                 entities.push(new EnemyDeath(entities[i].x, entities[i].y))
+            }
             entities.splice(i, 1);
         }
     }
@@ -137,7 +139,7 @@ class EnemyDeath {
     }
 
     draw(ctx) {
-        // if (this.spawn !== null) GRAPHICS.get(this.spawn).animate(gameEngine.clockTick, ctx, this.x, this.y, 3);
+        if (this.spawn !== null) this.spawn.animate(gameEngine.clockTick, ctx, this.x, this.y, 3);
         this.cloudDone = this.cloudAnimation.animate(gameEngine.clockTick, ctx, this.x, this.y, 3);
     }
 

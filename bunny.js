@@ -99,6 +99,8 @@ class Bunny {
         this.hp -= amount;
         if(this.hp <= 0){
             this.removeFromWorld = true;
+            gameEngine.scene.addInteractable(new Bunny(100 + (Math.random()*560), 300 + (Math.random()*368)));
+            gameEngine.scene.addInteractable(new Bunny(300 + (Math.random()*560), 100 + (Math.random()*368)));
         }
     }
 

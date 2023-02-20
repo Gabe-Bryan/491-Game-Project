@@ -43,7 +43,8 @@ ASSET_MANAGER.downloadAll(() => {
 	testMap.addMapCellEntity(2, 2, new Knight(500, 600));
 	testMap.addMapCellEntity(2, 2, new Knight(600, 600));
 	//testMap.addMapCellEntity(3, 2, new Knight(600, 600));
-	testMap.addMapCellEntity(2, 2, new Skull(100,400));
+	// testMap.addMapCellEntity(2, 2, new Skull(100,400));
+	testMap.addMapCellEntity(3, 2, new Bunny(400,400));
 
 	let roomIndexX = 3;
 	let roomIndexY = 2;

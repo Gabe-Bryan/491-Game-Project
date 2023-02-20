@@ -142,14 +142,15 @@ class GameMap {
     addMapEntitiesToEngine(engine) {
         for (let y = 0; y < this.currCellTileMap.length; y++) {
             for (let x = 0; x < this.currCellTileMap[y].length; x++) {
-                 engine.scene.addEnvEntity(this.currCellTileMap[y][x][0]);
+                engine.scene.addEnvEntity(this.currCellTileMap[y][x][0]);
             }
         }
     }
 
     addInteractableToEngine(engine) {
         for (let i = 0; i < this.mapCellEntities[this.currCellY][this.currCellX].length; i++) {
-            engine.scene.addInteractable(this.mapCellEntities[this.currCellY][this.currCellX][i]);
+            let entity = this.mapCellEntities[this.currCellY][this.currCellX][i];
+            if (entity.removeFromWorld !== true) engine.scene.addInteractable(entity);
         }
     }
 
