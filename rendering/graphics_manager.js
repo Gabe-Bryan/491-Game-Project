@@ -378,7 +378,7 @@ class GraphicsManager {
             throw new Error(`fSequence.length = ${fSequence.length} but fTiming.length = ${fTiming.length} ... GOOD DAY SIR!`);
         }
         if (this.animations.has(id)) {
-            console.log(`addAnimation: animations.${id} has been overridden!`);
+            console.error(`animation: ${id} has been overridden!`);
         }
 
         const setObj = this.spriteSets.get(spriteSetName); // Animation class constructor wants the SpriteSet object

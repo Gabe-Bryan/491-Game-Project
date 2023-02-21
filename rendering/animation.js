@@ -65,14 +65,30 @@ class Animation {
             this.x_offset, this.y_offset, this.damSpriteSets ); 
     }
 
-    mirrorAnimation_Horz(new_x_offsets_sprite = false, new_x_offset_anima = false) {       
+    mirrorAnimation_Horz(new_x_offsets_sprite = null, new_x_offset_anima = null) {       
         this.spriteSet.mirrorSet(true, false);
         this.spriteSet.id = String(this.spriteSet.get_id() + "_HorzMirr");
 
-        if (new_x_offsets_sprite)  this.spriteSet.set_x_ofs(new_x_offsets_sprite);
-        if (new_x_offset_anima) this.x_offset = new_x_offset_anima;
+        if (new_x_offsets_sprite !== null) this.spriteSet.set_x_ofs(new_x_offsets_sprite);
+        if (new_x_offset_anima  !== null) this.x_offset = new_x_offset_anima;
 
         return this.init();
+
+
+        // let setSize = this.spriteSet.getCount();
+
+        // // sprite set x offset
+        // if (new_x_offsets_sprite instanceof Array && new_x_offsets_sprite.length === setSize)
+        //     this.spriteSet.set_x_ofs(new_x_offsets_sprite);
+        // else if (typeof new_x_offsets_sprite === 'number')
+        //     this.spriteSet.set_x_ofs(new Array(setSize).fill(new_x_offsets_sprite));
+        
+        // // animation x offset
+        // if (new_x_offset_anima instanceof Array && new_x_offset_anima.length === setSize)
+        //     x_offset = new_x_offset_anima;
+        // else if (typeof new_x_offset_anima === 'number')
+        //     x_offset.fill(new_x_offset_anima);
+        // 
     }
 
     getCurrentFrame() {return this.currFrame;}
@@ -108,7 +124,7 @@ class Animation {
     setDamageSpriteFrequency(frequency) {this.damFreq = frequency;}
 
     addDamageSprites(frequency) {
-        if (this.damageSets instanceof Array) {
+        if (this.damSpriteSets instanceof Array) {
             console.error("this animation already has damage sprites!!!!")
             return;
         }
@@ -132,7 +148,7 @@ class Animation {
     }
 
     animateDamage(tick, ctx, dx, dy, scale) {
-        if (!(this.damageSets instanceof Array)) {
+        if (!(this.damSpriteSets instanceof Array)) {
             console.error(`You should add .addDamageSprites() for ${this.id} in Graphics Loader so the damage sprites will be pre-drawn when the game loads. I will create them now for you, but that's not ideal because it could add lag to the game!`)
             this.addDamageSprites();
         }

@@ -27,17 +27,15 @@ class SpriteSet {
     gsl(label) {return this.getSprite_byLabel(label);}
 
     set_x_ofs(new_x_offsets) {
-        let same = (new_x_offsets instanceof Array) ? false : true;
-        for (let i = 0; i < new_x_offsets.length; i++){
-            this.sprites[i].x_ofs = same? new_x_offsets : new_x_offsets[i];
-        }
+        let array = new_x_offsets instanceof Array ? true : false;
+        for (let i = 0; i < this.getCount(); i++)
+            this.sprites[i].x_ofs = array ? new_x_offsets[i] : new_x_offsets;
     }
 
     set_y_ofs(new_y_offsets) {
-        let same = (new_y_offsets instanceof Array) ? false : true;
-        for (let i = 0; i < new_y_offsets.length; i++){
-            this.sprites[i].y_ofs = same ? new_y_offsets : new_y_offsets[i];
-        }
+        let array = new_y_offsets instanceof Array ? true : false;
+        for (let i = 0; i < this.getCount(); i++)
+            this.sprites[i].y_ofs = array ? new_y_offsets[i] : new_y_offsets;
     }
 
     clone(clones_id) {
