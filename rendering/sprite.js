@@ -2,10 +2,15 @@
  * @author Christopher Henderson
  */
 class Sprite { 
+
+    static SPRITE_COUNT = 0
+
     /** don't use this! Instead use the Animation Manager to build Sprite. */
     constructor(src, sx, sy, sWidth, sHeight, x_ofs, y_ofs, label) {
         Object.assign(this, {src, sx, sy, sWidth, sHeight, x_ofs, y_ofs, label});
         this.isImageBitmap = src instanceof ImageBitmap;
+        Sprite.SPRITE_COUNT++
+        console.log(`Sprites Count = ${Sprite.SPRITE_COUNT}`);
     }
 
     hasLabel() {return typeof label === 'string';}

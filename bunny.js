@@ -27,10 +27,10 @@ class Bunny {
 
     setupAnimations() { // this.currButton --> 0 = north  | 1 = south  |  2 = east  |  3 = west
         this.animations = [
-            GRAPHICS.get('ANIMA_bunny_north'),
-            GRAPHICS.get('ANIMA_bunny_south'),
-            GRAPHICS.get('ANIMA_bunny_east'),
-            GRAPHICS.get('ANIMA_bunny_west'),
+            GRAPHICS.getInstance('ANIMA_bunny_north'),
+            GRAPHICS.getInstance('ANIMA_bunny_south'),
+            GRAPHICS.getInstance('ANIMA_bunny_east'),
+            GRAPHICS.getInstance('ANIMA_bunny_west'),
         ]
 
     }
@@ -90,7 +90,7 @@ class Bunny {
         }else{
             this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
             //console.log(this.phys2d.velocity);
-            console.log(this.kbVect);
+            // console.log(this.kbVect);
             this.phys2d.velocity.x *= gameEngine.clockTick;
             this.phys2d.velocity.y *= gameEngine.clockTick;
 
