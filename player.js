@@ -27,6 +27,7 @@ class Player {
         this.updateCollider();
         this.alive = true;
         this.pain = {hurting : false, timer: 0, cooldown: 0.5} // cooldown in sec
+        this.hitstop = {hitting: false, timer: 0, cooldown: 0.125}
 
         this.setHp(Player.MAX_HP);
         this.kbLeft = 0;
@@ -81,6 +82,14 @@ class Player {
         }
         else if(moveIn.x != 0 || moveIn.y != 0) this.state = 1;
         else this.state = 0;
+
+        if (this.hitstop.hitting) {
+            this.hitstop.timer -= gameEngine.clockTick;
+            if (this.hitstop.timer <= 0) {
+                this.hitstop.hitting = false;
+                this.hitstop.timer = 0;
+            }
+        }
     }
 
 
@@ -96,7 +105,7 @@ class Player {
         if (!this.alive) return;
         let prevFacing = this.facing;
         this.sidesAffected = undefined;
-        
+
         if (this.pain.hurting) { // damage animation stuff
             this.pain.timer -= gameEngine.clockTick;
             if (this.pain.timer <= 0) {
@@ -120,6 +129,11 @@ class Player {
 
         if (this.state != 2) this.updateDirection(this.moveIn);
         else this.processAttack();
+
+        if(this.hitstop.hitting){
+            this.phys2d.velocity = {x: 0, y: 0};
+            return;
+        }
 
         if (this.kbLeft > 0){
             this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
@@ -168,10 +182,12 @@ class Player {
     }
 
     dealDamage(entity, kb) {
-        entity.takeDamage(1, kb);
+        entity.takeDamage(1, kb, this.hitstop.cooldown);
+        this.hitstop.hitting = true;
+        this.hitstop.timer = this.hitstop.cooldown;
     }
 
-    takeDamage(amount, kb) {
+    takeDamage(amount, kb, hitStopTime = 0.01) {
         //console.log("GYahaAAaaa: " + amount);
         this.kbVect = {x: kb.x, y: kb.y};
         this.kbLeft = Player.KB_DUR;
@@ -185,6 +201,8 @@ class Player {
 
         this.pain.hurting = true;
         this.pain.timer = this.pain.cooldown;
+        this.hitstop.hitting = true;
+        this.hitstop.timer = hitStopTime;
     }
 
     setHp(newHp) {
@@ -243,7 +261,7 @@ class Player {
         if (!this.alive) this.endSprites.drawSprite(2, ctx, this.x, this.y, scale);
         else if(gameEngine.victory) this.endSprites.drawSprite(1, ctx, this.x, this.y, scale);
         // Game is still going 
-        else this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale, this.pain.hurting);
+        else this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale, this.pain.hurting, this.hitstop.hitting);
 
         // GRAPHICS.get('SET_end_game').drawSprite(0, ctx, this.x+100, this.y, scale);
         // GRAPHICS.get('ANIMA_link_dead').animate(gameEngine.clockTick, ctx, this.x +100, this.y, scale);

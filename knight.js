@@ -125,7 +125,7 @@ class Knight {
         }
 
         // this.facing --> 0 = n  | 1 = s  |  2 = e  |  3 = w
-        
+        this.phys2d.velocity = {x: 0, y:0};
         if(this.facing == 0) this.phys2d.velocity.y = -1;
         else if(this.facing == 1) this.phys2d.velocity.y = 1;
         else if(this.facing == 2) this.phys2d.velocity.x = 1;
@@ -204,10 +204,10 @@ class Knight {
     }
 
     dealDamage(entity, kb){
-        entity.takeDamage(1, kb);
+        entity.takeDamage(1, kb, this.hitstop.cooldown);
     }
 
-    takeDamage(amount, kb){
+    takeDamage(amount, kb, hitStopTime){
         //console.log("That fleshwound only hurt: " + amount);
         this.kbVect = {x: kb.x, y: kb.y};
         this.kbLeft = Knight.KB_DUR;
@@ -218,6 +218,8 @@ class Knight {
 
         this.pain.hurting = true;
         this.pain.timer = this.pain.cooldown;
+        this.hitstop.hitting = true;
+        this.hitstop.timer = hitStopTime;
 
         this.chargeTLeft /= 2;
         this.elapsedTime += this.nextChange * 0.2;
