@@ -10,7 +10,7 @@ class Sprite {
         Object.assign(this, {src, sx, sy, sWidth, sHeight, x_ofs, y_ofs, label});
         this.isImageBitmap = src instanceof ImageBitmap;
         Sprite.SPRITE_COUNT++
-        console.log(`Sprites Count = ${Sprite.SPRITE_COUNT}`);
+        // console.log(`Sprites Count = ${Sprite.SPRITE_COUNT}`);
     }
 
     hasLabel() {return typeof label === 'string';}

@@ -3,7 +3,7 @@
  */
 class Animation {
     static ANIMATION_COUNT = 0;
-    static INSTANCE_COUNT = 0;
+    // static INSTANCE_COUNT = 0;
     /** don't use this! Instead use the Animation Manager to build Animation. */
     constructor(id, spriteSet, fSequence, fTiming, x_offset, y_offset, damSpriteSets) {
         if (fSequence.length !== fTiming.length)
@@ -14,7 +14,7 @@ class Animation {
         this.init();
 
         Animation.ANIMATION_COUNT++
-        console.log(`Animation Count = ${Animation.ANIMATION_COUNT}`);
+        // console.log(`Animation Count = ${Animation.ANIMATION_COUNT}`);
     }
 
     init() {
@@ -125,7 +125,7 @@ class Animation {
 
     addDamageSprites(frequency) {
         if (this.damSpriteSets instanceof Array) {
-            console.error("this animation already has damage sprites!!!!")
+            console.error(`Animation: ${this.id}, already has damage sprites!!!!`)
             return;
         }
         if (typeof frequency === 'number') this.damFreq = frequency;

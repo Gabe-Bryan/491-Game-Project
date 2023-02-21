@@ -3,14 +3,14 @@
  */
 class SpriteSet {
 
-    static SPRITE_SETS_COUNT = 0;
+    static SPRITE_SET_COUNT = 0;
     
     /** don't use this! Instead use the Animation Manager to build SpriteSet. */
     constructor(the_id) {
         this.id = the_id;
         this.sprites = new Array();
-        SpriteSet.SPRITE_SETS_COUNT++
-        console.log(`Sprite Set Count = ${SpriteSet.SPRITE_SETS_COUNT}`);
+        SpriteSet.SPRITE_SET_COUNT++
+        // console.log(`Sprite Set Count = ${SpriteSet.SPRITE_SET_COUNT}`);
     }
 
     get_id() {return this.id;}

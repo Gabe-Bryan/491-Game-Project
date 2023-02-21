@@ -44,22 +44,22 @@ class Knight {
     setupAnimations() {
         this.animations = Array(1);
         this.animations[0] = [
-            GRAPHICS.get('ANIMA_blue_enemy_north'),
-            GRAPHICS.get('ANIMA_blue_enemy_south'),
-            GRAPHICS.get('ANIMA_blue_enemy_east'),
-            GRAPHICS.get('ANIMA_blue_enemy_west')
+            GRAPHICS.getInstance('ANIMA_blue_enemy_north'),
+            GRAPHICS.getInstance('ANIMA_blue_enemy_south'),
+            GRAPHICS.getInstance('ANIMA_blue_enemy_east'),
+            GRAPHICS.getInstance('ANIMA_blue_enemy_west')
         ]
         this.animations[1] = [
-            GRAPHICS.get('ANIMA_blue_enemy_north'),
-            GRAPHICS.get('ANIMA_blue_enemy_south'),
-            GRAPHICS.get('ANIMA_blue_enemy_east'),
-            GRAPHICS.get('ANIMA_blue_enemy_west')
+            GRAPHICS.getInstance('ANIMA_blue_enemy_north'),
+            GRAPHICS.getInstance('ANIMA_blue_enemy_south'),
+            GRAPHICS.getInstance('ANIMA_blue_enemy_east'),
+            GRAPHICS.getInstance('ANIMA_blue_enemy_west')
         ]
         this.animations[2] = [
-            GRAPHICS.get('ANIMA_blue_enemy_north'),
-            GRAPHICS.get('ANIMA_blue_enemy_south'),
-            GRAPHICS.get('ANIMA_blue_enemy_east'),
-            GRAPHICS.get('ANIMA_blue_enemy_west')
+            GRAPHICS.getInstance('ANIMA_blue_enemy_north'),
+            GRAPHICS.getInstance('ANIMA_blue_enemy_south'),
+            GRAPHICS.getInstance('ANIMA_blue_enemy_east'),
+            GRAPHICS.getInstance('ANIMA_blue_enemy_west')
         ]
     }
 
@@ -78,9 +78,6 @@ class Knight {
             }
         }
 
-        //this.hitstop = {hitting: false, timer: 0, cooldown: 0.25}
-        
-
         if (this.hitstop.hitting) {
             this.hitstop.timer -= gameEngine.clockTick;
             if (this.hitstop.timer <= 0) {
@@ -91,7 +88,7 @@ class Knight {
     }
 
     update() {
-        console.log(this.hitstop.hitting + " " + this.hitstop.timer);
+        // console.log(this.hitstop.hitting + " " + this.hitstop.timer);
         this.updateAnimationState();
         let prevFacing = this.facing;
         this.sidesAffected = undefined;

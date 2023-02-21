@@ -1,5 +1,5 @@
 class Bunny {
-    static MAX_HP = 20;
+    static MAX_HP = 3;
     static SPAWN_RATE = 3;
     static KB_DUR = 0.1;
     constructor(x, y) {
@@ -28,10 +28,10 @@ class Bunny {
 
     setupAnimations() { // this.currButton --> 0 = north  | 1 = south  |  2 = east  |  3 = west
         this.animations = [
-            GRAPHICS.get('ANIMA_bunny_north'),
-            GRAPHICS.get('ANIMA_bunny_south'),
-            GRAPHICS.get('ANIMA_bunny_east'),
-            GRAPHICS.get('ANIMA_bunny_west')
+            GRAPHICS.getInstance('ANIMA_bunny_north'),
+            GRAPHICS.getInstance('ANIMA_bunny_south'),
+            GRAPHICS.getInstance('ANIMA_bunny_east'),
+            GRAPHICS.getInstance('ANIMA_bunny_west')
         ]
 
     }

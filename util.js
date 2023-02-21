@@ -72,7 +72,6 @@ const updateList = (entities) => {
     for (let i = entities.length - 1; i >= 0; --i) {
         if (entities[i].removeFromWorld) {
             if (entities[i].tag === "enemy") {
-                console.log("YO!")
                 entities.push(new DeathCloud(entities[i].x, entities[i].y))
             }
             entities.splice(i, 1);

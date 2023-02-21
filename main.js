@@ -94,6 +94,11 @@ ASSET_MANAGER.downloadAll(() => {
 	gameEngine.init(ctx);
 
 	gameEngine.start();
+
+	console.log(`   Sprites loaded ${Sprite.SPRITE_COUNT}`);
+	console.log(`SpriteSets loaded ${SpriteSet.SPRITE_SET_COUNT}`);
+	console.log(`Animations loaded ${Animation.ANIMATION_COUNT}`);
+
 });
 
 
