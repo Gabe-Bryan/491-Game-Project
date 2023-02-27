@@ -60,7 +60,9 @@ class GameEngine {
                 console.log("CLICK", getXandY(e));
             }
             this.click = getXandY(e);
+            ASSET_MANAGER.playAsset("aboda_village.mp3");
         });
+
 
         this.ctx.canvas.addEventListener("wheel", e => {
             if (this.options.debugging) {

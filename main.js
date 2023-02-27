@@ -16,7 +16,8 @@ ASSET_MANAGER.queueDownload(
 	"heart.png", 
 	"bomb.png", 
 	"key.png",
-	"items.png"
+	"items.png",
+	"aboda_village.mp3"
 );
 
 ASSET_MANAGER.downloadAll(() => {
