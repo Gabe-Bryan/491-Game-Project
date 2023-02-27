@@ -1,5 +1,6 @@
 class Bunny {
     static MAX_HP = 3;
+    static SPAWN_RATE = 3;
     static KB_DUR = 0.1;
     constructor(x, y) {
         Object.assign(this, {x, y});
@@ -27,10 +28,10 @@ class Bunny {
 
     setupAnimations() { // this.currButton --> 0 = north  | 1 = south  |  2 = east  |  3 = west
         this.animations = [
-            GRAPHICS.get('ANIMA_bunny_north'),
-            GRAPHICS.get('ANIMA_bunny_south'),
-            GRAPHICS.get('ANIMA_bunny_east'),
-            GRAPHICS.get('ANIMA_bunny_west'),
+            GRAPHICS.getInstance('ANIMA_bunny_north'),
+            GRAPHICS.getInstance('ANIMA_bunny_south'),
+            GRAPHICS.getInstance('ANIMA_bunny_east'),
+            GRAPHICS.getInstance('ANIMA_bunny_west')
         ]
 
     }
@@ -40,8 +41,9 @@ class Bunny {
         else this.state = 0;
     }
 
-    bunnyTime() {
-        gameEngine.addEntity(new Bunny(130 + Math.random()*600), 130 + Math.random()*500);
+    bunnyTime(amount) {
+        for (let i = 0; i < amount; i++)
+        gameEngine.scene.addInteractable(new Bunny(64 + (Math.random()*700), 64 + (Math.random()*600)));
     }
 
     update() {
@@ -64,7 +66,7 @@ class Bunny {
             this.bt++;
             if (this.bt > 50) {
                 this.bt = 0;
-                gameEngine.scene.addInteractable(new Bunny(200 + (Math.random()*560), 200 + (Math.random()*368)));
+                this.bunnyTime(1)
             }           
         }
 
@@ -83,21 +85,21 @@ class Bunny {
         else if (this.currButton === 3) [this.facing, this.state, this.phys2d.velocity.x] = [3, 1, -Player.MAX_VEL];
         else                            this.phys2d.velocity.x = 0;
 
-        if(this.kbLeft <= 0) {
+        if (this.kbLeft <= 0) {
             this.phys2d.velocity = normalizeVector(this.phys2d.velocity);
             this.phys2d.velocity.x *= Player.MAX_VEL * gameEngine.clockTick;
             this.phys2d.velocity.y *= Player.MAX_VEL * gameEngine.clockTick;
-        }else{
+        } else {
             this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
             //console.log(this.phys2d.velocity);
-            console.log(this.kbVect);
+            // console.log(this.kbVect);
             this.phys2d.velocity.x *= gameEngine.clockTick;
             this.phys2d.velocity.y *= gameEngine.clockTick;
 
             this.kbLeft -= gameEngine.clockTick;
         }
 
-        if(this.state != 2) this.updateState();
+        if (this.state != 2) this.updateState();
     };
 
 
@@ -106,10 +108,9 @@ class Bunny {
         this.kbVect = {x: kb.x, y: kb.y};
         this.kbLeft = Bunny.KB_DUR;
         this.hp -= amount;
-        if(this.hp <= 0){
+        if (this.hp <= 0){
             this.removeFromWorld = true;
-            gameEngine.scene.addInteractable(new Bunny(100 + (Math.random()*560), 300 + (Math.random()*368)));
-            gameEngine.scene.addInteractable(new Bunny(300 + (Math.random()*560), 100 + (Math.random()*368)));
+            this.bunnyTime(Bunny.SPAWN_RATE)
         }
 
         this.pain.hurting = true;

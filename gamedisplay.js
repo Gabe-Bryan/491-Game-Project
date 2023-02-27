@@ -83,8 +83,9 @@ class GameDisplay {
 
     drawVictory () {
         //Draw the transparent black "filter"
-        let completion = Math.min(1.0, this.timeV/GameDisplay.TIME_TO_FADE)
-        this.drawEndScreen("Victory", completion, 164, "rgb(237, 175, 59)", "black", 0);
+        let completion = Math.min(1.0, this.timeV/GameDisplay.TIME_TO_FADE);
+        let txt = gameEngine.gameOver ? "Victory?" : "Victory";
+        this.drawEndScreen(txt, completion, 164, "rgb(237, 175, 59)", "black", 0);
     }
 
 

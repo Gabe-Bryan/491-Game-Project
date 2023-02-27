@@ -12,7 +12,7 @@ class Skull{
     }
 
     setupAnimations() {
-        this.animation = GRAPHICS.get("ANIMA_skull_enemy").clone();
+        this.animation = GRAPHICS.getInstance("ANIMA_skull_enemy").clone();
     }
 
     checkAttack(dir){

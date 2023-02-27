@@ -60,14 +60,29 @@ class GraphicsManager {
             case 'SpriteSheet' :
                 return this.spriteSheets.get(id);
             case 'SpriteSet' :
-                return this.spriteSets.get(id).clone(id.concat('_clone_'+this.spriteSet_cloneCount++));
+                return this.spriteSets.get(id);
             case 'Animation' :
-                return this.animations.get(id).clone(id.concat('_clone_'+this.animation_cloneCount++));
+                return this.animations.get(id);
             // case 'TileSet' :
             //     return this.TileSets.get(id);
             case 'Tile' :
                 return this.tiles.get(id);
         }
+    }
+
+    getInstance(id) {
+        let type = this.library.get(id);
+        switch (type) {
+            case 'SpriteSheet' :
+                return this.spriteSheets.get(id); // not needed?
+            case 'SpriteSet' :
+                return this.spriteSets.get(id).instanceClone(id.concat('_instance_clone_'+this.spriteSet_cloneCount++));
+            case 'Animation' :
+                return this.animations.get(id).instanceClone(id.concat('_instance_clone_'+this.animation_cloneCount++));
+            case 'Tile' :
+                return this.tiles.get(id); // TODO: idk
+        }
+
     }
 
     // only lame people still use these old fashioned getters, use the 'get' method to become cool 😎
@@ -363,7 +378,7 @@ class GraphicsManager {
             throw new Error(`fSequence.length = ${fSequence.length} but fTiming.length = ${fTiming.length} ... GOOD DAY SIR!`);
         }
         if (this.animations.has(id)) {
-            console.log(`addAnimation: animations.${id} has been overridden!`);
+            console.error(`animation: ${id} has been overridden!`);
         }
 
         const setObj = this.spriteSets.get(spriteSetName); // Animation class constructor wants the SpriteSet object

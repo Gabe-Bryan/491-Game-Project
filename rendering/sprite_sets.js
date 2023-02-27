@@ -2,10 +2,15 @@
  * @author Christopher Henderson
  */
 class SpriteSet {
+
+    static SPRITE_SET_COUNT = 0;
+    
     /** don't use this! Instead use the Animation Manager to build SpriteSet. */
     constructor(the_id) {
         this.id = the_id;
         this.sprites = new Array();
+        SpriteSet.SPRITE_SET_COUNT++
+        // console.log(`Sprite Set Count = ${SpriteSet.SPRITE_SET_COUNT}`);
     }
 
     get_id() {return this.id;}
@@ -22,15 +27,15 @@ class SpriteSet {
     gsl(label) {return this.getSprite_byLabel(label);}
 
     set_x_ofs(new_x_offsets) {
-        for (let i = 0; i < new_x_offsets.length; i++){
-            this.sprites[i].x_ofs = new_x_offsets[i];
-        }
+        let array = new_x_offsets instanceof Array ? true : false;
+        for (let i = 0; i < this.getCount(); i++)
+            this.sprites[i].x_ofs = array ? new_x_offsets[i] : new_x_offsets;
     }
 
     set_y_ofs(new_y_offsets) {
-        for (let i = 0; i < new_y_offsets.length; i++){
-            this.sprites[i].y_ofs = new_y_offsets[i];
-        }
+        let array = new_y_offsets instanceof Array ? true : false;
+        for (let i = 0; i < this.getCount(); i++)
+            this.sprites[i].y_ofs = array ? new_y_offsets[i] : new_y_offsets;
     }
 
     clone(clones_id) {
@@ -40,10 +45,16 @@ class SpriteSet {
     }
 
     spriteSetClone() {
-        const cloneSet = new Array();
+        const clone_SpriteSet = new Array();
         for (let i = 0; i < this.getCount(); i++)
-            cloneSet.push(this.sprites[i].clone());
-        return cloneSet;
+            clone_SpriteSet.push(this.sprites[i].clone());
+        return clone_SpriteSet;
+    }
+
+    instanceClone() {
+        const instanceClone_SpriteSet = new SpriteSet(this.id);
+        instanceClone_SpriteSet.sprites = this.sprites;
+        return instanceClone_SpriteSet
     }
     
     /**
@@ -53,24 +64,14 @@ class SpriteSet {
      */
     mirrorSet(horz, vert) {this.sprites.forEach(sprite => sprite.mirrorImg(horz, vert));}
 
-    /** Horizontally mirrors (flip over x-axis) all the sprites in this set. */
-    mirrorSet_Horz() {this.sprites.forEach(sprite => sprite.mirrorImg(true, false));}
+    // /** Horizontally mirrors (flip over x-axis) all the sprites in this set. */
+    // mirrorSet_Horz() {this.sprites.forEach(sprite => sprite.mirrorImg(true, false));}
 
-    /** Vertically mirrors (flip over y-axis) all the sprites in this set. */
-    mirrorSet_Vert() {this.sprites.forEach(sprite => sprite.mirrorImg(false, true));}
+    // /** Vertically mirrors (flip over y-axis) all the sprites in this set. */
+    // mirrorSet_Vert() {this.sprites.forEach(sprite => sprite.mirrorImg(false, true));}
 
-    /** Horizontally & Vertically mirrors all the sprites in this set. */
-    mirrorSet_Both() {this.sprites.forEach(sprite => sprite.mirrorImg(true, true));}
-
-    addDeathFlashes(frameNum = 0) {
-        let redF = this.sprites[frameNum].clone();
-        let whiteF = this.sprites[frameNum].clone();
-        redF.pixelMorph_RGBA(255,null,null,null);
-        whiteF.pixelMorph_RGBA(255,255,255,null);
-        let i = this.getCount();
-        this.sprites[i-1] = redF;
-        this.sprites[i] = whiteF;
-    }
+    // /** Horizontally & Vertically mirrors all the sprites in this set. */
+    // mirrorSet_Both() {this.sprites.forEach(sprite => sprite.mirrorImg(true, true));}
 
     colorMod(R, G, B, A) {
         this.sprites.forEach(sprt => sprt.pixelMorph_RGBA(R, G, B, A))

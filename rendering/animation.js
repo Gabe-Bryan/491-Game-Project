@@ -2,14 +2,19 @@
  * @author Christopher Henderson
  */
 class Animation {
+    static ANIMATION_COUNT = 0;
+    // static INSTANCE_COUNT = 0;
     /** don't use this! Instead use the Animation Manager to build Animation. */
-    constructor(id, spriteSet, fSequence, fTiming, x_offset, y_offset) {
+    constructor(id, spriteSet, fSequence, fTiming, x_offset, y_offset, damSpriteSets) {
         if (fSequence.length !== fTiming.length)
             throw new Error('Animation: fSequence and fTiming are not same length');
             
-        Object.assign(this, {id, spriteSet, fSequence, fTiming, x_offset, y_offset });
+        Object.assign(this, {id, spriteSet, fSequence, fTiming, x_offset, y_offset, damSpriteSets});
         this.fCount = this.fSequence.length;
         this.init();
+
+        Animation.ANIMATION_COUNT++
+        // console.log(`Animation Count = ${Animation.ANIMATION_COUNT}`);
     }
 
     init() {
@@ -26,8 +31,7 @@ class Animation {
         this.looping = true;
         this.reversed = false;
         this.done = false;
-        
-        this.hasDamSprites = false;
+
         this.damSpriteType = 0;
         this.damElapsTime = 0;
         this.damFreq = 0.07;
@@ -51,28 +55,40 @@ class Animation {
         const copy_anima = new Animation(clones_id, copy_sprites,
             [...this.fSequence], [...this.fTiming], clone_x_offset, clone_y_offset);
 
-        if (this.hasDamSprites) copy_anima.addDamageSprites();
+        if (this.damSpriteSets instanceof Array) copy_anima.addDamageSprites();
         return copy_anima;
     }
 
-    mirrorAnimation_Horz(new_x_offsets_sprite, new_x_offset_anima) {       
-        this.spriteSet.mirrorSet_Horz();
-        this.spriteSet.id = String(this.spriteSet.get_id() + "_HorzMirr");
-        let setSize = this.spriteSet.getCount();
+    instanceClone() {
+        return new Animation (
+            this.id, this.spriteSet, this.fSequence, this.fTiming, 
+            this.x_offset, this.y_offset, this.damSpriteSets ); 
+    }
 
-        // sprite set x offset
-        if (new_x_offsets_sprite instanceof Array && new_x_offsets_sprite.length === setSize)
-            this.spriteSet.set_x_ofs(new_x_offsets_sprite);
-        else if (typeof new_x_offsets_sprite === 'number')
-            this.spriteSet.set_x_ofs(new Array(setSize).fill(new_x_offsets_sprite));
-        
-        // animation x offset
-        if (new_x_offset_anima instanceof Array && new_x_offset_anima.length === setSize)
-            x_offset = new_x_offset_anima;
-        else if (typeof new_x_offset_anima === 'number')
-            x_offset.fill(new_x_offset_anima);
+    mirrorAnimation_Horz(new_x_offsets_sprite = null, new_x_offset_anima = null) {       
+        this.spriteSet.mirrorSet(true, false);
+        this.spriteSet.id = String(this.spriteSet.get_id() + "_HorzMirr");
+
+        if (new_x_offsets_sprite !== null) this.spriteSet.set_x_ofs(new_x_offsets_sprite);
+        if (new_x_offset_anima  !== null) this.x_offset = new_x_offset_anima;
 
         return this.init();
+
+
+        // let setSize = this.spriteSet.getCount();
+
+        // // sprite set x offset
+        // if (new_x_offsets_sprite instanceof Array && new_x_offsets_sprite.length === setSize)
+        //     this.spriteSet.set_x_ofs(new_x_offsets_sprite);
+        // else if (typeof new_x_offsets_sprite === 'number')
+        //     this.spriteSet.set_x_ofs(new Array(setSize).fill(new_x_offsets_sprite));
+        
+        // // animation x offset
+        // if (new_x_offset_anima instanceof Array && new_x_offset_anima.length === setSize)
+        //     x_offset = new_x_offset_anima;
+        // else if (typeof new_x_offset_anima === 'number')
+        //     x_offset.fill(new_x_offset_anima);
+        // 
     }
 
     getCurrentFrame() {return this.currFrame;}
@@ -83,6 +99,7 @@ class Animation {
     isDone() {return this.done;}
     //getFlags() {return {looping: this.looping, reversed: this.reversed}}
 
+    // this is prob not correct rn
     getFrameDimensions(log = false) {
         return spriteSet.getSpriteDimensions(this.currFrame, log);
     }
@@ -103,12 +120,12 @@ class Animation {
         this.reversed = this.reversed? false : true;
         return this;
     }
-
+    setDamageSpriteSet(damageSets) {this.damSpriteSets = damageSets}
     setDamageSpriteFrequency(frequency) {this.damFreq = frequency;}
 
     addDamageSprites(frequency) {
-        if (this.hasDamSprites) {
-            console.error("this animation already has damage sprites!!!!")
+        if (this.damSpriteSets instanceof Array) {
+            console.error(`Animation: ${this.id}, already has damage sprites!!!!`)
             return;
         }
         if (typeof frequency === 'number') this.damFreq = frequency;
@@ -116,7 +133,6 @@ class Animation {
         this.damSpriteSets[0] = this.spriteSet;                                                       //   R     G     B     A
         this.damSpriteSets[1] = this.spriteSet.clone(this.spriteSet.id.concat("_DAMAGE_red"  )).colorMod( 255, null, null, null);
         this.damSpriteSets[2] = this.spriteSet.clone(this.spriteSet.id.concat("_DAMAGE_white")).colorMod( 255,  255,  255, null);
-        this.hasDamSprites = true;
     }
 
     calcFrame() {
@@ -132,7 +148,7 @@ class Animation {
     }
 
     animateDamage(tick, ctx, dx, dy, scale) {
-        if (!this.hasDamSprites) {
+        if (!(this.damSpriteSets instanceof Array)) {
             console.error(`You should add .addDamageSprites() for ${this.id} in Graphics Loader so the damage sprites will be pre-drawn when the game loads. I will create them now for you, but that's not ideal because it could add lag to the game!`)
             this.addDamageSprites();
         }
@@ -155,10 +171,9 @@ class Animation {
         return this.done;
     }
 
-    animate(tick, ctx, dx, dy, scale = 1, damage) {
+    animate(tick, ctx, dx, dy, scale = 1, damage, freezeFrame) {
         if(damage) return this.animateDamage(tick, ctx, dx, dy, scale);
-
-        let frameNum = this.calcFrame();
+        let frameNum = freezeFrame ? this.currFrame : this.calcFrame();
         this.spriteSet.drawSprite(frameNum, ctx, dx + this.x_offset_mod * scale, dy + this.y_offset_mod * scale, scale, scale)
         
         if (0) {
