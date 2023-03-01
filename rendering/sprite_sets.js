@@ -78,6 +78,13 @@ class SpriteSet {
         return this;
     }
 
+    append_colorMod(frameNum, R, G, B, A) {
+        sprite_clone = this.sprites[frameNum].clone();
+        sprite_clone.pixelMorph_RGBA(R, G, B, A);
+        this.sprites.push(sprite_clone);
+        return this;
+    }
+
     drawSprite(sKey, ctx, dx, dy, xScale, yScale) {
         if (sKey >= this.getCount()) return;
         this.sprites[sKey].draw(ctx, dx, dy, xScale, yScale);

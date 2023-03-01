@@ -16,7 +16,8 @@ ASSET_MANAGER.queueDownload(
 	"heart.png", 
 	"bomb.png", 
 	"key.png",
-	"items.png"
+	"items.png",
+	"bombs.png"
 );
 
 ASSET_MANAGER.downloadAll(() => {
@@ -41,6 +42,11 @@ ASSET_MANAGER.downloadAll(() => {
 		'#008800':'blocker_yellow_stone',
 		'#444444':'wall_complex'
 	});
+
+	// TESTING SPAWNZ
+	gameEngine.scene.addInteractable(new Bomb(200,370));
+	// testMap.addMapCellEntity(1, 2, new Bomb(200,370));
+
 
 	////////////////////////////////////////////////////////////
 	// testMap.addMapCellEntity(2, 2, new Knight(500, 600));

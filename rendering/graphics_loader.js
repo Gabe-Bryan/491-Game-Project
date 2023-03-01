@@ -131,7 +131,7 @@ class GraphicsLoader {
         GRAPHICS.addSpriteGrid('SET_green_goblin', 'ENEMIES', 1, 6, 449, 295, 22, 25, 11, 5);
         GRAPHICS.addSpriteSet('SET_green_goblin_east', 'ENEMIES', [402, 427], 293, 18, 25);
     
-        GRAPHICS.addSpriteGrid('SET_red_goblins', 'ENEMIES', 1, 6, 448, 331, 22, 25, 0, [3, 4, 7, 3, 4]);
+        GRAPHICS.addSpriteGrid('SET_red_goblin', 'ENEMIES', 1, 6, 448, 331, 22, 25, 0, [3, 4, 7, 3, 4]);
         GRAPHICS.addSpriteSet('SET_red_goblin_east', 'ENEMIES', [402, 424], 330, 18, 25);
 
         GRAPHICS.addAnimation('ANIMA_green_goblin_south', 'SET_green_goblin', [0,1,2], 0.5);
@@ -161,10 +161,11 @@ class GraphicsLoader {
         GRAPHICS.cloneAnimation('ANIMA_bunny_west','ANIMA_bunny_east').mirrorAnimation_Horz();
 
         /// /// EFFECTS /// /// /// 
-        GRAPHICS.addSpriteGrid('SET_explode', 'ENEMIES', 1, 6, 441, 733, 32, 33, 0, [8, 6, 6, 5, 7])
-        GRAPHICS.addAnimation('ANIMA_explode', 'SET_explode', 
-            [   0,    1,    2,    3,    4,    1,    2,    3,    4,    5, 999],
-            [0.20, 0.15, 0.10, 0.15, 0.10, 0.15, 0.10, 0.10, 0.15,  0.3, 0]).setLooping(false);
+        GRAPHICS.addSpriteGrid('SET_big_explode', 'ENEMIES', 1, 6, 441, 733, 32, 33, 0, [8, 6, 6, 5, 7])
+        GRAPHICS.addAnimation('ANIMA_big_explode', 'SET_big_explode', [0,2,3,1,5,7,8,8,8,8,8,8,8], 0.2).setLooping(true);
+        // GRAPHICS.addAnimation('ANIMA_big_explode', 'SET_big_explode', 
+        //     [   0,    1,    2,    3,    4,    1,    2,    3,    4,    5, 999],
+        //     [0.20, 0.15, 0.10, 0.15, 0.10, 0.15, 0.10, 0.10, 0.15,  0.3, 0]).setLooping(true);
         
         GRAPHICS.addSpriteSheet('DEATHFX', ASSET_MANAGER.getAsset('death_effects.png'));
         GRAPHICS.addSpriteRow('SET_death_effects', 'DEATHFX',7, 0,4,26,23,0);
@@ -184,7 +185,45 @@ class GraphicsLoader {
             [ 80,  41,  24,  21], [ 80,  61,  15,  21],
             [  0, -12,   0,   3], [  0, -38,  10,   3]
         );
+        
+        // smaller bombs
+        GRAPHICS.addSpriteSheet('BOMBS', ASSET_MANAGER.getAsset('bombs.png'));
+        GRAPHICS.addSpriteSet(
+            'SET_bombs_burn', 'BOMBS', //       V-- explode
+            [ 3, 23, 43, 63, 83, 104, 124, 144],  // x orig
+            [26, 26, 26, 26, 26,  26,  26,  26],  // y org
+            [13, 13, 13, 13, 13,  13,  13,  13],  // width
+            [16, 16, 16, 16, 16,  16,  16,  16],  // height
+            [ 0,  0,  0,  0,  0,   0,   0,   0],  // x-offsets
+            [ 0,  0,  0,  0,  0,   0,   0,   0]   // y-offsets
+        );
 
+        GRAPHICS.addSpriteSet(
+            'SET_bombs_blow', 'BOMBS', //             V-- explode
+            [161, 178, 211, 244, 291, 322, 364, 409],  // x orig
+            [ 22,  11,  10,   2,  12,   6,   4,  10],  // y org
+            [ 14,  30,  30,  44,  28,  40,  42,  44],  // width
+            [ 14,  30,  32,  46,  30,  40,  42,  38],  // height
+            [  0,  -8,  -8, -15,  -7, -11, -13, -15],  // x-offsets
+            [  0,  -8,  -9, -16,  -8, -12, -13, -12]   // y-offsets
+        );
+
+
+        GRAPHICS.addAnimation('ANIMA_normal_bombs_stable', 'SET_bombs_burn', 1, 0);
+
+        GRAPHICS.addAnimation(
+            'ANIMA_normal_bombs_burn', 'SET_bombs_burn',
+            [  0,   1,   2,   3,    4,   5,   6,   7],
+            [0.2, 0.2, 0.3, 0.15, 0.1, 0.1, 0.1, 0.5]
+        );
+
+        GRAPHICS.addAnimation(
+            'ANIMA_normal_bombs_blow', 'SET_bombs_blow',
+            [   0,    1,   2,    3,   4,   5,   6,   7],
+            [0.06, 0.08, 0.1, 0.15, 0.2, 0.2, 0.2, 0.2]
+        );
+
+        // addAnimation(id, spriteSetName, fSequence, fTiming, x_offset = 0, y_offset = 0) {
     }
 
     // addSpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_ofs = 0, y_ofs = 0, labels)
