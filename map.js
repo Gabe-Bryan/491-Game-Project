@@ -67,6 +67,13 @@ class GameMap {
         
     }
 
+    teleportPlayerToMapCell(destCellX, destCellY) {
+        gameEngine.scene.clearScene();
+        this.loadMapCell(destCellX, destCellY);
+        this.addMapEntitiesToEngine(gameEngine);
+        this.addInteractableToEngine(gameEngine);
+    }
+
     pixelToHexColor(pixel) {
         let r = Number(pixel[0]).toString(16).padStart(2, "0");
         let g = Number(pixel[1]).toString(16).padStart(2, "0");

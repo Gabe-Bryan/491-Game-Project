@@ -141,16 +141,38 @@ class Portal {
     constructor(xLoc, yLoc, portalName, mapCellX=null, mapCellY=null, bgTile=null) {
         Object.assign(this, {xLoc, yLoc, portalName, mapCellX, mapCellY, bgTile});
         this.linkedTo = null;
+        this.destOffset = {'x':0, 'y':0};
+        this.collider = {type: "box", corner: {x:xLoc, y: yLoc}, height: 16 * SCALE, width: 16 * SCALE};
     }
 
     update() {
+        let pc = Player.CURR_PLAYER;
+        let playerCollided = checkCollision(this, pc);
+        
+        if (playerCollided && this.linkedTo != null) {
+            
+            let currMapCellX = gameEngine.currMap.getMapCellX(),
+                currMapCellY = gameEngine.currMap.getMapCellY(),
+                destMapCellX = this.linkedTo.mapCellX,
+                destMapCellY = this.linkedTo.mapCellY;
 
+            if (currMapCellX != destMapCellX || currMapCellY != destMapCellY) {
+                gameEngine.currMap.teleportPlayerToMapCell(destMapCellX, destMapCellY);
+            }
+
+            //console.log(Player.CURR_PLAYER.phys2d.velocity);
+            Player.CURR_PLAYER.x = this.linkedTo.xLoc + Math.round(Player.CURR_PLAYER.phys2d.velocity.x) * 16 * SCALE;
+            Player.CURR_PLAYER.y = this.linkedTo.yLoc + Math.round(Player.CURR_PLAYER.phys2d.velocity.y) * 16 * SCALE;
+
+            
+        }
     };
 
     draw(ctx, scale) {
-        let tileString = 'portal';
-        if (this.bgTile!=null)
-            tileString = this.bgTile;
-        GRAPHICS.get(tileString).drawTile(ctx, this.xLoc, this.yLoc);
+        GRAPHICS.get('ANIMA_portal').animate(gameEngine.clockTick, ctx, this.xLoc, this.yLoc, scale)
     };
+
+    setLinkedEntity(linkedEntity) {
+        this.linkedTo = linkedEntity;
+    }
 }
