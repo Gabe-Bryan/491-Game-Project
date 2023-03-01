@@ -136,3 +136,21 @@ class WallComplex {
         GRAPHICS.get(this.tileString).drawTile(ctx, this.xLoc, this.yLoc);
     }
 }
+
+class Portal {
+    constructor(xLoc, yLoc, portalName, mapCellX=null, mapCellY=null, bgTile=null) {
+        Object.assign(this, {xLoc, yLoc, portalName, mapCellX, mapCellY, bgTile});
+        this.linkedTo = null;
+    }
+
+    update() {
+
+    };
+
+    draw(ctx, scale) {
+        let tileString = 'portal';
+        if (this.bgTile!=null)
+            tileString = this.bgTile;
+        GRAPHICS.get(tileString).drawTile(ctx, this.xLoc, this.yLoc);
+    };
+}

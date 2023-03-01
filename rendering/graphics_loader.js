@@ -24,10 +24,11 @@ class GraphicsLoader {
 
         GRAPHICS.addSpriteSet(
             'environment', 'CASTLE_TILES',
-            [238, 255, 272, 238, 255, 272],
-            [0, 0, 0, 17, 17, 17],
+            [238, 255, 272, 238, 255, 272, 238],
+            [0, 0, 0, 17, 17, 17, 34],
             16, 16, 0, 0, 
-            ['wall_NW', 'wall_NE', 'wall_VERT', 'wall_SW', 'wall_SE', 'wall_HORIZ']
+            ['wall_NW', 'wall_NE', 'wall_VERT', 'wall_SW', 'wall_SE', 'wall_HORIZ',
+             'portal']
         );
 
         const spt = GRAPHICS.get('environment');
@@ -46,6 +47,11 @@ class GraphicsLoader {
         GRAPHICS.addTile('wall_SW', spt.gsl('wall_SW'));
         GRAPHICS.addTile('wall_SE', spt.gsl('wall_SE'));
         GRAPHICS.addTile('wall_HORIZ', spt.gsl('wall_HORIZ'));
+        
+        GRAPHICS.addTile('portal', spt.gsl('portal'));
+        GRAPHICS.addTile('portal_grass', spt.gsl('grass_thick'), spt.gsl('portal'));
+        GRAPHICS.addTile('portal_sand', spt.gsl('sand'), spt.gsl('portal'));
+        GRAPHICS.addTile('portal_blue_cobble', spt.gsl('floor_blue_cobblestone'), spt.gsl('portal'));
 
         // const theSprites = GRAPHICS.get('environment');
         // theSprites.forEach(sprite => {
