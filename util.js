@@ -71,6 +71,9 @@ const updateList = (entities) => {
 
     for (let i = entities.length - 1; i >= 0; --i) {
         if (entities[i].removeFromWorld) {
+            if (entities[i].tag === "enemy") {
+                entities.push(new DeathCloud(entities[i].x, entities[i].y))
+            }
             entities.splice(i, 1);
         }
     }
@@ -109,14 +112,15 @@ const getDirVect = (dir) => {
     }
 }
 
-const drawGameOver = (ctx) => {
-    ctx.font = "72px Zelda";
-    ctx.textAlign = "center";
-    ctx.fillStyle = "red";
-    ctx.fillText("GAME OVER", ctx.canvas.clientWidth/2, ctx.canvas.clientHeight/2);
-    ctx.textAlign = "start";
+const getEnemiesLeft = (entities) => {
+    let eLeft = 0;
+    for(let i = 0; i < entities.length; i++){
+        if(entities[i].tag == "enemy" && !(entities[i] instanceof Skull)){
+            eLeft++;
+        }
+    }
+    return eLeft;
 }
-
 
 const screenToTileCoord = (x, y) => {
     let tileWidth = 16*SCALE,

@@ -5,15 +5,8 @@ class SceneManager{
     }
 
     draw(ctx, scale){
-        this.drawList(this.env_entities, ctx, scale);
-        this.drawList(this.interact_entities, ctx, scale);
-    }
-
-    drawList(entities, ctx, scale) {
-        // Draw latest things first
-        for (let i = entities.length - 1; i >= 0; i--) {
-            entities[i].draw(ctx, scale);
-        }
+        drawList(this.env_entities, ctx, scale);
+        drawList(this.interact_entities, ctx, scale);
     }
 
     update(){

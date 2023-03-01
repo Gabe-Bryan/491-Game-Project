@@ -2,21 +2,24 @@
  * @author Christopher Henderson
  */
 class SpriteSet {
+
+    static SPRITE_SET_COUNT = 0;
+    
     /** don't use this! Instead use the Animation Manager to build SpriteSet. */
     constructor(the_id) {
         this.id = the_id;
-        this.count = 0;
         this.sprites = new Array();
+        SpriteSet.SPRITE_SET_COUNT++
+        // console.log(`Sprite Set Count = ${SpriteSet.SPRITE_SET_COUNT}`);
     }
 
     get_id() {return this.id;}
-    getCount() {return this.count;}
+    getCount() {return this.sprites.length;}
     getSprites() {return this.sprites};
     getSpriteDim(sKey) {return [this.sprites[sKey].sWidth, this.sprites[sKey].sHeight];}
 
     addSprite(spriteSheet, sx, sy, sWidth, sHeight, x_ofs, y_ofs, label) {
         this.sprites.push(new Sprite(spriteSheet, sx, sy, sWidth, sHeight, x_ofs, y_ofs, label));
-        this.count++;
     }
 
     getSprite_byIndex(index) {return this.sprites[index];}
@@ -24,29 +27,34 @@ class SpriteSet {
     gsl(label) {return this.getSprite_byLabel(label);}
 
     set_x_ofs(new_x_offsets) {
-        for (let i = 0; i < new_x_offsets.length; i++){
-            this.sprites[i].x_ofs = new_x_offsets[i];
-        }
+        let array = new_x_offsets instanceof Array ? true : false;
+        for (let i = 0; i < this.getCount(); i++)
+            this.sprites[i].x_ofs = array ? new_x_offsets[i] : new_x_offsets;
     }
 
     set_y_ofs(new_y_offsets) {
-        for (let i = 0; i < new_y_offsets.length; i++){
-            this.sprites[i].y_ofs = new_y_offsets[i];
-        }
+        let array = new_y_offsets instanceof Array ? true : false;
+        for (let i = 0; i < this.getCount(); i++)
+            this.sprites[i].y_ofs = array ? new_y_offsets[i] : new_y_offsets;
     }
 
     clone(clones_id) {
         const clone = new SpriteSet(clones_id);
-        clone.count = this.count;
         clone.sprites = this.spriteSetClone();
         return clone;
     }
 
     spriteSetClone() {
-        const cloneSet = new Array();
-        for (let i = 0; i < this.count; i++)
-            cloneSet.push(this.sprites[i].clone());
-        return cloneSet;
+        const clone_SpriteSet = new Array();
+        for (let i = 0; i < this.getCount(); i++)
+            clone_SpriteSet.push(this.sprites[i].clone());
+        return clone_SpriteSet;
+    }
+
+    instanceClone() {
+        const instanceClone_SpriteSet = new SpriteSet(this.id);
+        instanceClone_SpriteSet.sprites = this.sprites;
+        return instanceClone_SpriteSet
     }
     
     /**
@@ -56,28 +64,22 @@ class SpriteSet {
      */
     mirrorSet(horz, vert) {this.sprites.forEach(sprite => sprite.mirrorImg(horz, vert));}
 
-    /** Horizontally mirrors (flip over x-axis) all the sprites in this set. */
-    mirrorSet_Horz() {this.sprites.forEach(sprite => sprite.mirrorImg(true, false));}
+    // /** Horizontally mirrors (flip over x-axis) all the sprites in this set. */
+    // mirrorSet_Horz() {this.sprites.forEach(sprite => sprite.mirrorImg(true, false));}
 
-    /** Vertically mirrors (flip over y-axis) all the sprites in this set. */
-    mirrorSet_Vert() {this.sprites.forEach(sprite => sprite.mirrorImg(false, true));}
+    // /** Vertically mirrors (flip over y-axis) all the sprites in this set. */
+    // mirrorSet_Vert() {this.sprites.forEach(sprite => sprite.mirrorImg(false, true));}
 
-    /** Horizontally & Vertically mirrors all the sprites in this set. */
-    mirrorSet_Both() {this.sprites.forEach(sprite => sprite.mirrorImg(true, true));}
+    // /** Horizontally & Vertically mirrors all the sprites in this set. */
+    // mirrorSet_Both() {this.sprites.forEach(sprite => sprite.mirrorImg(true, true));}
 
-    addDeathFlashes(frameNum = 0) {
-        let redF = this.sprites[frameNum].clone();
-        let whiteF = this.sprites[frameNum].clone();
-        redF.pixelMorph_RGBA(255,null,null,null);
-        whiteF.pixelMorph_RGBA(255,255,255,null);
-        let i = this.count;
-        this.sprites[i-1] = redF;
-        this.count++
-        this.sprites[i] = whiteF;
+    colorMod(R, G, B, A) {
+        this.sprites.forEach(sprt => sprt.pixelMorph_RGBA(R, G, B, A))
+        return this;
     }
 
     drawSprite(sKey, ctx, dx, dy, xScale, yScale) {
-        if (sKey >= this.count) return;
+        if (sKey >= this.getCount()) return;
         this.sprites[sKey].draw(ctx, dx, dy, xScale, yScale);
 
         if(0) this.sprites[sKey].drawDebug(sKey, ctx, dx, dy, xScale, yScale)

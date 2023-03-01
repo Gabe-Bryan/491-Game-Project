@@ -1,10 +1,11 @@
 class Bunny {
     static MAX_HP = 3;
+    static SPAWN_RATE = 3;
     static KB_DUR = 0.1;
     constructor(x, y) {
         Object.assign(this, {x, y});
 
-        this.DEBUG = true;
+        this.DEBUG = false;
         this.state = 0;  // 0:idle,  1:walking, 2:attacking
         this.facing = 1; // 0:north, 1:south,   2:east, 3:west
         this.attackHitCollector = [];
@@ -21,29 +22,18 @@ class Bunny {
         this.updateCollider();
 
         this.hp = Bunny.MAX_HP;
+        this.pain = {hurting : false, timer: 0, cooldown: 0.5} // cooldown in sec
         this.kbLeft = 0;
     }
 
-    setupAnimations() {
-        this.animations = Array(1);
-        this.animations[0] = [
-            GRAPHICS.getAnimation('ANIMA_bunny_north'),
-            GRAPHICS.getAnimation('ANIMA_bunny_south'),
-            GRAPHICS.getAnimation('ANIMA_bunny_east'),
-            GRAPHICS.getAnimation('ANIMA_bunny_west')
+    setupAnimations() { // this.currButton --> 0 = north  | 1 = south  |  2 = east  |  3 = west
+        this.animations = [
+            GRAPHICS.getInstance('ANIMA_bunny_north'),
+            GRAPHICS.getInstance('ANIMA_bunny_south'),
+            GRAPHICS.getInstance('ANIMA_bunny_east'),
+            GRAPHICS.getInstance('ANIMA_bunny_west')
         ]
-        this.animations[1] = [
-            GRAPHICS.getAnimation('ANIMA_bunny_north'),
-            GRAPHICS.getAnimation('ANIMA_bunny_south'),
-            GRAPHICS.getAnimation('ANIMA_bunny_east'),
-            GRAPHICS.getAnimation('ANIMA_bunny_west')
-        ]
-        this.animations[2] = [
-            GRAPHICS.getAnimation('ANIMA_bunny_north'),
-            GRAPHICS.getAnimation('ANIMA_bunny_south'),
-            GRAPHICS.getAnimation('ANIMA_bunny_east'),
-            GRAPHICS.getAnimation('ANIMA_bunny_west')
-        ]
+
     }
 
     updateState() {
@@ -51,12 +41,21 @@ class Bunny {
         else this.state = 0;
     }
 
-    bunnyTime() {
-        gameEngine.addEntity(new Bunny(130 + Math.random()*600), 130 + Math.random()*500);
+    bunnyTime(amount) {
+        for (let i = 0; i < amount; i++)
+        gameEngine.scene.addInteractable(new Bunny(64 + (Math.random()*700), 64 + (Math.random()*600)));
     }
 
     update() {
         this.elapsedTime += gameEngine.clockTick;
+
+        if (this.pain.hurting) { // damage animation stuff
+            this.pain.timer -= gameEngine.clockTick;
+            if (this.pain.timer <= 0) {
+                this.pain.hurting = false;
+                this.pain.timer = 0;
+            }
+        }
 
         if (this.elapsedTime > this.nextChange) {
             this.nextChange += 0.2 + Math.random() * 1.82;
@@ -65,18 +64,18 @@ class Bunny {
 
         if (gameEngine.keys["b"]) {
             this.bt++;
-            if (this.bt > 100) {
+            if (this.bt > 50) {
                 this.bt = 0;
-                gameEngine.scene.addInteractable(new Bunny(200 + (Math.random()*560), 200 + (Math.random()*368)));
+                this.bunnyTime(1)
             }           
         }
 
 
-        if (this.x > 960) this.currButton = 3;
+        if (this.x > 950) this.currButton = 3;
         if (this.x < 10) this.currButton = 2;
-        if (this.y < 10) this.currButton = 0;
-        if (this.y > 770) this.currButton = 1;
-        // this.currButton --> 0 = w  | 1 = s  |  2 = d  |  3 = a
+        if (this.y < 10) this.currButton = 1;
+        if (this.y > 760) this.currButton = 0;
+        // this.currButton --> 0 = north  | 1 = south  |  2 = east  |  3 = west
         
         if (this.currButton === 0)      [this.facing, this.state, this.phys2d.velocity.y] = [0, 1, -Player.MAX_VEL];
         else if (this.currButton === 1) [this.facing, this.state, this.phys2d.velocity.y] = [1, 1, Player.MAX_VEL];
@@ -86,21 +85,21 @@ class Bunny {
         else if (this.currButton === 3) [this.facing, this.state, this.phys2d.velocity.x] = [3, 1, -Player.MAX_VEL];
         else                            this.phys2d.velocity.x = 0;
 
-        if(this.kbLeft <= 0) {
+        if (this.kbLeft <= 0) {
             this.phys2d.velocity = normalizeVector(this.phys2d.velocity);
             this.phys2d.velocity.x *= Player.MAX_VEL * gameEngine.clockTick;
             this.phys2d.velocity.y *= Player.MAX_VEL * gameEngine.clockTick;
-        }else{
+        } else {
             this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
             //console.log(this.phys2d.velocity);
-            console.log(this.kbVect);
+            // console.log(this.kbVect);
             this.phys2d.velocity.x *= gameEngine.clockTick;
             this.phys2d.velocity.y *= gameEngine.clockTick;
 
             this.kbLeft -= gameEngine.clockTick;
         }
 
-        if(this.state != 2) this.updateState();
+        if (this.state != 2) this.updateState();
     };
 
 
@@ -109,9 +108,13 @@ class Bunny {
         this.kbVect = {x: kb.x, y: kb.y};
         this.kbLeft = Bunny.KB_DUR;
         this.hp -= amount;
-        if(this.hp <= 0){
+        if (this.hp <= 0){
             this.removeFromWorld = true;
+            this.bunnyTime(Bunny.SPAWN_RATE)
         }
+
+        this.pain.hurting = true;
+        this.pain.timer = this.pain.cooldown;
     }
 
     updateCollider(){
@@ -120,6 +123,6 @@ class Bunny {
     }
 
     draw(ctx, scale) {
-        this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
+        this.animations[this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale, this.pain.hurting);
     }
 }
