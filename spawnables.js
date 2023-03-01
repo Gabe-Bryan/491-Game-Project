@@ -1,6 +1,6 @@
 class Bomb {
-    static NORM_KB = 2000;
-    static NORM_DMG = 2;
+    static NORM_KB = 2500;
+    static NORM_DMG = 3;
 
     constructor(x, y, type = null) {
 
