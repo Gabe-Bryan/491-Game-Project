@@ -226,15 +226,22 @@ class GraphicsLoader {
             /////////////////////////////////////
            //    P R O J E C T I L E S        //
           //  Each set should have sprites   //
-         //   for North, South, East, West  //
+         //   for North, East, South, West  //
         /////////////////////////////////////
 
-        // Bombs //
-        GRAPHICS.addSpriteSet('PROX_reg_bomb', 'BOMBS', 3, 26, 13, 16); // only 1 sprite for NSEW
+        // Bombs & iron ball have same sprite in all 4 directions no need to rotate,
+        // sprites in set are simply cloned to keep calling parity with other projectile sets
+        GRAPHICS.addSpriteSet('PRJX_reg_bomb', 'BOMBS', 3, 26, 13, 16).cloneAndAppendSprite(0,3); 
+        GRAPHICS.addSpriteSet('PRJX_iron_ball', 'ENEMIES', 648, 338, 12, 12).cloneAndAppendSprite(0,3);
 
-        // arrow //
-        GRAPHICS.addSpriteSet('PROX_reg_bomb', 'ENEMIES', 249, 86, 5, 15); // north
-        
+                                       // 0 → north  |  1 → east  |  2 → south  |  3 → west  ↓
+        GRAPHICS.addSpriteSet('PRJX_trident', 'ENEMIES', 249, 47, 5, 13).projectileBuilder(0);
+        GRAPHICS.addSpriteSet('PRJX_arrow', 'ENEMIES', 249, 86, 5, 15).projectileBuilder(0);
+        GRAPHICS.addSpriteSet('PRJX_fire_ball', 'ENEMIES', 612, 342,16,7).projectileBuilder(1);
+        GRAPHICS.addSpriteSet('PRJX_red_magic_beam', 'ENEMIES', 164, 470, 16, 8).projectileBuilder(2);
+        GRAPHICS.addSpriteSet('PRJX_blue_magic_beam', 'ENEMIES', 164, 510, 16, 8).projectileBuilder(2);
+
+
     }
 
     // addSpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_ofs = 0, y_ofs = 0, labels)

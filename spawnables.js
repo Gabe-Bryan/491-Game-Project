@@ -3,8 +3,6 @@ class Bomb {
     static NORM_DMG = 3;
 
     constructor(x, y, type = null) {
-
-
         Object.assign(this, {x, y, type}); // more types coming soon ...                                                                                                                     as far as you know Wahahahahahaaaaa!
         this.kickBack = Bomb.NORM_KB;
         this.damage = Bomb.NORM_DMG;
@@ -15,7 +13,6 @@ class Bomb {
         this.bomb_collider = {type: "box", corner: {x: this.x + -1*SCALE, y: this.y + 3 * SCALE}, width: 14 * SCALE, height: 14 * SCALE};
         this.blow_collider = {type: "box", corner: {x: this.x - 9 * SCALE, y: this.y - 9 * SCALE}, width: 32 * SCALE, height: 32 * SCALE};
         this.collider = this.bomb_collider;
-
 
         this.setupAnimations();
 
