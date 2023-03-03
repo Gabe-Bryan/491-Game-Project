@@ -57,6 +57,11 @@ class SpriteSet {
         return instanceClone_SpriteSet
     }
     
+    cloneAndAppendSprite(frameNum) {
+        sprite_clone = this.sprites[frameNum].clone();
+        this.sprites.push(sprite_clone);
+    }
+
     /**
      * Will mirror every sprite in this SpriteSet
      * @param {boolean} horz flip horizontally ?

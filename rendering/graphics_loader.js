@@ -160,6 +160,7 @@ class GraphicsLoader {
         GRAPHICS.addAnimation('ANIMA_bunny_east', 'SET_bunny', [0,1], 0.2).addDamageSprites();
         GRAPHICS.cloneAnimation('ANIMA_bunny_west','ANIMA_bunny_east').mirrorAnimation_Horz();
 
+
         /// /// EFFECTS /// /// /// 
         GRAPHICS.addSpriteGrid('SET_big_explode', 'ENEMIES', 1, 6, 441, 733, 32, 33, 0, [8, 6, 6, 5, 7])
         GRAPHICS.addAnimation('ANIMA_big_explode', 'SET_big_explode', [0,2,3,1,5,7,8,8,8,8,8,8,8], 0.2).setLooping(true);
@@ -177,7 +178,6 @@ class GraphicsLoader {
             [88, 104, 85, 100], 280,
             [ 8, 8, 11, 12], [7, 7, 26, 26]
         );
-        // GRAPHICS.addAnimation('ANIMA_ow_heart', 'SET_ow_heart', 2, 0.3)
 
         GRAPHICS.addSpriteSet(
             'SET_end_game', 'LINK',
@@ -186,10 +186,10 @@ class GraphicsLoader {
             [  0, -12,   0,   3], [  0, -38,  10,   3]
         );
         
-        // smaller bombs
+        // normal bombs spawn
         GRAPHICS.addSpriteSheet('BOMBS', ASSET_MANAGER.getAsset('bombs.png'));
         GRAPHICS.addSpriteSet(
-            'SET_bombs_burn', 'BOMBS', //       V-- explode
+            'SET_bombs_burn', 'BOMBS',
             [ 3, 23, 43, 63, 83, 104, 124, 144],  // x orig
             [26, 26, 26, 26, 26,  26,  26,  26],  // y org
             [13, 13, 13, 13, 13,  13,  13,  13],  // width
@@ -199,7 +199,7 @@ class GraphicsLoader {
         );
 
         GRAPHICS.addSpriteSet(
-            'SET_bombs_blow', 'BOMBS', //             V-- explode
+            'SET_bombs_blow', 'BOMBS',
             [161, 178, 211, 244, 291, 322, 364, 409],  // x orig
             [ 22,  11,  10,   2,  12,   6,   4,  10],  // y org
             [ 14,  30,  30,  44,  28,  40,  42,  44],  // width
@@ -223,9 +223,21 @@ class GraphicsLoader {
             [0.06, 0.08, 0.1, 0.15, 0.2, 0.2, 0.2, 0.2]
         );
 
-        // addAnimation(id, spriteSetName, fSequence, fTiming, x_offset = 0, y_offset = 0) {
+            /////////////////////////////////////
+           //    P R O J E C T I L E S        //
+          //  Each set should have sprites   //
+         //   for North, South, East, West  //
+        /////////////////////////////////////
+
+        // Bombs //
+        GRAPHICS.addSpriteSet('PROX_reg_bomb', 'BOMBS', 3, 26, 13, 16); // only 1 sprite for NSEW
+
+        // arrow //
+        GRAPHICS.addSpriteSet('PROX_reg_bomb', 'ENEMIES', 249, 86, 5, 15); // north
+        
     }
 
     // addSpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_ofs = 0, y_ofs = 0, labels)
     // addSpriteRow(id, spriteSheet, sprite_count, x_orig, y_orig, widths, heights, gaps, x_ofs, y_ofs, labels)
+    // addAnimation(id, spriteSetName, fSequence, fTiming, x_offset = 0, y_offset = 0)
 }
