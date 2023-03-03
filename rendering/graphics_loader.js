@@ -185,6 +185,9 @@ class GraphicsLoader {
             [ 80,  41,  24,  21], [ 80,  61,  15,  21],
             [  0, -12,   0,   3], [  0, -38,  10,   3]
         );
+
+        ///// SHADOW ????
+        GRAPHICS.addSpriteSet('SET_shadow', 'ENEMIES', 126, 859, 12, 6);
         
         // normal bombs spawn
         GRAPHICS.addSpriteSheet('BOMBS', ASSET_MANAGER.getAsset('bombs.png'));
