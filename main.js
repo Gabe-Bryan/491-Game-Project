@@ -42,6 +42,7 @@ ASSET_MANAGER.downloadAll(() => {
 		'#008800':'blocker_yellow_stone',
 		'#444444':'wall_complex'
 	});
+	gameEngine.currMap = testMap;
 
 	// TESTING SPAWNZ
 	// gameEngine.scene.addInteractable(new Bomb(240,200));
@@ -87,6 +88,21 @@ ASSET_MANAGER.downloadAll(() => {
 	testMap.addMapCellEntity(2, 4, new Skull(r3_SkullXY.x, r3_SkullXY.y));
 	testMap.addMapCellEntity(2, 4, new Skull(r3_Skull2XY.x, r3_Skull2XY.y));
 	
+	// PORTAL TEST STUFF
+	let test_portal1XY = tileToScreenCoord(4, 4);
+	let test_portal1 = new Portal(test_portal1XY.x, test_portal1XY.y, 'portal1', 1, 2);
+	test_portal1.destOffset.y = 16*SCALE;
+	
+	let test_portal2XY = tileToScreenCoord(14, 4);
+	let test_portal2 = new Portal(test_portal2XY.x, test_portal2XY.y, 'portal2', 1, 2);
+	test_portal2.destOffset.y = 16*SCALE;
+
+	testMap.addMapCellEntity(1, 2, test_portal1);
+	testMap.addMapCellEntity(1, 2, test_portal2);
+
+	test_portal1.setLinkedEntity(test_portal2);
+	test_portal2.setLinkedEntity(test_portal1);
+	
 	// actual starting room is (1, 2)
 	let startMapCellX = 1,
 		startMapCellY = 2;
@@ -96,8 +112,6 @@ ASSET_MANAGER.downloadAll(() => {
 	
 	testMap.addMapEntitiesToEngine(gameEngine);
 	testMap.addInteractableToEngine(gameEngine);
-	
-	gameEngine.currMap = testMap;
 
 	gameEngine.init(ctx);
 

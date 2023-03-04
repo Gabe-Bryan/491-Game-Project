@@ -30,6 +30,14 @@ class GraphicsLoader {
             ['wall_NW', 'wall_NE', 'wall_VERT', 'wall_SW', 'wall_SE', 'wall_HORIZ']
         );
 
+        GRAPHICS.addSpriteSet(
+            'portals', 'CASTLE_TILES', 
+            [272, 289],
+            [51, 51],
+            16, 16, 0, 0
+            ['portal', 'portal2']
+        );
+
         const spt = GRAPHICS.get('environment');
         GRAPHICS.addTile('grass', spt.gsl('grass_thick'));
         GRAPHICS.addTile('sand', spt.gsl('sand'));
@@ -46,6 +54,9 @@ class GraphicsLoader {
         GRAPHICS.addTile('wall_SW', spt.gsl('wall_SW'));
         GRAPHICS.addTile('wall_SE', spt.gsl('wall_SE'));
         GRAPHICS.addTile('wall_HORIZ', spt.gsl('wall_HORIZ'));
+        
+        //GRAPHICS.addTile('portal', spt.gsl('portal'));
+        GRAPHICS.addAnimation('ANIMA_portal', 'portals', 2, 0.7);
 
         // const theSprites = GRAPHICS.get('environment');
         // theSprites.forEach(sprite => {
