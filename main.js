@@ -82,19 +82,32 @@ ASSET_MANAGER.downloadAll(() => {
 	testMap.addMapCellEntity(2, 4, new Skull(r3_Skull2XY.x, r3_Skull2XY.y));
 	
 	// PORTAL TEST STUFF
-	let test_portal1XY = tileToScreenCoord(4, 4);
-	let test_portal1 = new Portal(test_portal1XY.x, test_portal1XY.y, 'portal1', 1, 2);
-	test_portal1.destOffset.y = 16*SCALE;
+	let prtl_clrs = ['pink', 'red', 'green', 'yellow', 'blue', 'orange'];
+	for (let i = 0; i < prtl_clrs.length; i++) {
+		let left_prtlXY = tileToScreenCoord(5, 1+i);
+		let right_prtlXY = tileToScreenCoord(14, 1+i);
+		left_prtlXY.y *= 2.2;
+		right_prtlXY.y *= 2.2;
+		let left_prtl = new Portal(left_prtlXY.x, left_prtlXY.y, prtl_clrs[i], 1, 2);
+		let right_prtl = new Portal(right_prtlXY.x, right_prtlXY.y, prtl_clrs[i], 1, 2);
+		left_prtl.setLinkedEntity(right_prtl);
+		right_prtl.setLinkedEntity(left_prtl);
+		testMap.addMapCellEntity(1, 2, left_prtl);
+		testMap.addMapCellEntity(1, 2, right_prtl);
+	}
+
+	// let test_portal1XY = tileToScreenCoord(4, 4);
+	// let test_portal1 = new Portal(test_portal1XY.x, test_portal1XY.y, 'red', 1, 2);
 	
-	let test_portal2XY = tileToScreenCoord(14, 4);
-	let test_portal2 = new Portal(test_portal2XY.x, test_portal2XY.y, 'portal2', 1, 2);
-	test_portal2.destOffset.y = 16*SCALE;
+	
+	// let test_portal2XY = tileToScreenCoord(14, 4);
+	// let test_portal2 = new Portal(test_portal2XY.x, test_portal2XY.y, 'blue', 1, 2);
+	
+	// testMap.addMapCellEntity(1, 2, test_portal1);
+	// testMap.addMapCellEntity(1, 2, test_portal2);
 
-	testMap.addMapCellEntity(1, 2, test_portal1);
-	testMap.addMapCellEntity(1, 2, test_portal2);
-
-	test_portal1.setLinkedEntity(test_portal2);
-	test_portal2.setLinkedEntity(test_portal1);
+	// test_portal1.setLinkedEntity(test_portal2);
+	// test_portal2.setLinkedEntity(test_portal1);
 	
 	// actual starting room is (1, 2)
 	let startMapCellX = 1,
