@@ -143,6 +143,8 @@ class Portal {
         this.DEBUG = false;
         this.linkedTo = null;
         this.collider = {type: "box", corner: {x:xLoc, y: yLoc}, height: 16 * SCALE, width: 16 * SCALE};
+
+        this.animation = GRAPHICS.getInstance('ANIMA_portal_'+portalColor);
     }
 
     update() {
@@ -180,24 +182,15 @@ class Portal {
     };
 
     draw(ctx, scale) {
-        let colorStr = '';
-
-        if (this.portalColor == 'red' ||
-            this.portalColor == 'green' ||
-            this.portalColor == 'yellow' ||
-            this.portalColor == 'blue' ||
-            this.portalColor == 'orange') 
-            
-            colorStr = '_' + this.portalColor;
-        else
-            colorStr = '_pink';
-
-        let animation = 'ANIMA_portal'+colorStr;
-
-        GRAPHICS.get(animation).animate(gameEngine.clockTick, ctx, this.xLoc, this.yLoc, scale)
+        this.animation.animate(gameEngine.clockTick, ctx, this.xLoc, this.yLoc, scale);
     };
 
     setLinkedEntity(linkedEntity) {
         this.linkedTo = linkedEntity;
+    }
+
+    setTwoWayLinkedEntity(linkedEntity) {
+        this.linkedTo = linkedEntity;
+        linkedEntity.linkedTo = this;
     }
 }

@@ -81,20 +81,41 @@ ASSET_MANAGER.downloadAll(() => {
 	testMap.addMapCellEntity(2, 4, new Skull(r3_SkullXY.x, r3_SkullXY.y));
 	testMap.addMapCellEntity(2, 4, new Skull(r3_Skull2XY.x, r3_Skull2XY.y));
 	
+	let chestXY = tileToScreenCoord(7, 5);
+	testMap.addMapCellEntity(1, 2, new SmallChest(chestXY.x, chestXY.y, 'heart'));
+	let chest = new SmallChest(chestXY.x, chestXY.y, 'heart');
+	// gameEngine.scene.addEnvEntity(chest);
+
 	// PORTAL TEST STUFF
-	let prtl_clrs = ['pink', 'red', 'green', 'yellow', 'blue', 'orange'];
+	let testPortal1XY = tileToScreenCoord(9, 2),
+		testPortal2XY = tileToScreenCoord(9, 13);
+	
+	testPortal2XY.x += 8*SCALE;
+	testPortal1XY.x += 8*SCALE;
+	
+	let testPortal1 = new Portal(testPortal1XY.x, testPortal1XY.y, 'pink', 1, 2),
+		testPortal2 = new Portal(testPortal2XY.x, testPortal2XY.y, 'pink', 1, 1);
+
+	testPortal1.setTwoWayLinkedEntity(testPortal2);
+
+	testMap.addMapCellEntity(1, 2, testPortal1);
+	testMap.addMapCellEntity(1, 1, testPortal2);
+
+	let prtl_clrs = ['red', 'green', 'yellow', 'blue', 'orange'];
 	for (let i = 0; i < prtl_clrs.length; i++) {
 		let left_prtlXY = tileToScreenCoord(5, 1+i);
 		let right_prtlXY = tileToScreenCoord(14, 1+i);
-		left_prtlXY.y *= 2.2;
-		right_prtlXY.y *= 2.2;
-		let left_prtl = new Portal(left_prtlXY.x, left_prtlXY.y, prtl_clrs[i], 1, 2);
-		let right_prtl = new Portal(right_prtlXY.x, right_prtlXY.y, prtl_clrs[i], 1, 2);
+		left_prtlXY.y *= 2.3;
+		right_prtlXY.y *= 2.3;
+		let left_prtl = new Portal(left_prtlXY.x, left_prtlXY.y, prtl_clrs[i], 1, 1);
+		let right_prtl = new Portal(right_prtlXY.x, right_prtlXY.y, prtl_clrs[i], 1, 1);
 		left_prtl.setLinkedEntity(right_prtl);
 		right_prtl.setLinkedEntity(left_prtl);
-		testMap.addMapCellEntity(1, 2, left_prtl);
-		testMap.addMapCellEntity(1, 2, right_prtl);
+		testMap.addMapCellEntity(1, 1, left_prtl);
+		testMap.addMapCellEntity(1, 1, right_prtl);
 	}
+
+	
 
 	// let test_portal1XY = tileToScreenCoord(4, 4);
 	// let test_portal1 = new Portal(test_portal1XY.x, test_portal1XY.y, 'red', 1, 2);

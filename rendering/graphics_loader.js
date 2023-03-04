@@ -39,6 +39,14 @@ class GraphicsLoader {
              'portal_yellow', 'portal_yellow_2', 'portal_blue', 'portal_blue_2', 'portal_orange', 'portal_orange_2']
         );
 
+        GRAPHICS.addSpriteSet(
+            'chests', 'DUNGEON_TILES',
+            [367, 384],
+            [89, 89],
+            16, 16, 0, 0
+            ['chest_small_closed', 'chest_small_open']
+        );
+
         const spt = GRAPHICS.get('environment');
         GRAPHICS.addTile('grass', spt.gsl('grass_thick'));
         GRAPHICS.addTile('sand', spt.gsl('sand'));
@@ -56,7 +64,7 @@ class GraphicsLoader {
         GRAPHICS.addTile('wall_SE', spt.gsl('wall_SE'));
         GRAPHICS.addTile('wall_HORIZ', spt.gsl('wall_HORIZ'));
         
-        //GRAPHICS.addTile('portal', spt.gsl('portal'));
+        // portal tiles
         let portalAnimSpeed = 0.7;
         GRAPHICS.addAnimation('ANIMA_portal_pink', 'portals', [0,1], portalAnimSpeed);
         GRAPHICS.addAnimation('ANIMA_portal_red', 'portals', [2,3], portalAnimSpeed);
