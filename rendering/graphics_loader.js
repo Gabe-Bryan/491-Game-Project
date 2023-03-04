@@ -236,9 +236,9 @@ class GraphicsLoader {
         );
 
             /////////////////////////////////////
-           //    P R O J E C T I L E S        //
+           //  ◈  P R O J E C T I L E S  ◈   //
           //  Each set should have sprites   //
-         //   for North, East, South, West  //
+         //  for North, East, South, West   //
         /////////////////////////////////////
 
         // Bombs & iron ball have same sprite in all 4 directions no need to rotate,
