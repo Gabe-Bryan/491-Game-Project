@@ -202,14 +202,13 @@ class GraphicsLoader {
         
         // normal bombs spawn
         GRAPHICS.addSpriteSheet('BOMBS', ASSET_MANAGER.getAsset('bombs.png'));
-        GRAPHICS.addSpriteSet(
-            'SET_bombs_burn', 'BOMBS',
-            [ 3, 23, 43, 63, 83, 104, 124, 144],  // x orig
-            [26, 26, 26, 26, 26,  26,  26,  26],  // y org
-            [13, 13, 13, 13, 13,  13,  13,  13],  // width
-            [16, 16, 16, 16, 16,  16,  16,  16],  // height
-            [ 0,  0,  0,  0,  0,   0,   0,   0],  // x-offsets
-            [ 0,  0,  0,  0,  0,   0,   0,   0]   // y-offsets
+
+        GRAPHICS.addSpriteSet('SET_bombs_burn', 'BOMBS', [ 3, 23, 43, 63, 83, 104, 124, 144], 18, 13, 16);
+        GRAPHICS.addSpriteSet('SET_bombs_burn', 'BOMBS',[23, 144], 35, 13, 16); // red & black
+
+        // ↓ top row bombs variety pack
+        GRAPHICS.addSpriteSet('SET_bombs_variety', 'BOMBS',
+            [ 3, 23, 43, 63, 83, 104, 124, 144], 2, 13, 16
         );
 
         GRAPHICS.addSpriteSet(
@@ -222,13 +221,12 @@ class GraphicsLoader {
             [  0,  -8,  -9, -16,  -8, -12, -13, -12]   // y-offsets
         );
 
-
         GRAPHICS.addAnimation('ANIMA_normal_bombs_stable', 'SET_bombs_burn', 1, 0);
 
         GRAPHICS.addAnimation(
             'ANIMA_normal_bombs_burn', 'SET_bombs_burn',
-            [  0,   1,   2,   3,    4,   5,   6,   7],
-            [0.2, 0.2, 0.3, 0.15, 0.1, 0.1, 0.1, 0.5]
+            [   0,    1,    2,   3,   4,   5,   6,   7,   8,    7,   8,    7,   8,    7,    8,    7,    8,   9],
+            [0.15, 0.15, 0.25, 0.1, 0.1, 0.1, 0.1, 0.6, 0.3, 0.25, 0.2, 0.15, 0.1, 0.05, 0.05, 0.03, 0.03, 0.1]
         );
 
         GRAPHICS.addAnimation(
@@ -245,7 +243,7 @@ class GraphicsLoader {
 
         // Bombs & iron ball have same sprite in all 4 directions no need to rotate,
         // sprites in set are simply cloned to keep calling parity with other projectile sets
-        GRAPHICS.addSpriteSet('PRJX_reg_bomb', 'BOMBS', 3, 26, 13, 16).cloneAndAppendSprite(0,3); 
+        GRAPHICS.addSpriteSet('PRJX_reg_bomb', 'BOMBS', 3, 18, 13, 16).cloneAndAppendSprite(0,3); 
         GRAPHICS.addSpriteSet('PRJX_iron_ball', 'ENEMIES', 648, 338, 12, 12).cloneAndAppendSprite(0,3);
 
                                        // 0 → north  |  1 → east  |  2 → south  |  3 → west  ↓
