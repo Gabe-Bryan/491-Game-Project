@@ -29,11 +29,12 @@ class _Bomb_PRX {
         Object.assign(this, {x, y, nesw, dir});
         this.phys2d = {static: false, velocity: {x: 0, y: 0}};
         this.done = false;
-        this.bombWidth = 13; this.bombHight = 16;
+        this.bombDim = {width: 13, hight: 16};
+        this.shadowDim = {width: 12, hight: 6}
 
         this.tempo = 0.1;
         this.gravity = 1.5;
-        this.height = 0;
+        this.height = 2;
         
         this.bombSize = 1;
 
@@ -49,31 +50,24 @@ class _Bomb_PRX {
             this.removeFromWorld = true;
             return;
         }
-        let tick = 0.2 * gameEngine.clockTick;
-        this.height += tick;
-        this.bombSize = 1 * Math.log(this.height + 1) + 1;
 
-        // if (this.bombSize <= 3 && this.bombSize >= 1) {
-        //     this.bombSize -= tick;
-        //     this.shadowSize = 0.8;
-        //     this.shadowDist = 2* this.bombSize;
-        // }
-
-        // console.log(this.height)
-        // console.log(this.height)
+        if (this.height <= 3 && this.height > 0) {
+            let tick = 0.2 * gameEngine.clockTick;
+            this.height -= tick;
+            this.bombSize = 1 * Math.log(this.height + 1) + 1;
+        }
 
 
-
-        // let dir_ball = normalizeVector(this.dir);
-        // this.phys2d.velocity = scaleVect(dir_ball, _Bomb_PRX.VEL * gameEngine.clockTick);
+        let dir_ball = normalizeVector(this.dir);
+        this.phys2d.velocity = scaleVect(dir_ball, _Bomb_PRX.VEL * gameEngine.clockTick);
     }
 
     draw(ctx, scale) { // bomb has same sprite for N,E,S,W directions, I still used nesw var for parity
-        let shade_X = this.x + (1 + (1 - this.shadowSize) / 2) * scale;
+        let shade_X = this.x - scale * ((Math.abs(1 - this.shadowSize * this.shadowDim.width) / 2) + 1);
         let shade_y = this.y + this.shadowDist * scale;
         
-        let bomb_x = this.x - scale * Math.abs(1 - this.bombSize * this.bombWidth) / 2
-        let bomb_y = this.y - this.height * this.bombHight * scale;
+        let bomb_x = this.x - scale * Math.abs(1 - this.bombSize * this.bombDim.width) / 2
+        let bomb_y = this.y - this.height * this.bombDim.hight * scale;
         // let bomb_y = this.y;
 
 
@@ -172,7 +166,7 @@ class _Iron_Ball_PRX {
     constructor(x, y, nesw, dir) {
         Object.assign(this, {x, y, nesw, dir});
         this.speed = 100;
-        this.phys2d = {static: false, velocity: {x: 0, y: 0}};
+        this.phys2d = {isSolid: false, static: false, velocity: {x: 0, y: 0}};
 
         this.updateCollider();
         this.DEBUG = true;

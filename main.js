@@ -45,7 +45,7 @@ ASSET_MANAGER.downloadAll(() => {
 
 	// TESTING SPAWNZ
 	// gameEngine.scene.addInteractable(new Bomb(200,370));
-	gameEngine.scene.addInteractable(new Projectile('bomb', 200, 200, 1));
+	gameEngine.scene.addInteractable(new Projectile('ironBall', 200, 200, 1));
 	// testMap.addMapCellEntity(1, 2, new Bomb(200,370));
 
 
