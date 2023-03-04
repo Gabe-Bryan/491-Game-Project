@@ -42,6 +42,7 @@ ASSET_MANAGER.downloadAll(() => {
 		'#008800':'blocker_yellow_stone',
 		'#444444':'wall_complex'
 	});
+	
 	gameEngine.currMap = testMap;
 
 	// TESTING SPAWNZ
