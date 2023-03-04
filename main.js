@@ -45,7 +45,7 @@ ASSET_MANAGER.downloadAll(() => {
 
 	// TESTING SPAWNZ
 	// gameEngine.scene.addInteractable(new Bomb(200,370));
-	gameEngine.scene.addInteractable(new Projectile('bomb', 125, 200, 1));
+	gameEngine.scene.addInteractable(new Projectile('bomb', 200, 200, 1));
 	// testMap.addMapCellEntity(1, 2, new Bomb(200,370));
 
 
@@ -55,12 +55,12 @@ ASSET_MANAGER.downloadAll(() => {
 	// testMap.addMapCellEntity(3, 2, new Knight(600, 600));
 	// testMap.addMapCellEntity(3, 2, new Bunny(400,400));
 	//////////////////////////////////////////////////////////
-	testMap.addMapCellEntity(1, 2, new Bunny(400,400));
-	testMap.addMapCellEntity(1, 4, new Triforce(400,300));
-	testMap.addMapCellEntity(1, 2, new HeartDrop(80,80));
-	testMap.addMapCellEntity(1, 2, new HeartDrop(80,650));
-	testMap.addMapCellEntity(1, 2, new HeartDrop(850,80));
-	testMap.addMapCellEntity(1, 2, new HeartDrop(850,650));
+	// testMap.addMapCellEntity(1, 2, new Bunny(400,400));
+	// testMap.addMapCellEntity(1, 4, new Triforce(400,300));
+	// testMap.addMapCellEntity(1, 2, new HeartDrop(80,80));
+	// testMap.addMapCellEntity(1, 2, new HeartDrop(80,650));
+	// testMap.addMapCellEntity(1, 2, new HeartDrop(850,80));
+	// testMap.addMapCellEntity(1, 2, new HeartDrop(850,650));
 	//////////////////////////////////////////////////////////
 
 

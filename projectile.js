@@ -27,17 +27,21 @@ class _Bomb_PRX {
     // doesnt deal damage directly, spawns a 'Bomb' bomb in its place when movement is done
     constructor(x, y, nesw, dir) {
         Object.assign(this, {x, y, nesw, dir});
-
         this.phys2d = {static: false, velocity: {x: 0, y: 0}};
-        this.cutoff = 0.4
-        this.slows = 0.5
         this.done = false;
+        this.bombWidth = 13; this.bombHight = 16;
 
+        this.tempo = 0.1;
+        this.gravity = 1.5;
+        this.height = 0;
+        
         this.bombSize = 1;
-        this.shadowSize = 1;
-        this.shadowDist = 12;
+
+        this.shadowSize = 0.8;
+        this.shadowDist = 16;
         
     }
+    //parab(x, factor) return 2 * factor * x - (x*x)
 
     update() {
         if (this.done) {
@@ -45,26 +49,119 @@ class _Bomb_PRX {
             this.removeFromWorld = true;
             return;
         }
+        let tick = 0.2 * gameEngine.clockTick;
+        this.height += tick;
+        this.bombSize = 1 * Math.log(this.height + 1) + 1;
 
-        // need more
-        this.bombSize += 0.01 * gameEngine.clockTick;
-        this.y += 5 * gameEngine.clockTick;
-        this.shadowSize -= 0.01 * gameEngine.clockTick;
-        this.shadowDist += 1.5 * gameEngine.clockTick;
+        // if (this.bombSize <= 3 && this.bombSize >= 1) {
+        //     this.bombSize -= tick;
+        //     this.shadowSize = 0.8;
+        //     this.shadowDist = 2* this.bombSize;
+        // }
+
+        // console.log(this.height)
+        // console.log(this.height)
 
 
-        let dir_ball = normalizeVector(this.dir);
-        this.phys2d.velocity = scaleVect(dir_ball, _Bomb_PRX.VEL * gameEngine.clockTick);
 
-        // I want it to bounce
+        // let dir_ball = normalizeVector(this.dir);
+        // this.phys2d.velocity = scaleVect(dir_ball, _Bomb_PRX.VEL * gameEngine.clockTick);
     }
 
     draw(ctx, scale) { // bomb has same sprite for N,E,S,W directions, I still used nesw var for parity
-        let shdow_y = this.y + (this.shadowDist * scale);
-        GRAPHICS.getInstance('SET_shadow').drawSprite(0,ctx, this.x, shdow_y, scale * this.shadowSize);
-        GRAPHICS.getInstance('PRJX_reg_bomb').drawSprite(this.nesw, ctx, this.x, this.y, scale * this.bombSize);
+        let shade_X = this.x + (1 + (1 - this.shadowSize) / 2) * scale;
+        let shade_y = this.y + this.shadowDist * scale;
+        
+        let bomb_x = this.x - scale * Math.abs(1 - this.bombSize * this.bombWidth) / 2
+        let bomb_y = this.y - this.height * this.bombHight * scale;
+        // let bomb_y = this.y;
+
+
+        // let bomb_x = this.x - ((this.bombSize - 1) / 2 )  * scale;
+        // let bomb_y = this.y - this.height * scale * 10;
+        // console.log(((this.bombSize - 1) / 2 ) * scale)
+
+        GRAPHICS.getInstance('SET_shadow').drawSprite(0,ctx, shade_X, shade_y, scale * this.shadowSize);
+        GRAPHICS.getInstance('PRJX_reg_bomb').drawSprite(this.nesw, ctx, bomb_x, bomb_y, scale * this.bombSize);
     }
 }
+
+function parab_flight(x, factor) {
+    return 2 * factor * x - (x*x);
+}
+function sqr(x) {
+    return x*x;
+}
+
+// class _Bomb_PRX {
+//     static VEL = 0;
+//     // doesnt deal damage directly, spawns a 'Bomb' bomb in its place when movement is done
+//     constructor(x, y, nesw, dir) {
+//         Object.assign(this, {x, y, nesw, dir});
+
+//         this.phys2d = {static: false, velocity: {x: 0, y: 0}};
+//         this.cutoff = 0.4
+//         this.slows = 0.5
+//         this.done = false;
+
+//         this.tempo = 0.1;
+//         this.g = 1.5
+
+//         this.bombSize = 1.5;
+//         this.shadowSize = 0.80;
+//         this.shadowDist = 35;
+
+//         this.mode = 0;
+//         this.top = 1.5
+        
+//     }
+
+//     update() {
+//         if (this.done) {
+//             gameEngine.scene.addInteractable(new Bomb(this.x,this.y));
+//             this.removeFromWorld = true;
+//             return;
+//         }
+
+//         let tick = gameEngine.clockTick;
+//         this.tempo = this.tempo * (1 + this.g * tick);
+
+//         if (this.bombSize <= 1) {
+//             this.tempo *= -1;
+//             this.g *= -1;
+
+//         }
+
+//         if (this.bombSize > this.top) {
+//             this.tempo *= -1;
+//             this.g *= -1;
+//             this.top *= 1;
+//         }
+
+//         if (this.mode == 0) {
+//             this.bombSize += -0.3 * tick * this.tempo;;
+//             this.y += 150 * tick * this.tempo;;
+//             this.shadowSize += 0.09 * tick * this.tempo;;
+//             this.shadowDist += -13 * tick * this.tempo;
+//         }
+
+//         let dir_ball = normalizeVector(this.dir);
+//         this.phys2d.velocity = scaleVect(dir_ball, _Bomb_PRX.VEL * gameEngine.clockTick);
+
+//         // I want it to bounce
+//     }
+
+//     draw(ctx, scale) { // bomb has same sprite for N,E,S,W directions, I still used nesw var for parity
+//         let shade_y = this.y + (this.shadowDist * scale);
+
+//         let bomb_off_scl = 25; let shade_off_scl = 10;
+//         let bomb_offset = (bomb_off_scl/this.bombSize) - bomb_off_scl;
+//         let shade_offset = (shade_off_scl/this.shadowSize) - shade_off_scl;
+
+//         GRAPHICS.getInstance('SET_shadow').drawSprite(0,ctx, this.x + shade_offset, shade_y, scale * this.shadowSize);
+//         GRAPHICS.getInstance('PRJX_reg_bomb').drawSprite(this.nesw, ctx, this.x + bomb_offset, this.y, scale * this.bombSize);
+//     }
+// }
 
 class _Iron_Ball_PRX {
     static VEL = 100;
