@@ -140,10 +140,10 @@ class WallComplex {
 class Portal {
     constructor(xLoc, yLoc, portalName, mapCellX=null, mapCellY=null, bgTile=null) {
         Object.assign(this, {xLoc, yLoc, portalName, mapCellX, mapCellY, bgTile});
+        this.DEBUG = false;
         this.linkedTo = null;
         this.destOffset = {'x':0, 'y':0};
         this.collider = {type: "box", corner: {x:xLoc, y: yLoc}, height: 16 * SCALE, width: 16 * SCALE};
-        this.DEBUG = true;
     }
 
     update() {
@@ -177,8 +177,6 @@ class Portal {
 
             Player.CURR_PLAYER.x = this.linkedTo.xLoc + Math.floor(currPlayerVel.x)+xVelOffset * 16;
             Player.CURR_PLAYER.y = this.linkedTo.yLoc - vertColliderFix + Math.floor(currPlayerVel.y)+yVelOffset * 16;
-
-            
         }
     };
 
