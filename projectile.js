@@ -23,26 +23,40 @@ class Projectile {
 }
 
 class _Bomb_PRX {
-    static VEL = 0;
+    static VEL = 10;
     // doesnt deal damage directly, spawns a 'Bomb' bomb in its place when movement is done
     constructor(x, y, nesw, dir) {
         Object.assign(this, {x, y, nesw, dir});
-        this.phys2d = {static: false, velocity: {x: 0, y: 0}};
+        this.phys2d = {isSolid: true, static: false, velocity: {x: 0, y: 0}};
         this.done = false;
         this.bombDim = {width: 13, hight: 16};
-        this.shadowDim = {width: 12, hight: 6}
+        this.shadowDim = {width: 12, hight: 6};
 
-        this.tempo = 0.1;
-        this.gravity = 1.5;
-        this.height = 2;
-        
         this.bombSize = 1;
-
+        this.bombHeightFactor = 30;
         this.shadowSize = 0.8;
-        this.shadowDist = 16;
-        
+        this.shadowDist = 11;
+
+        this.gravity = 1.5;
+        this.entropy = 0.8;
+        this.maxHeight = 1;
+        this.maxTempo = 0.2;
+
+        this.state = 0;
+        this.height = this.maxHeight;
+        this.tempo = 0;
+
+        this.updateCollider();
+        this.DEBUG = true;
     }
     //parab(x, factor) return 2 * factor * x - (x*x)
+
+    updateCollider() {
+        let bomb_x = this.x - SCALE * Math.abs(1 - this.bombSize * this.bombDim.width) / 2
+        let bomb_y = this.y - this.height * this.bombHeightFactor * SCALE;
+
+        this.collider = {type: "box", corner: {x: bomb_x, y: bomb_y}, width: 13 * SCALE, height: 24 * SCALE};
+    }
 
     update() {
         if (this.done) {
@@ -51,12 +65,42 @@ class _Bomb_PRX {
             return;
         }
 
-        if (this.height <= 3 && this.height > 0) {
-            let tick = 0.2 * gameEngine.clockTick;
-            this.height -= tick;
-            this.bombSize = 1 * Math.log(this.height + 1) + 1;
+        if (this.state == 1 && this.tempo < 0.01) {
+            console.log("LOW " + this.tempo);
+            this.tempo = 0;
+            this.state = 0;
         }
 
+        if (this.tempo > 2) {
+            console.log("HIGH" + this.tempo);
+        }
+
+        if (this.state == 0 && this.height <= 0) {
+            this.state = 1;
+        }
+
+        // if (this.state == 1 && this.height > this.maxHeight) {
+        //     this.tempo = 0.2;
+        //     this.state = 0;
+        // }
+
+
+
+        //////////////////////
+        if (this.state == 0) {
+            this.tempo += this.gravity * gameEngine.clockTick
+            this.height -= this.tempo * gameEngine.clockTick;
+        }
+
+        if (this.state == 1) {
+            this.tempo -= this.gravity * gameEngine.clockTick
+            this.height += this.tempo * gameEngine.clockTick;
+        }
+
+        this.bombSize = 0.5 * Math.log(this.height + 1) + 1;
+        this.shadowSize = 0.9 * 1 * Math.log(this.height + 1) + 1;
+
+        // console.log("tempo = " + this.tempo);
 
         let dir_ball = normalizeVector(this.dir);
         this.phys2d.velocity = scaleVect(dir_ball, _Bomb_PRX.VEL * gameEngine.clockTick);
@@ -67,13 +111,7 @@ class _Bomb_PRX {
         let shade_y = this.y + this.shadowDist * scale;
         
         let bomb_x = this.x - scale * Math.abs(1 - this.bombSize * this.bombDim.width) / 2
-        let bomb_y = this.y - this.height * this.bombDim.hight * scale;
-        // let bomb_y = this.y;
-
-
-        // let bomb_x = this.x - ((this.bombSize - 1) / 2 )  * scale;
-        // let bomb_y = this.y - this.height * scale * 10;
-        // console.log(((this.bombSize - 1) / 2 ) * scale)
+        let bomb_y = this.y - this.height * this.bombHeightFactor * scale;
 
         GRAPHICS.getInstance('SET_shadow').drawSprite(0,ctx, shade_X, shade_y, scale * this.shadowSize);
         GRAPHICS.getInstance('PRJX_reg_bomb').drawSprite(this.nesw, ctx, bomb_x, bomb_y, scale * this.bombSize);
@@ -87,76 +125,6 @@ function sqr(x) {
     return x*x;
 }
 
-// class _Bomb_PRX {
-//     static VEL = 0;
-//     // doesnt deal damage directly, spawns a 'Bomb' bomb in its place when movement is done
-//     constructor(x, y, nesw, dir) {
-//         Object.assign(this, {x, y, nesw, dir});
-
-//         this.phys2d = {static: false, velocity: {x: 0, y: 0}};
-//         this.cutoff = 0.4
-//         this.slows = 0.5
-//         this.done = false;
-
-//         this.tempo = 0.1;
-//         this.g = 1.5
-
-//         this.bombSize = 1.5;
-//         this.shadowSize = 0.80;
-//         this.shadowDist = 35;
-
-//         this.mode = 0;
-//         this.top = 1.5
-        
-//     }
-
-//     update() {
-//         if (this.done) {
-//             gameEngine.scene.addInteractable(new Bomb(this.x,this.y));
-//             this.removeFromWorld = true;
-//             return;
-//         }
-
-//         let tick = gameEngine.clockTick;
-//         this.tempo = this.tempo * (1 + this.g * tick);
-
-//         if (this.bombSize <= 1) {
-//             this.tempo *= -1;
-//             this.g *= -1;
-
-//         }
-
-//         if (this.bombSize > this.top) {
-//             this.tempo *= -1;
-//             this.g *= -1;
-//             this.top *= 1;
-//         }
-
-//         if (this.mode == 0) {
-//             this.bombSize += -0.3 * tick * this.tempo;;
-//             this.y += 150 * tick * this.tempo;;
-//             this.shadowSize += 0.09 * tick * this.tempo;;
-//             this.shadowDist += -13 * tick * this.tempo;
-//         }
-
-//         let dir_ball = normalizeVector(this.dir);
-//         this.phys2d.velocity = scaleVect(dir_ball, _Bomb_PRX.VEL * gameEngine.clockTick);
-
-//         // I want it to bounce
-//     }
-
-//     draw(ctx, scale) { // bomb has same sprite for N,E,S,W directions, I still used nesw var for parity
-//         let shade_y = this.y + (this.shadowDist * scale);
-
-//         let bomb_off_scl = 25; let shade_off_scl = 10;
-//         let bomb_offset = (bomb_off_scl/this.bombSize) - bomb_off_scl;
-//         let shade_offset = (shade_off_scl/this.shadowSize) - shade_off_scl;
-
-//         GRAPHICS.getInstance('SET_shadow').drawSprite(0,ctx, this.x + shade_offset, shade_y, scale * this.shadowSize);
-//         GRAPHICS.getInstance('PRJX_reg_bomb').drawSprite(this.nesw, ctx, this.x + bomb_offset, this.y, scale * this.bombSize);
-//     }
-// }
-
 class _Iron_Ball_PRX {
     static VEL = 100;
     static KB_STR = 600;
@@ -167,6 +135,7 @@ class _Iron_Ball_PRX {
         Object.assign(this, {x, y, nesw, dir});
         this.speed = 100;
         this.phys2d = {isSolid: false, static: false, velocity: {x: 0, y: 0}};
+        this.dim = {x: 12, y: 12}
 
         this.updateCollider();
         this.DEBUG = true;
@@ -197,6 +166,14 @@ class _Iron_Ball_PRX {
             this.phys2d.velocity = scaleVect(dir_ball, _Iron_Ball_PRX.VEL * gameEngine.clockTick);
             this.checkAttack();
         }
+        if (this.x < -1 * 1.1 * this.dim.x * SCALE ||
+            this.x > 965 ||
+            this.y < -1 * 1.1 * this.dim.y * SCALE ||
+            this.y > 772) {
+
+            this.removeFromWorld = true;
+        }
+        console.log("ALIVE")
 
     }
 
