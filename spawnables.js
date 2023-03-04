@@ -16,7 +16,7 @@ class Bomb {
 
         this.setupAnimations();
 
-        this.DEBUG = true;
+        this.DEBUG = false;
     }
 
     setupAnimations() {
@@ -38,6 +38,10 @@ class Bomb {
     }
 
     update() {
+        // if(true) {
+        //     this.state = 0;
+        //     return;
+        // }
         if (this.state == 1 && this.anima[1].isDone()) {
             this.state = 2;
             this.collider = this.blow_collider
@@ -59,6 +63,9 @@ class Bomb {
     }
 
     draw(ctx, scale) {
+
+        // GRAPHICS.getInstance('SET_shadow').drawSprite(0,ctx, shade_X, shade_y, scale * this.shadowSize);
+        GRAPHICS.getInstance('SET_shadow').drawSprite(0, ctx, this.x-2, this.y + 11 * scale, scale);
         this.anima[this.state].animate(gameEngine.clockTick, ctx, this.x, this.y, scale);
         if(this.DEBUG) drawBoxCollider(ctx, this.collider, true);
     }

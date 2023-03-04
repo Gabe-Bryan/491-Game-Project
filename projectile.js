@@ -23,68 +23,67 @@ class Projectile {
 }
 
 class _Bomb_PRX {
-    static VEL = 10;
+    static VEL = 0;
     // doesnt deal damage directly, spawns a 'Bomb' bomb in its place when movement is done
     constructor(x, y, nesw, dir) {
         Object.assign(this, {x, y, nesw, dir});
         this.phys2d = {isSolid: true, static: false, velocity: {x: 0, y: 0}};
-        this.done = false;
-        this.bombDim = {width: 13, hight: 16};
-        this.shadowDim = {width: 12, hight: 6};
 
+        this.bombWidth = 13;
+        this.shadowWidth = 12
         this.bombSize = 1;
-        this.bombHeightFactor = 30;
-        this.shadowSize = 0.8;
+        this.bombHeightFactor = 20;
+        this.shadowSize = 1;
         this.shadowDist = 11;
 
-        this.gravity = 1.5;
-        this.entropy = 0.8;
-        this.maxHeight = 1;
-        this.maxTempo = 0.2;
+        this.gravity = 4;
+        this.elasticity = 0.75;
+        this.elasticity = 0;
 
         this.state = 0;
-        this.height = this.maxHeight;
+        this.height = 2;
         this.tempo = 0;
+        this.topHeight = this.height;
+
+        this.prevVel = this.phys2d.velocity;
 
         this.updateCollider();
-        this.DEBUG = true;
+        this.DEBUG = false;
     }
-    //parab(x, factor) return 2 * factor * x - (x*x)
 
     updateCollider() {
-        let bomb_x = this.x - SCALE * Math.abs(1 - this.bombSize * this.bombDim.width) / 2
-        let bomb_y = this.y - this.height * this.bombHeightFactor * SCALE;
-
-        this.collider = {type: "box", corner: {x: bomb_x, y: bomb_y}, width: 13 * SCALE, height: 24 * SCALE};
+        this.collider = {type: "box", corner: {x: this.bomb_x, y: this.bomb_y + 15}, width: 12 * this.bombSize * SCALE, height: 12 * this.bombSize * SCALE};
     }
 
     update() {
-        if (this.done) {
-            gameEngine.scene.addInteractable(new Bomb(this.x,this.y));
+        console.log("this.phys2d.velocity = " + this.phys2d.velocity.x)
+        if (this.phys2d.velocity.x == 0) {
+            //stuff
+        }
+
+
+
+        this.bomb_x = this.x - SCALE * Math.abs(1 - this.bombSize * this.bombWidth) / 2
+        this.bomb_y = this.y - this.height * this.bombHeightFactor * SCALE;
+
+        if (this.topHeight < 0.05 && this.tempo <= 0) {
+            this.bombSize = 1;
+            console.log(this.shadowSize)
+            gameEngine.scene.addInteractable(new Bomb(this.bomb_x, this.bomb_y));
             this.removeFromWorld = true;
             return;
         }
 
         if (this.state == 1 && this.tempo < 0.01) {
-            console.log("LOW " + this.tempo);
             this.tempo = 0;
             this.state = 0;
-        }
-
-        if (this.tempo > 2) {
-            console.log("HIGH" + this.tempo);
+            this.topHeight = this.height;
         }
 
         if (this.state == 0 && this.height <= 0) {
             this.state = 1;
+            this.tempo *= this.elasticity;
         }
-
-        // if (this.state == 1 && this.height > this.maxHeight) {
-        //     this.tempo = 0.2;
-        //     this.state = 0;
-        // }
-
-
 
         //////////////////////
         if (this.state == 0) {
@@ -98,23 +97,19 @@ class _Bomb_PRX {
         }
 
         this.bombSize = 0.5 * Math.log(this.height + 1) + 1;
-        this.shadowSize = 0.9 * 1 * Math.log(this.height + 1) + 1;
+        this.shadowSize = 0.2 * 1 * Math.log(this.height + 1) + 1;
 
-        // console.log("tempo = " + this.tempo);
-
+        this.prevVel = this.phys2d.velocity;
         let dir_ball = normalizeVector(this.dir);
         this.phys2d.velocity = scaleVect(dir_ball, _Bomb_PRX.VEL * gameEngine.clockTick);
     }
 
     draw(ctx, scale) { // bomb has same sprite for N,E,S,W directions, I still used nesw var for parity
-        let shade_X = this.x - scale * ((Math.abs(1 - this.shadowSize * this.shadowDim.width) / 2) + 1);
+        let shade_X = this.x - scale * ((Math.abs(1 - this.shadowSize * this.shadowWidth) / 2) + 1);
         let shade_y = this.y + this.shadowDist * scale;
-        
-        let bomb_x = this.x - scale * Math.abs(1 - this.bombSize * this.bombDim.width) / 2
-        let bomb_y = this.y - this.height * this.bombHeightFactor * scale;
 
         GRAPHICS.getInstance('SET_shadow').drawSprite(0,ctx, shade_X, shade_y, scale * this.shadowSize);
-        GRAPHICS.getInstance('PRJX_reg_bomb').drawSprite(this.nesw, ctx, bomb_x, bomb_y, scale * this.bombSize);
+        GRAPHICS.getInstance('PRJX_reg_bomb').drawSprite(this.nesw, ctx, this.bomb_x, this.bomb_y, scale * this.bombSize);
     }
 }
 
