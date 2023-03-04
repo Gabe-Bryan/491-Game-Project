@@ -20,9 +20,9 @@ const updatePhys = (entities) => {
 
             entity.x += entity.phys2d.velocity.x;
             entity.y += entity.phys2d.velocity.y;
-            if(entity.collider && entity.phys2d.isSolid !== false){
+            if(entity.collider && entity.phys2d){
                 entity.updateCollider();
-                correctMovement(prevX, prevY, entity);
+                if(entity.phys2d.isSolid !== false) correctMovement(prevX, prevY, entity);
             }
             
         }
