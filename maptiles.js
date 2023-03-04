@@ -143,6 +143,7 @@ class Portal {
         this.linkedTo = null;
         this.destOffset = {'x':0, 'y':0};
         this.collider = {type: "box", corner: {x:xLoc, y: yLoc}, height: 16 * SCALE, width: 16 * SCALE};
+        this.DEBUG = true;
     }
 
     update() {
@@ -160,9 +161,22 @@ class Portal {
                 gameEngine.currMap.teleportPlayerToMapCell(destMapCellX, destMapCellY);
             }
 
-            //console.log(Player.CURR_PLAYER.phys2d.velocity);
-            Player.CURR_PLAYER.x = this.linkedTo.xLoc + Math.round(Player.CURR_PLAYER.phys2d.velocity.x) * 16 * SCALE;
-            Player.CURR_PLAYER.y = this.linkedTo.yLoc + Math.round(Player.CURR_PLAYER.phys2d.velocity.y) * 16 * SCALE;
+            let currPlayerVel = Player.CURR_PLAYER.phys2d.velocity;
+            
+            let portalEdgeBuffer = 3,
+                xVelOffset = 0,
+                yVelOffset = 0;
+
+            if (currPlayerVel.x < 0) xVelOffset = -portalEdgeBuffer;
+            else if (currPlayerVel.x > 0) xVelOffset = portalEdgeBuffer;
+
+            if (currPlayerVel.y < 0) yVelOffset = -portalEdgeBuffer;
+            else if (currPlayerVel.y > 0) yVelOffset = portalEdgeBuffer;
+
+            let vertColliderFix = 26;
+
+            Player.CURR_PLAYER.x = this.linkedTo.xLoc + Math.floor(currPlayerVel.x)+xVelOffset * 16;
+            Player.CURR_PLAYER.y = this.linkedTo.yLoc - vertColliderFix + Math.floor(currPlayerVel.y)+yVelOffset * 16;
 
             
         }

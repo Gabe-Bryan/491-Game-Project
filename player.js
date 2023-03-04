@@ -12,7 +12,7 @@ class Player {
     constructor(x, y) {
         Object.assign(this, {x, y});
 
-        this.DEBUG = false;
+        this.DEBUG = true;
         this.state = 0;     // 0:idle, 1:walking, 2:attacking, 3: taking damage
         this.facing = 1;    
         this.attackHitbox = undefined;
