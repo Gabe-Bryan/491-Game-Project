@@ -18,8 +18,8 @@ class Projectile {
         }
         
         switch (type) {
-            case     'bomb': return new _Bomb_PRX(x, y, nesw, dir);
-            case 'ironBall': return new _Iron_Ball_PRX(x, y, nesw, dir);
+            case     'bomb': return new _Bomb_PRX(x, y, dir);
+            case 'ironBall': return new _Iron_Ball_PRX(x, y, dir);
             // _Arrow_Type_PRX  types: 0 → arrow | 1 → trident | 2 → fireBall | 3 → redBeam | 4 → blueBeam
             case    'arrow': return new _Arrow_Type_PRX(x, y, nesw, dir, 0);
             case  'trident': return new _Arrow_Type_PRX(x, y, nesw, dir, 1);
@@ -35,8 +35,8 @@ class Projectile {
 class _Bomb_PRX {
     static VEL = 0;
     // doesnt deal damage directly, spawns a 'Bomb' bomb in its place when movement is done
-    constructor(x, y, nesw, dir) {
-        Object.assign(this, {x, y, nesw, dir});
+    constructor(x, y, dir) {
+        Object.assign(this, {x, y, dir});
         this.phys2d = {isSolid: true, static: false, velocity: {x: 0, y: 0}};
         this.dim = {x: 13, y: 16}
         this.preVeloc = {x:1, y:1};
@@ -128,7 +128,7 @@ class _Bomb_PRX {
         let shade_y = this.y + this.shadowDist * scale;
 
         GRAPHICS.getInstance('SET_shadow').drawSprite(0,ctx, shade_X, shade_y, scale * this.shadowSize);
-        GRAPHICS.getInstance('PRJX_reg_bomb').drawSprite(this.nesw, ctx, this.bomb_x, this.bomb_y, scale * this.bombSize);
+        GRAPHICS.getInstance('PRJX_reg_bomb').drawSprite(0, ctx, this.bomb_x, this.bomb_y, scale * this.bombSize);
     }
 }
 
@@ -138,8 +138,8 @@ class _Iron_Ball_PRX {
     static DMG_STR = 0;
     static DMG_CD = 1.1;
 
-    constructor(x, y, nesw, dir) {
-        Object.assign(this, {x, y, nesw, dir});
+    constructor(x, y, dir) {
+        Object.assign(this, {x, y, dir});
         this.speed = 100;
         this.phys2d = {isSolid: true, static: false, velocity: {x: 0, y: 0}};
         this.dim = {x: 12, y: 12}
@@ -147,17 +147,17 @@ class _Iron_Ball_PRX {
 
         this.updateCollider();
         this.DEBUG = true;
-        this.attackCD = 0;
+        this.hitCD = 0;
     }
 
     checkAttack() {
         let player = Player.CURR_PLAYER;
-        if (this.attackCD <= 0) {
+        if (this.hitCD <= 0) {
             let hit = checkCollision(this, player);
             if (hit) {
                 let p_Dir = normalizeVector(distVect(this, Player.CURR_PLAYER));
                 player.takeDamage(_Iron_Ball_PRX.DMG_STR, scaleVect(p_Dir, _Iron_Ball_PRX.KB_STR))
-                this.attackCD = _Iron_Ball_PRX.DMG_CD;
+                this.hitCD = _Iron_Ball_PRX.DMG_CD;
                 
                 this.dir = normalizeVector ( {
                     x: Math.random()/3 + -this.dir.x * Math.random(),
@@ -166,7 +166,7 @@ class _Iron_Ball_PRX {
 
             }
         } else {
-            this.attackCD -= gameEngine.clockTick;
+            this.hitCD -= gameEngine.clockTick;
         }
     }
 
@@ -193,20 +193,22 @@ class _Iron_Ball_PRX {
     }
 
     draw(ctx, scale) { // iron ball has same sprite for N,E,S,W directions, I still used nesw var for parity
-        GRAPHICS.getInstance('PRJX_iron_ball').drawSprite(this.nesw, ctx, this.x, this.y, scale);
+        GRAPHICS.getInstance('PRJX_iron_ball').drawSprite(0, ctx, this.x, this.y, scale);
         if(this.DEBUG) drawBoxCollider(ctx, this.collider, true);
     }
 }
 
 class _Arrow_Type_PRX {
-    //         type        trident    redBeam 
-    //       values   arrow   ↓   fireB   ↓  blueBeam
-    static     VEL = [ 100,  100,  100,  100,  100];
-    static  KB_STR = [ 400,  400,  500,  600,  800];
-    static DMG_STR = [   1,    1,    2,    2,    3];
-    static  DMG_CD = [ 1.1,  1.1,  1.1,  1.1,  1.1];
+    //         type          trident       redBeam 
+    //       values    arrow    ↓    fireB    ↓   blueBeam
+    static     VEL = [  100,   100,   100,   100,   100];
+    static  KB_STR = [  400,   400,   500,   600,   800];
+    static DMG_STR = [    1,     1,     2,     2,     3];
+    static  DMG_CD = [  1.1,   1.1,   1.5,   1.1,   1.1];
+    static  SEEKER = [false, false,  true,  true, false]
+    static  SEEKCD = 2
 
-    static dims = [
+    static DIMS = [
         {x: 15, y:  5}, // arrow
         {x: 13, y:  5}, // trident
         {x: 16, y:  7}, // fire ball
@@ -220,13 +222,14 @@ class _Arrow_Type_PRX {
         this.phys2d = {isSolid: false, static: false, velocity: {x: 0, y: 0}};
         
         // getting the dimensions, depends on direction
-        if (nesw == 1 || nesw == 3) this.dim = _Arrow_Type_PRX.dims[this.type];
-        else this.dim = {x:_Arrow_Type_PRX.dims[this.type].y, y: _Arrow_Type_PRX.dims[this.type].x};
+        if (nesw == 1 || nesw == 3) this.dim = _Arrow_Type_PRX.DIMS[this.type];
+        else this.dim = {x:_Arrow_Type_PRX.DIMS[this.type].y, y: _Arrow_Type_PRX.DIMS[this.type].x};
 
         this.setupAnimations();
         this.updateCollider();
         this.DEBUG = true;
-        this.attackCD = 0;
+        this.hitCD = 0;
+        this.targetCD = 0;
     }
 
     setupAnimations() {
@@ -239,22 +242,33 @@ class _Arrow_Type_PRX {
         ]
     }
 
-    checkAttack() {
+    checkImpact() {
         let player = Player.CURR_PLAYER;
-        if (this.attackCD <= 0) {
+        if (this.hitCD <= 0) {
             let hit = checkCollision(this, player);
             if (hit) {
                 let p_Dir = normalizeVector(distVect(this, Player.CURR_PLAYER));
                 player.takeDamage(_Arrow_Type_PRX.DMG_STR[this.type], scaleVect(p_Dir, _Arrow_Type_PRX.KB_STR[this.type]))
-                this.attackCD = _Arrow_Type_PRX.DMG_CD[this.type];
+                this.hitCD = _Arrow_Type_PRX.DMG_CD[this.type];
+                this.targetCD = _Arrow_Type_PRX.SEEKCD;
             }
         } else {
-            this.attackCD -= gameEngine.clockTick;
+            this.hitCD -= gameEngine.clockTick; //{x: Player.CURR_PLAYER.x, y: Player.CURR_PLAYER.y -10}
         }
     }
 
     updateCollider() {
-        this.collider = {type: "box", corner: {x: this.x, y: this.y}, width: this.dim.x * SCALE, height: this.dim.y * SCALE};
+        this.collider = {type: "box", corner: {x: this.x, y: this.y},width: this.dim.x * SCALE,height: this.dim.y * SCALE};
+    }
+
+    updateDirection() {
+        if (Math.abs(this.dir.x) > Math.abs(this.dir.y))
+            this.nesw = this.dir.x > 0 ? 1 : 3;
+        else
+            this.nesw = this.dir.y > 0 ? 2 : 0;
+        // nsew : 0 → north  |  1 → east  |  2 → south  |  3 → west
+        if (this.nesw == 1 || this.nesw == 3) this.dim = _Arrow_Type_PRX.DIMS[this.type];
+        else this.dim = {x:_Arrow_Type_PRX.DIMS[this.type].y, y: _Arrow_Type_PRX.DIMS[this.type].x};
     }
 
     update() {
@@ -264,13 +278,18 @@ class _Arrow_Type_PRX {
             this.removeFromWorld = true;
             console.log(`Arrow type ${this.type} was removed`);
         }
-        if (Player.CURR_PLAYER.alive) this.checkAttack();
-        let dir_ball = normalizeVector(this.dir);
-        this.phys2d.velocity = scaleVect(dir_ball, _Arrow_Type_PRX.VEL[this.type] * gameEngine.clockTick);
-    }
 
+        if (Player.CURR_PLAYER.alive) {
+            this.checkImpact();
+            if (this.targetCD <= 0 && _Arrow_Type_PRX.SEEKER[this.type]) 
+                this.dir = normalizeVector(distVect(this, {x: Player.CURR_PLAYER.x, y: Player.CURR_PLAYER.y + 20}));
+            else this.targetCD -= gameEngine.clockTick;
+        } 
+        this.phys2d.velocity = scaleVect(this.dir, _Arrow_Type_PRX.VEL[this.type] * gameEngine.clockTick);
+        this.updateDirection();
+    }
+    // nsew : 0 → north  |  1 → east  |  2 → south  |  3 → west
     draw(ctx, scale) { 
-        // nsew : 0 → north  |  1 → east  |  2 → south  |  3 → west
         this.anima[this.type].drawSprite(this.nesw, ctx, this.x, this.y, scale)
         if(this.DEBUG) drawBoxCollider(ctx, this.collider, true);
     }

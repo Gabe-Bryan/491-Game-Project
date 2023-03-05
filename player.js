@@ -33,7 +33,7 @@ class Player {
         this.kbLeft = 0;
         this.swingCD = 0;
 
-        this.holding = true;
+        this.holding = false;
         this.holdObj = 0; // only 1 so far, the bomb
         // si = sprite index, xos = x offset, yos = y offset, spnX = spawn x offset
         this.holdObjInfo = [{xos:2, yos: -8, spnX: 5, spnY: 0}];

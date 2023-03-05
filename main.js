@@ -49,7 +49,7 @@ ASSET_MANAGER.downloadAll(() => {
 	// gameEngine.scene.addEnvEntity(new Projectile('ironBall', 200, 600, {x:-0.5, y:1}));
 	// gameEngine.scene.addEnvEntity(new Projectile('arrow', 100, 280, 1));
 	// gameEngine.scene.addEnvEntity(new Projectile('trident', 100, 360, 1));
-	// gameEngine.scene.addEnvEntity(new Projectile('fireBall', 100, 440, 1));
+	gameEngine.scene.addEnvEntity(new Projectile('fireBall', 100, 440, 1));
 	// gameEngine.scene.addEnvEntity(new Projectile('redBeam', 100, 520, 1));
 	// gameEngine.scene.addEnvEntity(new Projectile('blueBeam', 100, 600, 1));
 	// testMap.addMapCellEntity(1, 2, new Bomb(200,370));
