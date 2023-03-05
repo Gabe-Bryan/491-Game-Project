@@ -13,7 +13,7 @@ class HeartDrop {
     }
 
     draw(ctx) {
-        GRAPHICS.get('SET_ow_heart').drawSprite(1, ctx, this.x+4, this.y+4, SCALE)
+        GRAPHICS.get('SET_ow_heart').drawSprite(1, ctx, this.x+4, this.y+4, SCALE);
     }
 }
 
@@ -37,12 +37,12 @@ class Triforce {
 }
 
 class DeathCloud {
-    constructor(x, y) {
+    constructor(x, y, spawnStuff = true) {
         Object.assign(this, {x, y});
         this.spawn = null;
         this.cloudDone = false;
         this.cloudAnimation = GRAPHICS.getInstance('ANIMA_enemy_death_cloud').setLooping(false);
-        if(Math.random() < 0.334)    gameEngine.scene.addInteractable(new HeartDrop(this.x+7.5*SCALE, this.y+7*SCALE));
+        if(Math.random() < 0.334 && spawnStuff)    gameEngine.scene.addInteractable(new HeartDrop(this.x+7.5*SCALE, this.y+7*SCALE));
     }
 
     update() {
