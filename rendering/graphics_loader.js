@@ -184,7 +184,19 @@ class GraphicsLoader {
             [ 80,  41,  24,  21], [ 80,  61,  15,  21],
             [  0, -12,   0,   3], [  0, -38,  10,   3]
         );
+        
+        GRAPHICS.addSpriteSet(
+            'SET_pot', 'LINK',
+            [129], [180],
+            [12], [13],
+            [2.5], [2]
+        );
 
+        GRAPHICS.addSpriteSet(
+            'SET_door', 'DUNGEON_TILES',
+            [343, 343, 343], [494, 511, 528],
+            32, 16
+        );
     }
 
     // addSpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_ofs = 0, y_ofs = 0, labels)
