@@ -6,6 +6,7 @@ class Player {
     static KB_STR = 300;
 
     static SWING_CD = 0.25;
+    static THROW_CD = 3;
 
     static CURR_PLAYER = undefined;
 
@@ -34,16 +35,18 @@ class Player {
         this.swingCD = 0;
 
         this.holding = false;
+        this.throwing = false;
         this.holdObj = 0; // only 1 so far, the bomb
         // si = sprite index, xos = x offset, yos = y offset, spnX = spawn x offset
-        this.holdObjInfo = [{xos:2, yos: -8, spnX: 5, spnY: 0}];
+        this.holdObjInfo = [{scl: 1.1, xos:1.5, yos: -9, spnX: 8, spnY: 10}];
+        this.throwTime = 0; this.butpad = 0; this.butpadLength = 0.6;
     };
 
     setupAnimations() {
         // Animation array: [state][facing]
-        this.animations = new Array(6)
+        this.animations = new Array(5)
 
-        // idle animations
+        // idle animations 
         this.animations[0] = [
             GRAPHICS.get('ANIMA_link_Idle_north'),
             GRAPHICS.get('ANIMA_link_Idle_south'),
@@ -77,12 +80,12 @@ class Player {
             GRAPHICS.get('ANIMA_link_carry_east'),
             GRAPHICS.get('ANIMA_link_carry_west'),
         ]
-        this.animations[5] = [
-            GRAPHICS.get('ANIMA_link_throw_north'),
-            GRAPHICS.get('ANIMA_link_throw_south'),
-            GRAPHICS.get('ANIMA_link_throw_east'),
-            GRAPHICS.get('ANIMA_link_throw_west')
-        ]
+        // this.animations[5] = [
+        //     GRAPHICS.get('ANIMA_link_throw_north'),
+        //     GRAPHICS.get('ANIMA_link_throw_south'),
+        //     GRAPHICS.get('ANIMA_link_throw_east'),
+        //     GRAPHICS.get('ANIMA_link_throw_west')
+        // ]
 
         // other animations / sprites
         this.holdObjSprite = [
@@ -114,10 +117,8 @@ class Player {
                 this.hitstop.timer = 0;
             }
         }
-        // this.state = 3;
+
     }
-
-
 
     updateDirection(moveIn) {
         if(moveIn.x > 0) this.facing = 2;
@@ -147,25 +148,36 @@ class Player {
         if (gameEngine.keys["d"])      moveIn.x = 1;//[this.facing, this.state, this.phys2d.velocity.x] = [2, walkStateChange, Player.MAX_VEL];
         else if (gameEngine.keys["a"]) moveIn.x = -1;//[this.facing, this.state, this.phys2d.velocity.x] = [3, walkStateChange, -Player.MAX_VEL];
         
+        /////// THROW STUFF //////////// . . . .
         if (gameEngine.keys["b"]) {
-            if (this.holding) {
-                this.holding = false;
-                let prjX = this.x + this.holdObjInfo[this.holdObj].xos * SCALE;
-                let prjY = this.y + this.holdObjInfo[this.holdObj].yos * SCALE;
-                gameEngine.scene.addInteractable(new Projectile('bomb', prjX, prjY, 2));
+            if (!this.holding && !this.throwing && this.butpad <= 0) {
+                console.log("HOLD");
+                this.holding = true;
+                this.butpad = this.butpadLength
             }
-            // else this.holding = true;
+            else if (this.holding && !this.throwing && this.butpad <= 0){
+                // console.log("THROW");
+                this.throwing = true;
+                this.butpad = this.butpadLength
+            }   
         }
+        if (this.butpad > 0) this.butpad -= gameEngine.clockTick;
+        else this.butpad = 0; // slowdown key press change
+
+        if (this.throwing) this.processThrow();
+        ///////////// . . . . . . . . . . . . . 
 
         this.moveIn = normalizeVector(moveIn);
         this.swingCD -= gameEngine.clockTick;
-        this.attackIn = gameEngine.keys['j'] && this.swingCD <= 0;
+        this.attackIn = gameEngine.keys['j'] && this.swingCD <= 0 && !this.holding;
         this.updateState(this.moveIn, this.attackIn);
 
-        if (this.state != 2) this.updateDirection(this.moveIn);
-        else this.processAttack();
 
-        if(this.hitstop.hitting){
+        if (this.state != 2) this.updateDirection(this.moveIn);
+        else if (this.state == 2) this.processAttack();
+
+
+        if(this.hitstop.hitting) {
             this.phys2d.velocity = {x: 0, y: 0};
             return;
         }
@@ -179,13 +191,33 @@ class Player {
 
             this.kbLeft -= gameEngine.clockTick;
         } else {
-            let velocityMod = this.state == 2 ? 1/2 : 1;
+            let velocityMod = this.state == 2 || this.state == 4 ? 1/2 : 1;
             this.phys2d.velocity.x = this.moveIn.x * Player.MAX_VEL * gameEngine.clockTick * velocityMod;
             this.phys2d.velocity.y = this.moveIn.y * -1 * Player.MAX_VEL * gameEngine.clockTick * velocityMod;    
         }
         
         gameEngine.currMap.screenEdgeTransition(this);
     };
+
+    processThrow() {
+        if (this.holding && this.throwing) {
+            console.log("THROW");
+            let prjX = this.x + this.holdObjInfo[this.holdObj].spnX * SCALE;
+            let prjY = this.y + this.holdObjInfo[this.holdObj].spnY * SCALE;
+            // n s e w
+            let pf =  this.facing
+            let facDir = pf == 0 ? 0 : pf == 2 ? 1 : pf == 1 ? 2 : 3
+            gameEngine.scene.addInteractable(new Projectile('bomb', prjX, prjY, facDir));
+            this.holding = false;
+            this.throwTime = Player.THROW_CD;
+        }
+        else if (this.throwTime <= 0) {
+            console.log("THROW DONE");
+            this.throwing = false;
+            this.throwTime = 0;
+        }
+        else this.throwTime -= gameEngine.clockTick
+    }
 
     processAttack() {
         this.attackTimeLeft -= gameEngine.clockTick;
@@ -216,35 +248,6 @@ class Player {
         }
     }
 
-
-    processThrow() {
-        this.attackTimeLeft -= gameEngine.clockTick;
-        if(this.attackTimeLeft - gameEngine.clockTick <= 0) {
-            this.state = 0;
-            this.resetAnims();
-            this.swingCD = Player.SWING_CD;
-        }
-        else {
-            //console.log("Time left for attack: " + this.attackTimeLeft);
-            this.setAttackHB();
-            //Attack collision det and handling
-            this.hitEnemy = false;
-            gameEngine.scene.interact_entities.forEach((entity) =>{
-                if(entity != this && entity.collider && entity.collider.type == "box" 
-                    && entity.tag == "enemy" && !this.attackHits.includes(entity)){
-                    let hit = boxBoxCol(this.attackHitbox, entity.collider);
-                    this.hitEnemy = hit || this.hitEnemy;//stored for debugging
-                    if (hit) {
-                        let kbDir = normalizeVector(distVect(this.collider.corner, entity.collider.corner));
-                        let kb = scaleVect(kbDir, Player.KB_STR * SCALE);
-                        //console.log(kb);
-                        this.dealDamage(entity, kb);
-                        this.attackHits.push(entity);
-                    }
-                }
-            });
-        }
-    }
 
     dealDamage(entity, kb) {
         entity.takeDamage(1, kb, this.hitstop.cooldown);
@@ -332,7 +335,7 @@ class Player {
                 0, ctx,
                 this.x + this.holdObjInfo[this.holdObj].xos * scale,
                 this.y + this.holdObjInfo[this.holdObj].yos * scale,
-                scale
+                scale * this.holdObjInfo[this.holdObj].scl
         );
         // GRAPHICS.get('SET_end_game').drawSprite(0, ctx, this.x+100, this.y, scale);
         // GRAPHICS.get('ANIMA_link_dead').animate(gameEngine.clockTick, ctx, this.x +100, this.y, scale);

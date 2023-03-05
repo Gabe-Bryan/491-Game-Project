@@ -125,9 +125,9 @@ class GraphicsLoader {
             [ 16,  16,  16,  16,  17], 22, 0,
             [  0,  -1,  -1,  -1,  -1]
         );
-        GRAPHICS.addAnimation('ANIMA_link_carry_south', 'SET_link_carry_throw_south', 4, 0.2);
-        GRAPHICS.addAnimation('ANIMA_link_carry_idle_south', 'SET_link_carry_throw_south', [0], Infinity);
-        GRAPHICS.addAnimation('ANIMA_link_throw_south', 'SET_link_carry_throw_south', [4], Infinity);
+        GRAPHICS.addAnimation('ANIMA_link_carry_south', 'SET_link_carry_throw_south', 4, 0.15).addDamageSprites();
+        GRAPHICS.addAnimation('ANIMA_link_carry_idle_south', 'SET_link_carry_throw_south', [0], Infinity).addDamageSprites();
+        GRAPHICS.addAnimation('ANIMA_link_throw_south', 'SET_link_carry_throw_south', [4], Infinity).addDamageSprites();
 
         GRAPHICS.addSpriteSet( // final sprite is throwing
         'SET_link_carry_throw_north', 'LINK',
@@ -135,9 +135,9 @@ class GraphicsLoader {
         [  1,   0,   1,   0,   0]
         );
         GRAPHICS.addSpriteSet('SET_link_carry_throw_north', 'LINK', [232, 284], 97, 16, 22);
-        GRAPHICS.addAnimation('ANIMA_link_carry_north', 'SET_link_carry_throw_north', 4, 0.2);
-        GRAPHICS.addAnimation('ANIMA_link_carry_idle_north', 'SET_link_carry_throw_north', [0], Infinity);
-        GRAPHICS.addAnimation('ANIMA_link_throw_north', 'SET_link_carry_throw_north', [5], 0);
+        GRAPHICS.addAnimation('ANIMA_link_carry_north', 'SET_link_carry_throw_north', 4, 0.15).addDamageSprites();
+        GRAPHICS.addAnimation('ANIMA_link_carry_idle_north', 'SET_link_carry_throw_north', [0], Infinity).addDamageSprites();
+        GRAPHICS.addAnimation('ANIMA_link_throw_north', 'SET_link_carry_throw_north', [5], 0).addDamageSprites();
 
         GRAPHICS.addSpriteSet( // final sprite is throwing
         'SET_link_carry_throw_east', 'LINK',
@@ -146,11 +146,11 @@ class GraphicsLoader {
         [ 0,  0,  0,  0,  0], // x-offset
         [ 0, -1, -2,  0,  1]  // y-offset
         );
-        GRAPHICS.addAnimation('ANIMA_link_carry_east', 'SET_link_carry_throw_east', [3,1,2,1], 0.2, -2);
-        GRAPHICS.addAnimation('ANIMA_link_carry_idle_east', 'SET_link_carry_throw_east', [3], Infinity, -2);
-        GRAPHICS.addAnimation('ANIMA_link_throw_east', 'SET_link_carry_throw_east', [4], 0);
+        GRAPHICS.addAnimation('ANIMA_link_carry_east', 'SET_link_carry_throw_east', [3,1,2,1], 0.15, -2).addDamageSprites();
+        GRAPHICS.addAnimation('ANIMA_link_carry_idle_east', 'SET_link_carry_throw_east', [3], Infinity, -2).addDamageSprites();
+        GRAPHICS.addAnimation('ANIMA_link_throw_east', 'SET_link_carry_throw_east', [4], 0).addDamageSprites();
 
-        GRAPHICS.cloneAnimation('ANIMA_link_carry_west', 'ANIMA_link_carry_east').mirrorAnimation_Horz(null, 2);
+        GRAPHICS.cloneAnimation('ANIMA_link_carry_west', 'ANIMA_link_carry_east').mirrorAnimation_Horz([0,0,-1,0], 2);
         GRAPHICS.cloneAnimation('ANIMA_link_carry_idle_west', 'ANIMA_link_carry_idle_east').mirrorAnimation_Horz(null, 2);
         GRAPHICS.cloneAnimation('ANIMA_link_throw_west', 'ANIMA_link_throw_east').mirrorAnimation_Horz(null, 2);
 

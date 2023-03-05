@@ -33,7 +33,7 @@ class Projectile {
 }
 
 class _Bomb_PRX {
-    static VEL = 0;
+    static VEL = 100;
     // doesnt deal damage directly, spawns a 'Bomb' bomb in its place when movement is done
     constructor(x, y, dir) {
         Object.assign(this, {x, y, dir});
@@ -115,8 +115,8 @@ class _Bomb_PRX {
             this.height += this.tempo * gameEngine.clockTick;
         }
 
-        this.bombSize = 0.4 * Math.log(this.height + 1) + 1;
-        this.shadowSize = 0.2 * 1 * Math.log(this.height + 1) + 1;
+        this.bombSize = 0.2 * Math.log(this.height + 1) + 1;
+        this.shadowSize = 0.2 * Math.log(this.height + 1) + 1;
 
         let dir_ball = normalizeVector(this.dir);
         this.phys2d.velocity = scaleVect(dir_ball, _Bomb_PRX.VEL * gameEngine.clockTick);
