@@ -118,6 +118,44 @@ class GraphicsLoader {
         GRAPHICS.addSpriteSheet('CHARS', ASSET_MANAGER.getAsset('characters.png'));
         GRAPHICS.addSpriteSet('link_dead', 'CHARS', 267, 388, 24, 15);
 
+        // LINK hold object above head
+        GRAPHICS.addSpriteSet( // final sprite is throwing
+            'SET_link_carry_throw_south', 'LINK',
+            [168, 189, 209, 231, 254], 137,
+            [ 16,  16,  16,  16,  17], 22, 0,
+            [  0,  -1,  -1,  -1,  -1]
+        );
+        GRAPHICS.addAnimation('ANIMA_link_carry_south', 'SET_link_carry_throw_south', 4, 0.2);
+        GRAPHICS.addAnimation('ANIMA_link_carry_idle_south', 'SET_link_carry_throw_south', [0], Infinity);
+        GRAPHICS.addAnimation('ANIMA_link_throw_south', 'SET_link_carry_throw_south', [4], Infinity);
+
+        GRAPHICS.addSpriteSet( // final sprite is throwing
+        'SET_link_carry_throw_north', 'LINK',
+        [10, 36, 60, 82, 104], 177, 16, 22, 0,
+        [  1,   0,   1,   0,   0]
+        );
+        GRAPHICS.addSpriteSet('SET_link_carry_throw_north', 'LINK', [232, 284], 97, 16, 22);
+        GRAPHICS.addAnimation('ANIMA_link_carry_north', 'SET_link_carry_throw_north', 4, 0.2);
+        GRAPHICS.addAnimation('ANIMA_link_carry_idle_north', 'SET_link_carry_throw_north', [0], Infinity);
+        GRAPHICS.addAnimation('ANIMA_link_throw_north', 'SET_link_carry_throw_north', [5], 0);
+
+        GRAPHICS.addSpriteSet( // final sprite is throwing
+        'SET_link_carry_throw_east', 'LINK',
+        [159, 181, 204, 227, 250], 168,
+        [ 16,  16,  17,  16,  16], 24,
+        [ 0,  0,  0,  0,  0], // x-offset
+        [ 0, -1, -2,  0,  1]  // y-offset
+        );
+        GRAPHICS.addAnimation('ANIMA_link_carry_east', 'SET_link_carry_throw_east', [3,1,2,1], 0.2, -2);
+        GRAPHICS.addAnimation('ANIMA_link_carry_idle_east', 'SET_link_carry_throw_east', [3], Infinity, -2);
+        GRAPHICS.addAnimation('ANIMA_link_throw_east', 'SET_link_carry_throw_east', [4], 0);
+
+        GRAPHICS.cloneAnimation('ANIMA_link_carry_west', 'ANIMA_link_carry_east').mirrorAnimation_Horz(null, 2);
+        GRAPHICS.cloneAnimation('ANIMA_link_carry_idle_west', 'ANIMA_link_carry_idle_east').mirrorAnimation_Horz(null, 2);
+        GRAPHICS.cloneAnimation('ANIMA_link_throw_west', 'ANIMA_link_throw_east').mirrorAnimation_Horz(null, 2);
+
+
+
         /// /// E N E M I E S /// /// /// 
         GRAPHICS.addSpriteSheet('ENEMIES', ASSET_MANAGER.getAsset('enemies.png'));
         GRAPHICS.addSpriteSet('SET_blue_enemy_south', 'ENEMIES',  1, [156, 197, 235, 277], 22, 38);
@@ -225,8 +263,8 @@ class GraphicsLoader {
 
         GRAPHICS.addAnimation(
             'ANIMA_normal_bombs_burn', 'SET_bombs_burn',
-            [   0,    1,    2,   3,   4,   5,   6,   7,   8,    7,   8,    7,   8,    7,    8,    7,    8,   9],
-            [0.15, 0.15, 0.25, 0.1, 0.1, 0.1, 0.1, 0.6, 0.3, 0.25, 0.2, 0.15, 0.1, 0.05, 0.05, 0.03, 0.03, 0.1]
+            [  0,   1,    2,   3,   4,   5,   6,   7,   8,    7,   8,    7,   8,    7,    8,    7,    8,    9],
+            [0.1, 0.1, 0.15, 0.1, 0.1, 0.1, 0.1, 0.5, 0.3, 0.25, 0.2, 0.15, 0.1, 0.05, 0.05, 0.03, 0.03, 0.05]
         );
 
         GRAPHICS.addAnimation(
@@ -247,9 +285,9 @@ class GraphicsLoader {
         GRAPHICS.addSpriteSet('PRJX_iron_ball', 'ENEMIES', 648, 338, 12, 12).cloneAndAppendSprite(0,3);
 
                                        // 0 → north  |  1 → east  |  2 → south  |  3 → west  ↓
-        GRAPHICS.addSpriteSet('PRJX_trident', 'ENEMIES', 249, 47, 5, 13).projectileBuilder(0);
         GRAPHICS.addSpriteSet('PRJX_arrow', 'ENEMIES', 249, 86, 5, 15).projectileBuilder(0);
-        GRAPHICS.addSpriteSet('PRJX_fire_ball', 'ENEMIES', 612, 342,16,7).projectileBuilder(1);
+        GRAPHICS.addSpriteSet('PRJX_trident', 'ENEMIES', 249, 47, 5, 13).projectileBuilder(0);
+        GRAPHICS.addSpriteSet('PRJX_fire_ball', 'ENEMIES', 612, 342, 16, 7).projectileBuilder(1);
         GRAPHICS.addSpriteSet('PRJX_red_magic_beam', 'ENEMIES', 164, 470, 16, 8).projectileBuilder(2);
         GRAPHICS.addSpriteSet('PRJX_blue_magic_beam', 'ENEMIES', 164, 510, 16, 8).projectileBuilder(2);
 

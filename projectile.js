@@ -1,21 +1,31 @@
 class Projectile {
-    static validTypes = ['bomb', 'ironBall', 'arrow'];
-
+    static TYPES = ['bomb', 'ironBall', 'arrow', 'trident','fireBall', 'redBeam', 'blueBeam'];
     constructor(type, x, y, nesw) {
-
-        if (!Projectile.validTypes.includes(type)) {
+        if (!Projectile.TYPES.includes(type))
             throw new Error(`${this.type} is NOT a valid type of projectile`);
+        
+        let dir;
+        
+        if (typeof nesw == 'object') {
+            dir = normalizeVector(nesw);
+            nesw = 0;
         }
-
-        // nsew : 0 → north  |  1 → east  |  2 → south  |  3 → west
-        const x_dir = nesw == 1 || nesw == 3 ? (nesw == 1 ? 1 : -1) : 0;
-        const y_dir = nesw == 0 || nesw == 2 ? (nesw == 2 ? 1 : -1) : 0;
-        const dir = {x: x_dir, y: y_dir};
+        else {
+            // nsew : 0 → north  |  1 → east  |  2 → south  |  3 → west
+            let x_dir = nesw == 1 || nesw == 3 ? (nesw == 1 ? 1 : -1) : 0;
+            let y_dir = nesw == 0 || nesw == 2 ? (nesw == 2 ? 1 : -1) : 0;
+            dir = {x: x_dir, y: y_dir};
+        }
         
         switch (type) {
             case     'bomb': return new _Bomb_PRX(x, y, nesw, dir);
             case 'ironBall': return new _Iron_Ball_PRX(x, y, nesw, dir);
-            case    'arrow': return new _Arrow_PRX(x, y, nesw, dir);;
+            // _Arrow_Type_PRX  types: 0 → arrow | 1 → trident | 2 → fireBall | 3 → redBeam | 4 → blueBeam
+            case    'arrow': return new _Arrow_Type_PRX(x, y, nesw, dir, 0);
+            case  'trident': return new _Arrow_Type_PRX(x, y, nesw, dir, 1);
+            case 'fireBall': return new _Arrow_Type_PRX(x, y, nesw, dir, 2);
+            case  'redBeam': return new _Arrow_Type_PRX(x, y, nesw, dir, 3);
+            case 'blueBeam': return new _Arrow_Type_PRX(x, y, nesw, dir, 4);
 
         }
         
@@ -28,47 +38,56 @@ class _Bomb_PRX {
     constructor(x, y, nesw, dir) {
         Object.assign(this, {x, y, nesw, dir});
         this.phys2d = {isSolid: true, static: false, velocity: {x: 0, y: 0}};
+        this.dim = {x: 13, y: 16}
+        this.preVeloc = {x:1, y:1};
 
-        this.bombWidth = 13;
+
         this.shadowWidth = 12
         this.bombSize = 1;
         this.bombHeightFactor = 20;
         this.shadowSize = 1;
         this.shadowDist = 11;
 
-        this.gravity = 4;
-        this.elasticity = 0.75;
-        this.elasticity = 0;
+        this.gravity = 6;
+        this.elasticity = 0.7;
+        // this.elasticity = 0;
 
         this.state = 0;
-        this.height = 2;
+        this.height = 1;
         this.tempo = 0;
         this.topHeight = this.height;
 
-        this.prevVel = this.phys2d.velocity;
+        this.prevVel;
 
         this.updateCollider();
-        this.DEBUG = false;
+        this.DEBUG = true;
     }
 
     updateCollider() {
-        this.collider = {type: "box", corner: {x: this.bomb_x, y: this.bomb_y + 15}, width: 12 * this.bombSize * SCALE, height: 12 * this.bombSize * SCALE};
+        this.collider = {
+            type: "box", corner: {x: this.bomb_x, y: this.bomb_y + 15},
+            width: 12 * this.bombSize * SCALE,
+            height: 12 * this.bombSize * SCALE
+        };
     }
 
     update() {
-        console.log("this.phys2d.velocity = " + this.phys2d.velocity.x)
-        if (this.phys2d.velocity.x == 0) {
-            //stuff
+        // did it escape the surly bonds of earth?
+        if (this.x < -1 * 1.1 * this.dim.x * SCALE || this.x > 965 ||
+            this.y < -1 * 1.1 * this.dim.y * SCALE || this.y > 772) {
+            this.removeFromWorld = true;
+            console.log('bomb removed');
         }
 
+        if (this.preVeloc.x == 0) this.dir.x *= -1;
+        if (this.preVeloc.y == 0) this.dir.y *= -1;
 
-
-        this.bomb_x = this.x - SCALE * Math.abs(1 - this.bombSize * this.bombWidth) / 2
+        this.bomb_x = this.x - SCALE * Math.abs(1 - this.bombSize * this.dim.x) / 2
         this.bomb_y = this.y - this.height * this.bombHeightFactor * SCALE;
 
-        if (this.topHeight < 0.05 && this.tempo <= 0) {
+        if (this.topHeight < 0.1 && this.tempo <= 0) {
             this.bombSize = 1;
-            console.log(this.shadowSize)
+            this.dir = {x: 0, y:0}
             gameEngine.scene.addInteractable(new Bomb(this.bomb_x, this.bomb_y));
             this.removeFromWorld = true;
             return;
@@ -96,12 +115,12 @@ class _Bomb_PRX {
             this.height += this.tempo * gameEngine.clockTick;
         }
 
-        this.bombSize = 0.5 * Math.log(this.height + 1) + 1;
+        this.bombSize = 0.4 * Math.log(this.height + 1) + 1;
         this.shadowSize = 0.2 * 1 * Math.log(this.height + 1) + 1;
 
-        this.prevVel = this.phys2d.velocity;
         let dir_ball = normalizeVector(this.dir);
         this.phys2d.velocity = scaleVect(dir_ball, _Bomb_PRX.VEL * gameEngine.clockTick);
+        this.preVeloc = this.phys2d.velocity;
     }
 
     draw(ctx, scale) { // bomb has same sprite for N,E,S,W directions, I still used nesw var for parity
@@ -113,15 +132,8 @@ class _Bomb_PRX {
     }
 }
 
-function parab_flight(x, factor) {
-    return 2 * factor * x - (x*x);
-}
-function sqr(x) {
-    return x*x;
-}
-
 class _Iron_Ball_PRX {
-    static VEL = 100;
+    static VEL = 300;
     static KB_STR = 600;
     static DMG_STR = 0;
     static DMG_CD = 1.1;
@@ -129,8 +141,9 @@ class _Iron_Ball_PRX {
     constructor(x, y, nesw, dir) {
         Object.assign(this, {x, y, nesw, dir});
         this.speed = 100;
-        this.phys2d = {isSolid: false, static: false, velocity: {x: 0, y: 0}};
+        this.phys2d = {isSolid: true, static: false, velocity: {x: 0, y: 0}};
         this.dim = {x: 12, y: 12}
+        this.preVeloc = {x:1, y:1};
 
         this.updateCollider();
         this.DEBUG = true;
@@ -145,6 +158,12 @@ class _Iron_Ball_PRX {
                 let p_Dir = normalizeVector(distVect(this, Player.CURR_PLAYER));
                 player.takeDamage(_Iron_Ball_PRX.DMG_STR, scaleVect(p_Dir, _Iron_Ball_PRX.KB_STR))
                 this.attackCD = _Iron_Ball_PRX.DMG_CD;
+                
+                this.dir = normalizeVector ( {
+                    x: Math.random()/3 + -this.dir.x * Math.random(),
+                    y: Math.random()/3 + -this.dir.y * Math.random()
+                })
+
             }
         } else {
             this.attackCD -= gameEngine.clockTick;
@@ -156,20 +175,21 @@ class _Iron_Ball_PRX {
     }
 
     update() {
-        if (Player.CURR_PLAYER.alive) {
-            let dir_ball = normalizeVector(this.dir);
-            this.phys2d.velocity = scaleVect(dir_ball, _Iron_Ball_PRX.VEL * gameEngine.clockTick);
-            this.checkAttack();
-        }
-        if (this.x < -1 * 1.1 * this.dim.x * SCALE ||
-            this.x > 965 ||
-            this.y < -1 * 1.1 * this.dim.y * SCALE ||
-            this.y > 772) {
-
+        // did it escape the surly bonds of earth?
+        if (this.x < -1 * 1.1 * this.dim.x * SCALE || this.x > 965 ||
+            this.y < -1 * 1.1 * this.dim.y * SCALE || this.y > 772) {
             this.removeFromWorld = true;
+            console.log('Iron Ball removed');
         }
-        console.log("ALIVE")
 
+        if (this.preVeloc.x == 0) this.dir.x *= -1;
+        if (this.preVeloc.y == 0) this.dir.y *= -1;
+
+        if (Player.CURR_PLAYER.alive) this.checkAttack();
+
+        let dir_ball = normalizeVector(this.dir);
+        this.phys2d.velocity = scaleVect(dir_ball, _Iron_Ball_PRX.VEL * gameEngine.clockTick);
+        this.preVeloc = this.phys2d.velocity;
     }
 
     draw(ctx, scale) { // iron ball has same sprite for N,E,S,W directions, I still used nesw var for parity
@@ -178,22 +198,81 @@ class _Iron_Ball_PRX {
     }
 }
 
-class _Arrow_PRX {
-    constructor(x, y, nesw, dir) {
-        Object.assign(this, {x, y, nesw, dir});
+class _Arrow_Type_PRX {
+    //         type        trident    redBeam 
+    //       values   arrow   ↓   fireB   ↓  blueBeam
+    static     VEL = [ 100,  100,  100,  100,  100];
+    static  KB_STR = [ 400,  400,  500,  600,  800];
+    static DMG_STR = [   1,    1,    2,    2,    3];
+    static  DMG_CD = [ 1.1,  1.1,  1.1,  1.1,  1.1];
+
+    static dims = [
+        {x: 15, y:  5}, // arrow
+        {x: 13, y:  5}, // trident
+        {x: 16, y:  7}, // fire ball
+        {x:  8, y: 16}, // red beam
+        {x:  8, y: 16}  // blue beam
+    ];
+
+    constructor(x, y, nesw, dir, type) {
+        Object.assign(this, {x, y, nesw, dir, type});
         this.speed = 100;
-        this.phys2d = {static: false, velocity: {x: 0, y: 0}};
+        this.phys2d = {isSolid: false, static: false, velocity: {x: 0, y: 0}};
+        
+        // getting the dimensions, depends on direction
+        if (nesw == 1 || nesw == 3) this.dim = _Arrow_Type_PRX.dims[this.type];
+        else this.dim = {x:_Arrow_Type_PRX.dims[this.type].y, y: _Arrow_Type_PRX.dims[this.type].x};
+
+        this.setupAnimations();
+        this.updateCollider();
+        this.DEBUG = true;
+        this.attackCD = 0;
+    }
+
+    setupAnimations() {
+        this.anima = [
+            GRAPHICS.getInstance('PRJX_arrow'),
+            GRAPHICS.getInstance('PRJX_trident'),
+            GRAPHICS.getInstance('PRJX_fire_ball'),
+            GRAPHICS.getInstance('PRJX_red_magic_beam'),
+            GRAPHICS.getInstance('PRJX_blue_magic_beam'),
+        ]
+    }
+
+    checkAttack() {
+        let player = Player.CURR_PLAYER;
+        if (this.attackCD <= 0) {
+            let hit = checkCollision(this, player);
+            if (hit) {
+                let p_Dir = normalizeVector(distVect(this, Player.CURR_PLAYER));
+                player.takeDamage(_Arrow_Type_PRX.DMG_STR[this.type], scaleVect(p_Dir, _Arrow_Type_PRX.KB_STR[this.type]))
+                this.attackCD = _Arrow_Type_PRX.DMG_CD[this.type];
+            }
+        } else {
+            this.attackCD -= gameEngine.clockTick;
+        }
+    }
+
+    updateCollider() {
+        this.collider = {type: "box", corner: {x: this.x, y: this.y}, width: this.dim.x * SCALE, height: this.dim.y * SCALE};
     }
 
     update() {
-
-
+        // did it escape the surly bonds of earth?
+        if (this.x < -1 * 1.1 * this.dim.x * SCALE || this.x > 965 ||
+            this.y < -1 * 1.1 * this.dim.y * SCALE || this.y > 772) {
+            this.removeFromWorld = true;
+            console.log(`Arrow type ${this.type} was removed`);
+        }
+        if (Player.CURR_PLAYER.alive) this.checkAttack();
+        let dir_ball = normalizeVector(this.dir);
+        this.phys2d.velocity = scaleVect(dir_ball, _Arrow_Type_PRX.VEL[this.type] * gameEngine.clockTick);
     }
 
-    draw(ctx, scale) {
+    draw(ctx, scale) { 
         // nsew : 0 → north  |  1 → east  |  2 → south  |  3 → west
-        GRAPHICS.getInstance('PRJX_arrow').drawSprite(this.nesw, ctx, this.x, this.y, scale);
-                                           
+        this.anima[this.type].drawSprite(this.nesw, ctx, this.x, this.y, scale)
+        if(this.DEBUG) drawBoxCollider(ctx, this.collider, true);
     }
 }
 

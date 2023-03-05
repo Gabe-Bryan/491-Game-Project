@@ -27,7 +27,7 @@ ASSET_MANAGER.downloadAll(() => {
 
 	new GraphicsLoader(); // <- just to build the sprites & animations into GRAPHICS
 
-	Player.CURR_PLAYER = new Player(canvas.width/2 - 16, canvas.height/2 - 32);
+	Player.CURR_PLAYER = new Player(canvas.width/2 - 16, canvas.height/6 - 32);
 	gameEngine.addEntity(Player.CURR_PLAYER); 
 	//gameEngine.addEntity(new Knight(canvas.width/4, canvas.height/2));
 	
@@ -45,8 +45,13 @@ ASSET_MANAGER.downloadAll(() => {
 
 	// TESTING SPAWNZ
 	// gameEngine.scene.addInteractable(new Bomb(240,200));
-	gameEngine.scene.addInteractable(new Projectile('bomb',200, 400, 1));
-	// gameEngine.scene.addEnvEntity(new Projectile('ironBall', 200, 400, 1));
+	// gameEngine.scene.addInteractable(new Projectile('bomb', 400, 400, {x: 0.7, y:0.5}));
+	// gameEngine.scene.addEnvEntity(new Projectile('ironBall', 200, 600, {x:-0.5, y:1}));
+	// gameEngine.scene.addEnvEntity(new Projectile('arrow', 100, 280, 1));
+	// gameEngine.scene.addEnvEntity(new Projectile('trident', 100, 360, 1));
+	// gameEngine.scene.addEnvEntity(new Projectile('fireBall', 100, 440, 1));
+	// gameEngine.scene.addEnvEntity(new Projectile('redBeam', 100, 520, 1));
+	// gameEngine.scene.addEnvEntity(new Projectile('blueBeam', 100, 600, 1));
 	// testMap.addMapCellEntity(1, 2, new Bomb(200,370));
 
 

@@ -26,17 +26,22 @@ class Player {
         this.tag = "player";
         this.updateCollider();
         this.alive = true;
-        this.pain = {hurting : false, timer: 0, cooldown: 0.5} // cooldown in sec
-        this.hitstop = {hitting: false, timer: 0, cooldown: 0.125}
+        this.pain = {hurting : false, timer: 0, cooldown: 0.5}; // cooldown in sec
+        this.hitstop = {hitting: false, timer: 0, cooldown: 0.125};
 
         this.setHp(Player.MAX_HP);
         this.kbLeft = 0;
         this.swingCD = 0;
+
+        this.holding = true;
+        this.holdObj = 0; // only 1 so far, the bomb
+        // si = sprite index, xos = x offset, yos = y offset, spnX = spawn x offset
+        this.holdObjInfo = [{xos:2, yos: -8, spnX: 5, spnY: 0}];
     };
 
     setupAnimations() {
         // Animation array: [state][facing]
-        this.animations = new Array(4)
+        this.animations = new Array(6)
 
         // idle animations
         this.animations[0] = [
@@ -59,17 +64,34 @@ class Player {
             GRAPHICS.get('ANIMA_link_attack_east'),
             GRAPHICS.get('ANIMA_link_attack_west')
         ]
-        // taking damage animations
+        // carrying object above head
         this.animations[3] = [
-            GRAPHICS.get('ANIMA_link_hurt_north'),
-            GRAPHICS.get('ANIMA_link_hurt_south'),
-            GRAPHICS.get('ANIMA_link_hurt_east'),
-            GRAPHICS.get('ANIMA_link_hurt_west')
+            GRAPHICS.get('ANIMA_link_carry_idle_north'),
+            GRAPHICS.get('ANIMA_link_carry_idle_south'),
+            GRAPHICS.get('ANIMA_link_carry_idle_east'),
+            GRAPHICS.get('ANIMA_link_carry_idle_west'),
+        ]
+        this.animations[4] = [
+            GRAPHICS.get('ANIMA_link_carry_north'),
+            GRAPHICS.get('ANIMA_link_carry_south'),
+            GRAPHICS.get('ANIMA_link_carry_east'),
+            GRAPHICS.get('ANIMA_link_carry_west'),
+        ]
+        this.animations[5] = [
+            GRAPHICS.get('ANIMA_link_throw_north'),
+            GRAPHICS.get('ANIMA_link_throw_south'),
+            GRAPHICS.get('ANIMA_link_throw_east'),
+            GRAPHICS.get('ANIMA_link_throw_west')
         ]
 
         // other animations / sprites
+        this.holdObjSprite = [
+            GRAPHICS.get('PRJX_reg_bomb'),
+        ]
+
         this.attackTime = GRAPHICS.getAnimation('ANIMA_link_attack_west').fTiming.reduce((a, b) => a+b);
         this.endSprites = GRAPHICS.getSpriteSet('SET_end_game');
+        
     };
 
     updateState(moveIn, attackIn) {
@@ -80,8 +102,10 @@ class Player {
             }
             this.state = 2;
         }
-        else if(moveIn.x != 0 || moveIn.y != 0) this.state = 1;
-        else this.state = 0;
+        else if(moveIn.x != 0 || moveIn.y != 0) {
+            this.state = this.holding? 4 : 1;
+        }
+        else this.state = this.holding? 3 : 0;;
 
         if (this.hitstop.hitting) {
             this.hitstop.timer -= gameEngine.clockTick;
@@ -90,6 +114,7 @@ class Player {
                 this.hitstop.timer = 0;
             }
         }
+        // this.state = 3;
     }
 
 
@@ -122,6 +147,16 @@ class Player {
         if (gameEngine.keys["d"])      moveIn.x = 1;//[this.facing, this.state, this.phys2d.velocity.x] = [2, walkStateChange, Player.MAX_VEL];
         else if (gameEngine.keys["a"]) moveIn.x = -1;//[this.facing, this.state, this.phys2d.velocity.x] = [3, walkStateChange, -Player.MAX_VEL];
         
+        if (gameEngine.keys["b"]) {
+            if (this.holding) {
+                this.holding = false;
+                let prjX = this.x + this.holdObjInfo[this.holdObj].xos * SCALE;
+                let prjY = this.y + this.holdObjInfo[this.holdObj].yos * SCALE;
+                gameEngine.scene.addInteractable(new Projectile('bomb', prjX, prjY, 2));
+            }
+            // else this.holding = true;
+        }
+
         this.moveIn = normalizeVector(moveIn);
         this.swingCD -= gameEngine.clockTick;
         this.attackIn = gameEngine.keys['j'] && this.swingCD <= 0;
@@ -153,6 +188,36 @@ class Player {
     };
 
     processAttack() {
+        this.attackTimeLeft -= gameEngine.clockTick;
+        if(this.attackTimeLeft - gameEngine.clockTick <= 0) {
+            this.state = 0;
+            this.resetAnims();
+            this.swingCD = Player.SWING_CD;
+        }
+        else {
+            //console.log("Time left for attack: " + this.attackTimeLeft);
+            this.setAttackHB();
+            //Attack collision det and handling
+            this.hitEnemy = false;
+            gameEngine.scene.interact_entities.forEach((entity) =>{
+                if(entity != this && entity.collider && entity.collider.type == "box" 
+                    && entity.tag == "enemy" && !this.attackHits.includes(entity)){
+                    let hit = boxBoxCol(this.attackHitbox, entity.collider);
+                    this.hitEnemy = hit || this.hitEnemy;//stored for debugging
+                    if (hit) {
+                        let kbDir = normalizeVector(distVect(this.collider.corner, entity.collider.corner));
+                        let kb = scaleVect(kbDir, Player.KB_STR * SCALE);
+                        //console.log(kb);
+                        this.dealDamage(entity, kb);
+                        this.attackHits.push(entity);
+                    }
+                }
+            });
+        }
+    }
+
+
+    processThrow() {
         this.attackTimeLeft -= gameEngine.clockTick;
         if(this.attackTimeLeft - gameEngine.clockTick <= 0) {
             this.state = 0;
@@ -262,9 +327,16 @@ class Player {
         else if(gameEngine.victory) this.endSprites.drawSprite(1, ctx, this.x, this.y, scale);
         // Game is still going 
         else this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale, this.pain.hurting, this.hitstop.hitting);
-
+        if (this.holding)
+            this.holdObjSprite[this.holdObj].drawSprite(
+                0, ctx,
+                this.x + this.holdObjInfo[this.holdObj].xos * scale,
+                this.y + this.holdObjInfo[this.holdObj].yos * scale,
+                scale
+        );
         // GRAPHICS.get('SET_end_game').drawSprite(0, ctx, this.x+100, this.y, scale);
         // GRAPHICS.get('ANIMA_link_dead').animate(gameEngine.clockTick, ctx, this.x +100, this.y, scale);
+        // GRAPHICS.get('ANIMA_link_carry_west').animate(gameEngine.clockTick, ctx, this.x +100, this.y, scale);
 
         if(this.DEBUG) {
             //this.drawCollider(ctx);

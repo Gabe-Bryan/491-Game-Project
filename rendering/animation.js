@@ -11,8 +11,8 @@ class Animation {
             
         Object.assign(this, {id, spriteSet, fSequence, fTiming, x_offset, y_offset, damSpriteSets});
         this.fCount = this.fSequence.length;
+        this.singleFrameAnima = this.fTiming === Infinity || this.fCount === 1? true : false;
         this.init();
-
         Animation.ANIMATION_COUNT++
         // console.log(`Animation Count = ${Animation.ANIMATION_COUNT}`);
     }
@@ -25,7 +25,7 @@ class Animation {
 
         this.tempo = 1;
         this.elapsedTime = 0;
-        this.currFrame = 0;
+        this.currFrame = this.fSequence_mod[0];
         this.nextFrameAt = this.fTiming_mod[0] * this.tempo;
 
         this.looping = true;
@@ -173,7 +173,7 @@ class Animation {
 
     animate(tick, ctx, dx, dy, scale = 1, damage, freezeFrame) {
         if(damage) return this.animateDamage(tick, ctx, dx, dy, scale);
-        let frameNum = freezeFrame ? this.currFrame : this.calcFrame();
+        let frameNum = freezeFrame || this.singleFrameAnima ? this.currFrame : this.calcFrame();
         this.spriteSet.drawSprite(frameNum, ctx, dx + this.x_offset_mod * scale, dy + this.y_offset_mod * scale, scale, scale)
         
         if (0) {
