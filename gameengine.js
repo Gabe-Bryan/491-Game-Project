@@ -61,6 +61,7 @@ class GameEngine {
             }
             this.click = getXandY(e);
             ASSET_MANAGER.playAsset("aboda_village.mp3");
+            ASSET_MANAGER.adjustVolume(0.2);
         });
 
 
@@ -111,6 +112,9 @@ class GameEngine {
         //All of the real updating takes place in this method @util.js
         updateList(this.entities);
         this.scene.update();
+        if (this.keys['m']) ASSET_MANAGER.muteAudio(true);
+        if (this.keys['p']) ASSET_MANAGER.muteAudio(false);
+
     };
 
     loop() {

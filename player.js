@@ -4,6 +4,7 @@ class Player {
     static MAX_VEL = 250; //Pixels per second (I think -Gabe)
     static KB_DUR = 0.1;
     static KB_STR = 300;
+    static MAX_KC = 10;
 
     static SWING_CD = 0.25;
 
@@ -32,6 +33,8 @@ class Player {
         this.setHp(Player.MAX_HP);
         this.kbLeft = 0;
         this.swingCD = 0;
+
+        this.keyCount = 0;
     };
 
     setupAnimations() {
@@ -75,6 +78,7 @@ class Player {
     updateState(moveIn, attackIn) {
         if (attackIn || this.state == 2) {
             if (this.state != 2) {
+                ASSET_MANAGER.playAsset("slash.wav");
                 this.attackTimeLeft = this.attackTime;
                 this.attackHits = [];
             }
@@ -107,6 +111,7 @@ class Player {
         this.sidesAffected = undefined;
 
         if (this.pain.hurting) { // damage animation stuff
+            ASSET_MANAGER.playAsset("link_hurt.wav");
             this.pain.timer -= gameEngine.clockTick;
             if (this.pain.timer <= 0) {
                 this.pain.hurting = false;
@@ -194,6 +199,7 @@ class Player {
         this.setHp(this.hp - amount);
         if(this.hp <= 0){
             //console.log("Game over!!!!!!!!!");
+            ASSET_MANAGER.playAsset("link_die.wav");
             gameEngine.gameOver = true;
             this.alive = false
             this.phys2d = {static: false, velocity: {x: 0, y: 0}};
@@ -214,6 +220,10 @@ class Player {
         let tempHP = this.hp + amount;
         if (tempHP > Player.MAX_HP) tempHP = Player.MAX_HP;          
         this.setHp(tempHP);
+    }
+
+    getKey() {
+        this.keyCount = Math.min(Math.max(this.keyCount+1, 0), Player.MAX_KC);
     }
 
     updateCollider() {

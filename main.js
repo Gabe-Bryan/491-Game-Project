@@ -17,7 +17,12 @@ ASSET_MANAGER.queueDownload(
 	"bomb.png", 
 	"key.png",
 	"items.png",
-	"aboda_village.mp3"
+	"aboda_village.mp3",
+	"slash.wav",
+	"link_die.wav",
+	"link_hurt.wav",
+	"enemy_hurt.wav",
+	"enemy_die.wav"
 );
 
 ASSET_MANAGER.downloadAll(() => {
