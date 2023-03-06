@@ -35,6 +35,8 @@ class GameEngine {
 
     start() {
         this.running = true;
+        ASSET_MANAGER.playAsset("aboda_village.mp3");
+        ASSET_MANAGER.adjustVolume(0.2);
         const gameLoop = () => {
             this.loop();
             requestAnimFrame(gameLoop, this.ctx.canvas);
@@ -60,8 +62,8 @@ class GameEngine {
                 console.log("CLICK", getXandY(e));
             }
             this.click = getXandY(e);
-            ASSET_MANAGER.playAsset("aboda_village.mp3");
-            ASSET_MANAGER.adjustVolume(0.2);
+           // ASSET_MANAGER.playAsset("aboda_village.mp3");
+           // ASSET_MANAGER.adjustVolume(0.2);
         });
 
 

@@ -177,6 +177,11 @@ class GraphicsLoader {
             [ 8, 8, 11, 12], [7, 7, 26, 26]
         );
         // GRAPHICS.addAnimation('ANIMA_ow_heart', 'SET_ow_heart', 2, 0.3)
+        GRAPHICS.addSpriteSet(
+            "SET_ow_key", 'OW_ITEMS',
+            [232], [169],
+            [8], [15]
+        );
 
         GRAPHICS.addSpriteSet(
             'SET_end_game', 'LINK',

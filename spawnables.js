@@ -64,7 +64,7 @@ class DeathCloud {
 class KeyDrop {
     constructor(x, y){
         Object.assign(this, {x, y});
-        this.collider = {type: "box", corner: {x: this.x+4, y: this.y+4}, width: 8 * SCALE, height: 8 * SCALE}
+        this.collider = {type: "box", corner: {x: this.x+4, y: this.y+4}, width: 8 * SCALE, height: 15 * SCALE}
         this.DEBUG = false;
     }
 
@@ -76,6 +76,6 @@ class KeyDrop {
     }
 
     draw(ctx) {
-       // GRAPHICS.get('SET_ow_heart').drawSprite(1, ctx, this.x+4, this.y+4, SCALE)
+       GRAPHICS.get('SET_ow_key').drawSprite(0, ctx, this.x+4, this.y+4, SCALE)
     }
 }
