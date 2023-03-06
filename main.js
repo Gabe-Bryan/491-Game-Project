@@ -16,7 +16,13 @@ ASSET_MANAGER.queueDownload(
 	"heart.png", 
 	"bomb.png", 
 	"key.png",
-	"items.png"
+	"items.png",
+	"aboda_village.mp3",
+	"slash.wav",
+	"link_die.wav",
+	"link_hurt.wav",
+	"enemy_hurt.wav",
+	"enemy_die.wav"
 );
 
 ASSET_MANAGER.downloadAll(() => {
@@ -56,6 +62,7 @@ ASSET_MANAGER.downloadAll(() => {
 	testMap.addMapCellEntity(1, 2, new HeartDrop(80,650));
 	testMap.addMapCellEntity(1, 2, new HeartDrop(850,80));
 	testMap.addMapCellEntity(1, 2, new HeartDrop(850,650));
+	testMap.addMapCellEntity(1, 2, new KeyDrop(800,600));
 	//////////////////////////////////////////////////////////
 
 
@@ -142,7 +149,8 @@ ASSET_MANAGER.downloadAll(() => {
 
 	gameEngine.init(ctx);
 
-	gameEngine.start();
+	gameEngine.start();   
+	
 
 	console.log(`   Sprites loaded ${Sprite.SPRITE_COUNT}`);
 	console.log(`SpriteSets loaded ${SpriteSet.SPRITE_SET_COUNT}`);

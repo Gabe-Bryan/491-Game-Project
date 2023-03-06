@@ -35,6 +35,8 @@ class GameEngine {
 
     start() {
         this.running = true;
+        ASSET_MANAGER.playAsset("aboda_village.mp3");
+        ASSET_MANAGER.adjustVolume(0.2);
         const gameLoop = () => {
             this.loop();
             requestAnimFrame(gameLoop, this.ctx.canvas);
@@ -60,7 +62,10 @@ class GameEngine {
                 console.log("CLICK", getXandY(e));
             }
             this.click = getXandY(e);
+           // ASSET_MANAGER.playAsset("aboda_village.mp3");
+           // ASSET_MANAGER.adjustVolume(0.2);
         });
+
 
         this.ctx.canvas.addEventListener("wheel", e => {
             if (this.options.debugging) {
@@ -109,6 +114,9 @@ class GameEngine {
         //All of the real updating takes place in this method @util.js
         updateList(this.entities);
         this.scene.update();
+        if (this.keys['m']) ASSET_MANAGER.muteAudio(true);
+        if (this.keys['p']) ASSET_MANAGER.muteAudio(false);
+
     };
 
     loop() {
