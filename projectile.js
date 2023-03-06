@@ -1,6 +1,6 @@
 class Projectile {
     static TYPES = ['bomb', 'ironBall', 'arrow', 'trident','fireBall', 'redBeam', 'blueBeam'];
-    constructor(type, x, y, nesw) {
+    constructor(type, x, y, nesw, ff) {
         if (!Projectile.TYPES.includes(type))
             throw new Error(`${this.type} is NOT a valid type of projectile`);
         
@@ -18,8 +18,8 @@ class Projectile {
         }
         
         switch (type) {
-            case     'bomb': return new _Bomb_PRX(x, y, dir);
-            case 'ironBall': return new _Iron_Ball_PRX(x, y, dir);
+            case     'bomb': return new _Bomb_PRX(x, y, dir, ff);
+            case 'ironBall': return new _Iron_Ball_PRX(x, y, dir, ff);
             // _Arrow_Type_PRX  types: 0 → arrow | 1 → trident | 2 → fireBall | 3 → redBeam | 4 → blueBeam
             case    'arrow': return new _Arrow_Type_PRX(x, y, nesw, dir, 0);
             case  'trident': return new _Arrow_Type_PRX(x, y, nesw, dir, 1);
@@ -33,10 +33,10 @@ class Projectile {
 }
 
 class _Bomb_PRX {
-    static VEL = 100;
+    static VEL = 200;
     // doesnt deal damage directly, spawns a 'Bomb' bomb in its place when movement is done
-    constructor(x, y, dir) {
-        Object.assign(this, {x, y, dir});
+    constructor(x, y, dir, ff) {
+        Object.assign(this, {x, y, dir, ff});
         this.phys2d = {isSolid: true, static: false, velocity: {x: 0, y: 0}};
         this.dim = {x: 13, y: 16}
         this.preVeloc = {x:1, y:1};
@@ -82,13 +82,16 @@ class _Bomb_PRX {
         if (this.preVeloc.x == 0) this.dir.x *= -1;
         if (this.preVeloc.y == 0) this.dir.y *= -1;
 
+        // if (this.phys2d.colliding) this.dir.x *= -1;
+        // if (this.phys2d.colliding) this.dir.y *= -1;
+
         this.bomb_x = this.x - SCALE * Math.abs(1 - this.bombSize * this.dim.x) / 2
         this.bomb_y = this.y - this.height * this.bombHeightFactor * SCALE;
 
         if (this.topHeight < 0.1 && this.tempo <= 0) {
             this.bombSize = 1;
             this.dir = {x: 0, y:0}
-            gameEngine.scene.addInteractable(new Bomb(this.bomb_x, this.bomb_y));
+            gameEngine.scene.addInteractable(new Bomb(this.bomb_x, this.bomb_y, this.ff));
             this.removeFromWorld = true;
             return;
         }

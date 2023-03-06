@@ -2,8 +2,8 @@ class Bomb {
     static NORM_KB = 2500;
     static NORM_DMG = 3;
 
-    constructor(x, y, type = null) {
-        Object.assign(this, {x, y, type}); // more types coming soon ...                                                                                                                     as far as you know Wahahahahahaaaaa!
+    constructor(x, y, friendFire = false, type = null) {
+        Object.assign(this, {x, y, friendFire, type}); // more types coming soon ...                                                                                                                     as far as you know Wahahahahahaaaaa!
         this.kickBack = Bomb.NORM_KB;
         this.damage = Bomb.NORM_DMG;
         this.alreadyGotBlown = false;
@@ -15,8 +15,9 @@ class Bomb {
         this.collider = this.bomb_collider;
 
         this.setupAnimations();
+        
 
-        this.DEBUG = false;
+        this.DEBUG = true;
     }
 
     setupAnimations() {
@@ -30,36 +31,52 @@ class Bomb {
     checkBlown(dir) {
         if (this.alreadyGotBlown == false) {
             let player = Player.CURR_PLAYER;
+            this.processAttack();
             if (checkCollision(this, player)) {
-                player.takeDamage(this.damage, scaleVect(dir, this.kickBack))
+                player.takeDamage(this.damage, scaleVect(dir, Bomb.NORM_KB))
                 this.alreadyGotBlown = true;
             }
         }
     }
 
+    processBlown() {
+        this.alreadyGotBlown = true;
+
+        if (Player.CURR_PLAYER.alive) {
+            let pdir = normalizeVector(distVect(this, Player.CURR_PLAYER));
+            let player = Player.CURR_PLAYER;
+            if (checkCollision(this, player)) {
+                player.takeDamage(this.damage, scaleVect(pdir, Bomb.NORM_KB))
+            }
+        }
+        
+        if (this.friendFire) {
+            this.attackHits = [];
+            gameEngine.scene.interact_entities.forEach((entity) =>{
+                    if(entity != this && entity.collider && entity.collider.type == "box" &&
+                        entity.tag == "enemy" && !this.attackHits.includes(entity)) {
+                        if (checkCollision(this, entity)) {
+                            let kbDir = normalizeVector(distVect(this, entity));
+                            entity.takeDamage(this.damage, scaleVect(kbDir, Bomb.NORM_KB));
+                            this.attackHits.push(entity);
+                        }
+                    }
+                });
+        }
+    }
+
     update() {
-        // if(true) {
-        //     this.state = 0;
-        //     return;
-        // }
         if (this.state == 1 && this.anima[1].isDone()) {
             this.state = 2;
             this.collider = this.blow_collider
         }
-        else if (this.state == 2 && this.anima[2].isDone()) {
+        else if(this.state == 2 && !this.alreadyGotBlown) {
+            this.processBlown();
+        }
+        else if (this.anima[2].isDone()) {
             this.removeFromWorld = true;
         }
-        if (Player.CURR_PLAYER.alive) {
-            let dir = normalizeVector(distVect(this, Player.CURR_PLAYER));
-            if (this.state == 0 || this.state == 1) {
-                //prevent player movement over bomb or maybe push bomb!?
-            }
-            if (this.state == 2) {
-                this.checkBlown(dir);
-            }
-
-        }
-
+        
     }
 
     draw(ctx, scale) {

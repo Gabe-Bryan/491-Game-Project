@@ -149,7 +149,7 @@ class Player {
         else if (gameEngine.keys["a"]) moveIn.x = -1;//[this.facing, this.state, this.phys2d.velocity.x] = [3, walkStateChange, -Player.MAX_VEL];
         
         /////// THROW STUFF //////////// . . . .
-        if (gameEngine.keys["b"]) {
+        if (gameEngine.keys["f"]) {
             if (!this.holding && !this.throwing && this.butpad <= 0) {
                 console.log("HOLD");
                 this.holding = true;
@@ -207,7 +207,7 @@ class Player {
             // n s e w
             let pf =  this.facing
             let facDir = pf == 0 ? 0 : pf == 2 ? 1 : pf == 1 ? 2 : 3
-            gameEngine.scene.addInteractable(new Projectile('bomb', prjX, prjY, facDir));
+            gameEngine.scene.addInteractable(new Projectile('bomb', prjX, prjY, facDir, true));
             this.holding = false;
             this.throwTime = Player.THROW_CD;
         }

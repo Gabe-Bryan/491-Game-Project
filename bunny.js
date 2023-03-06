@@ -2,6 +2,7 @@ class Bunny {
     static MAX_HP = 3;
     static SPAWN_RATE = 3;
     static KB_DUR = 0.1;
+    static MAX_VEL = 100
     constructor(x, y) {
         Object.assign(this, {x, y});
 
@@ -77,18 +78,18 @@ class Bunny {
         if (this.y > 760) this.currButton = 0;
         // this.currButton --> 0 = north  | 1 = south  |  2 = east  |  3 = west
         
-        if (this.currButton === 0)      [this.facing, this.state, this.phys2d.velocity.y] = [0, 1, -Player.MAX_VEL];
-        else if (this.currButton === 1) [this.facing, this.state, this.phys2d.velocity.y] = [1, 1, Player.MAX_VEL];
+        if (this.currButton === 0)      [this.facing, this.state, this.phys2d.velocity.y] = [0, 1, -Bunny.MAX_VEL];
+        else if (this.currButton === 1) [this.facing, this.state, this.phys2d.velocity.y] = [1, 1, Bunny.MAX_VEL];
         else                            this.phys2d.velocity.y = 0;
         
-        if (this.currButton === 2)      [this.facing, this.state, this.phys2d.velocity.x] = [2, 1, Player.MAX_VEL];
-        else if (this.currButton === 3) [this.facing, this.state, this.phys2d.velocity.x] = [3, 1, -Player.MAX_VEL];
+        if (this.currButton === 2)      [this.facing, this.state, this.phys2d.velocity.x] = [2, 1, Bunny.MAX_VEL];
+        else if (this.currButton === 3) [this.facing, this.state, this.phys2d.velocity.x] = [3, 1, -Bunny.MAX_VEL];
         else                            this.phys2d.velocity.x = 0;
 
         if (this.kbLeft <= 0) {
             this.phys2d.velocity = normalizeVector(this.phys2d.velocity);
-            this.phys2d.velocity.x *= Player.MAX_VEL * gameEngine.clockTick;
-            this.phys2d.velocity.y *= Player.MAX_VEL * gameEngine.clockTick;
+            this.phys2d.velocity.x *= Bunny.MAX_VEL * gameEngine.clockTick;
+            this.phys2d.velocity.y *= Bunny.MAX_VEL * gameEngine.clockTick;
         } else {
             this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
             //console.log(this.phys2d.velocity);
