@@ -122,6 +122,7 @@ class Knight {
             this.nextChange = 1 + Math.random() * 0.65;
             let newDir = this.facing < 2 ? Math.floor(Math.random()*2)+2 : Math.floor(Math.random()*2);
             this.facing = newDir;
+            console.log("screaming rn " + this.colliding);
         }
 
         // this.facing --> 0 = n  | 1 = s  |  2 = e  |  3 = w
@@ -213,9 +214,10 @@ class Knight {
         this.kbLeft = Knight.KB_DUR;
         this.hp -= amount;
         if(this.hp <= 0){
+            ASSET_MANAGER.playAsset("enemy_die.wav");
             this.removeFromWorld = true;
         }
-
+        ASSET_MANAGER.playAsset("enemy_hurt.wav");
         this.pain.hurting = true;
         this.pain.timer = this.pain.cooldown;
         this.hitstop.hitting = true;

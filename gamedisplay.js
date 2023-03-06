@@ -159,7 +159,7 @@ class GameDisplay {
     };
 
     addKey() {
-        if (this.keyCount < 99) { // change to a new key count??
+        if (this.keyCount < 12) { 
             this.keyCount++;
         }
     };
@@ -177,7 +177,7 @@ class GameDisplay {
     };
 
     reduceHeart() {
-        if (this.heartCount > 2) { // what to do when heart count = 0??
+        if (this.heartCount > 2) { 
             this.heartCount--;
         }
     };

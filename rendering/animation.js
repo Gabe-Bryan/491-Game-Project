@@ -11,8 +11,8 @@ class Animation {
             
         Object.assign(this, {id, spriteSet, fSequence, fTiming, x_offset, y_offset, damSpriteSets});
         this.fCount = this.fSequence.length;
+        this.singleFrameAnima = this.fTiming === Infinity || this.fCount === 1? true : false;
         this.init();
-
         Animation.ANIMATION_COUNT++
         // console.log(`Animation Count = ${Animation.ANIMATION_COUNT}`);
     }
@@ -62,7 +62,7 @@ class Animation {
     instanceClone() {
         return new Animation (
             this.id, this.spriteSet, this.fSequence, this.fTiming, 
-            this.x_offset, this.y_offset, this.damSpriteSets ); 
+            this.x_offset, this.y_offset, this.damSpriteSets); 
     }
 
     mirrorAnimation_Horz(new_x_offsets_sprite = null, new_x_offset_anima = null) {       
@@ -120,8 +120,14 @@ class Animation {
         this.reversed = this.reversed? false : true;
         return this;
     }
-    setDamageSpriteSet(damageSets) {this.damSpriteSets = damageSets}
-    setDamageSpriteFrequency(frequency) {this.damFreq = frequency;}
+    setDamageSpriteSet(damageSets) {
+        this.damSpriteSets = damageSets;
+        return this;
+    }
+    setDamageSpriteFrequency(frequency) {
+        this.damFreq = frequency;
+        return this;
+    }
 
     addDamageSprites(frequency) {
         if (this.damSpriteSets instanceof Array) {
@@ -133,6 +139,8 @@ class Animation {
         this.damSpriteSets[0] = this.spriteSet;                                                       //   R     G     B     A
         this.damSpriteSets[1] = this.spriteSet.clone(this.spriteSet.id.concat("_DAMAGE_red"  )).colorMod( 255, null, null, null);
         this.damSpriteSets[2] = this.spriteSet.clone(this.spriteSet.id.concat("_DAMAGE_white")).colorMod( 255,  255,  255, null);
+
+        return this;
     }
 
     calcFrame() {
@@ -173,7 +181,7 @@ class Animation {
 
     animate(tick, ctx, dx, dy, scale = 1, damage, freezeFrame) {
         if(damage) return this.animateDamage(tick, ctx, dx, dy, scale);
-        let frameNum = freezeFrame ? this.currFrame : this.calcFrame();
+        let frameNum = freezeFrame || this.singleFrameAnima ? this.fSequence_mod[this.currFrame] : this.calcFrame();
         this.spriteSet.drawSprite(frameNum, ctx, dx + this.x_offset_mod * scale, dy + this.y_offset_mod * scale, scale, scale)
         
         if (0) {

@@ -17,7 +17,14 @@ ASSET_MANAGER.queueDownload(
 	"heart.png", 
 	"bomb.png", 
 	"key.png",
-	"items.png"
+	"items.png",
+	"aboda_village.mp3",
+	"slash.wav",
+	"link_die.wav",
+	"link_hurt.wav",
+	"enemy_hurt.wav",
+	"enemy_die.wav",
+	"bombs.png"
 );
 
 ASSET_MANAGER.downloadAll(() => {
@@ -45,20 +52,42 @@ ASSET_MANAGER.downloadAll(() => {
 		'#444444':'wall_complex'
 	});
 
+	// TESTING SPAWNZ
+	// gameEngine.scene.addInteractable(new Bomb(240,200));
+	// gameEngine.scene.addInteractable(new Projectile('bomb', 400, 600, {x: -0.7, y:0.5}));
+	// gameEngine.scene.addEnvEntity(new Projectile('ironBall', 200, 600, {x:-0.5, y:1}));
+	// gameEngine.scene.addEnvEntity(new Projectile('arrow', 100, 280, 1));
+	// gameEngine.scene.addEnvEntity(new Projectile('trident', 100, 360, 1));
+	// gameEngine.scene.addEnvEntity(new Projectile('fireBall', 100, 440, 1));
+	// gameEngine.scene.addEnvEntity(new Projectile('redBeam', 100, 520, 1));
+	// gameEngine.scene.addEnvEntity(new Projectile('blueBeam', 100, 600, 1));
+	// testMap.addMapCellEntity(1, 2, new Bomb(200,370));
+
+
 	gameEngine.currMap = testMap;
 
 	////////////////////////////////////////////////////////////
-	// testMap.addMapCellEntity(2, 2, new Knight(500, 600));
-	// testMap.addMapCellEntity(2, 2, new Knight(600, 600)); 
-	// testMap.addMapCellEntity(3, 2, new Knight(600, 600));
-	// testMap.addMapCellEntity(3, 2, new Bunny(400,400));
+	testMap.addMapCellEntity(2, 2, new Knight(500, 600));
+	testMap.addMapCellEntity(2, 2, new Knight(600, 600)); 
+	testMap.addMapCellEntity(3, 2, new Knight(600, 600));
+	testMap.addMapCellEntity(3, 2, new Bunny(400,400));
 	//////////////////////////////////////////////////////////
 	testMap.addMapCellEntity(1, 2, new Bunny(400,400));
 	testMap.addMapCellEntity(1, 4, new Triforce(400,300));
-	testMap.addMapCellEntity(1, 2, new HeartDrop(80,80));
-	testMap.addMapCellEntity(1, 2, new HeartDrop(80,650));
-	testMap.addMapCellEntity(1, 2, new HeartDrop(850,80));
-	testMap.addMapCellEntity(1, 2, new HeartDrop(850,650));
+
+	let r1_Pot1XY = tileToScreenCoord(1, 1);
+	let r1_Pot2XY = tileToScreenCoord(1, 14);
+	let r1_Pot3XY = tileToScreenCoord(18, 1);
+	let r1_Pot4XY = tileToScreenCoord(18, 14);
+	let r1_Door = tileToScreenCoord(9, 15);
+	testMap.addMapCellEntity(1, 2, new Pot(r1_Pot1XY.x, r1_Pot1XY.y));
+	testMap.addMapCellEntity(1, 2, new Pot(r1_Pot2XY.x, r1_Pot2XY.y));
+	testMap.addMapCellEntity(1, 2, new Pot(r1_Pot3XY.x, r1_Pot3XY.y));
+	testMap.addMapCellEntity(1, 2, new Pot(r1_Pot4XY.x, r1_Pot4XY.y));
+	testMap.addMapCellEntity(1, 2, new Door(r1_Door.x, r1_Door.y, 0, true));
+
+	let r1_Wizard = tileToScreenCoord(3,4);
+	testMap.addMapCellEntity(1, 2, new Wizard(r1_Wizard.x, r1_Wizard.y));
 	//////////////////////////////////////////////////////////
 
 
@@ -85,8 +114,7 @@ ASSET_MANAGER.downloadAll(() => {
 	testMap.addMapCellEntity(2, 4, new Skull(r3_Skull2XY.x, r3_Skull2XY.y));
 	
 	let chestXY = tileToScreenCoord(7, 5);
-	testMap.addMapCellEntity(1, 1, new SmallChest(chestXY.x, chestXY.y, 'heart'));
-	let chest = new SmallChest(chestXY.x, chestXY.y, 'heart');
+	testMap.addMapCellEntity(1, 1, new SmallChest(chestXY.x, chestXY.y, new HeartDrop(chestXY.x, chestXY.y - 8)));
 	//gameEngine.scene.addEnvEntity(chest);
 
 	// PORTAL TEST STUFF
@@ -145,7 +173,8 @@ ASSET_MANAGER.downloadAll(() => {
 
 	gameEngine.init(ctx);
 
-	gameEngine.start();
+	gameEngine.start();   
+	
 
 	console.log(`   Sprites loaded ${Sprite.SPRITE_COUNT}`);
 	console.log(`SpriteSets loaded ${SpriteSet.SPRITE_SET_COUNT}`);
