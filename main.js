@@ -58,6 +58,7 @@ ASSET_MANAGER.downloadAll(() => {
 	// gameEngine.scene.addEnvEntity(new Projectile('fireBall', 100, 440, 1));
 	// gameEngine.scene.addEnvEntity(new Projectile('redBeam', 100, 520, 1));
 	// gameEngine.scene.addEnvEntity(new Projectile('blueBeam', 100, 600, 1));
+	gameEngine.scene.addEnvEntity(new BuringGasCloud(100, 300));
 	// testMap.addMapCellEntity(1, 2, new Bomb(200,370));
 
 

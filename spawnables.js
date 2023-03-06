@@ -11,19 +11,19 @@ class Bomb {
 
         this.phys2d  = {static: true};
         this.bomb_collider = {type: "box", corner: {x: this.x + -1*SCALE, y: this.y + 3 * SCALE}, width: 14 * SCALE, height: 14 * SCALE};
-        this.blow_collider = {type: "box", corner: {x: this.x - 9 * SCALE, y: this.y - 9 * SCALE}, width: 32 * SCALE, height: 32 * SCALE};
+        this.blow_collider = {type: "box", corner: {x: this.x - 20 * SCALE, y: this.y - 18 * SCALE}, width: 52 * SCALE, height: 52 * SCALE};
         this.collider = this.bomb_collider;
+        this.attackHits = [];
 
         this.setupAnimations();
         
-
-        this.DEBUG = true;
+        this.DEBUG = false;
     }
 
     setupAnimations() {
         this.anima = [
             GRAPHICS.getInstance('ANIMA_normal_bombs_stable').setLooping(false),
-            GRAPHICS.getInstance('ANIMA_normal_bombs_burn').setLooping(false),
+            GRAPHICS.getInstance('ANIMA_normal_bombs_burn').setLooping(false).setAnimaSpeed(200),
             GRAPHICS.getInstance('ANIMA_normal_bombs_blow').setLooping(false)
         ];
     }
@@ -51,7 +51,6 @@ class Bomb {
         }
         
         if (this.friendFire) {
-            this.attackHits = [];
             gameEngine.scene.interact_entities.forEach((entity) =>{
                     if(entity != this && entity.collider && entity.collider.type == "box" &&
                         entity.tag == "enemy" && !this.attackHits.includes(entity)) {
@@ -97,7 +96,7 @@ class HeartDrop {
     }
 
     update() {
-        if(checkCollision(this, Player.CURR_PLAYER)) {
+        if (checkCollision(this, Player.CURR_PLAYER)) {
             Player.CURR_PLAYER.heal(1);
             this.removeFromWorld = true;
         }
@@ -148,6 +147,42 @@ class DeathCloud {
     }
 }
 
+class BuringGasCloud {
+    constructor(x, y) {
+        Object.assign(this, {x, y});
+        this.cloudDone = false;
+        this.cloudAnimation = GRAPHICS.getInstance('ANIMA_enemy_death_gas').setLooping(false);
+        this.collider = {type: "box", corner: {x: this.x + 15, y: this.y + 12}, width: 16 * SCALE, height: 16 * SCALE};
+        this.phys2d  = {static: true};
+        this.cd = 0; this.cdLen = 0.66
+        this.hit = false; this.kicBack = 1;
+        this.damage = 1;
+
+    }
+
+    update() {
+        if (this.cloudDone) {
+            this.removeFromWorld = true;
+        } 
+        else if (this.cd <= 0) {
+            if (Player.CURR_PLAYER.alive) {
+                let pdir = normalizeVector(distVect(this, Player.CURR_PLAYER));
+                let player = Player.CURR_PLAYER;
+                    if (checkCollision(this, player)) {
+                        this.cd = this.cdLen
+                        player.takeDamage(this.damage, scaleVect(pdir, this.kicBack))
+                }
+            }
+        } else this.cd -+ gameEngine.clockTick;
+    }
+    updateCollider(){
+        this.collider = {type: "box", corner: {x: this.x, y: this.y}, width: 12 * SCALE, height: 12 * SCALE};
+    }
+
+    draw(ctx) {
+        this.cloudDone = this.cloudAnimation.animate(gameEngine.clockTick, ctx, this.x, this.y, 3);
+    }
+}
 
 class KeyDrop {
     constructor(x, y){

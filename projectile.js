@@ -33,7 +33,7 @@ class Projectile {
 }
 
 class _Bomb_PRX {
-    static VEL = 200;
+    static MAX_VEL = 350;
     // doesnt deal damage directly, spawns a 'Bomb' bomb in its place when movement is done
     constructor(x, y, dir, ff) {
         Object.assign(this, {x, y, dir, ff});
@@ -41,16 +41,17 @@ class _Bomb_PRX {
         this.dim = {x: 13, y: 16}
         this.preVeloc = {x:1, y:1};
 
-
         this.shadowWidth = 12
         this.bombSize = 1;
         this.bombHeightFactor = 20;
         this.shadowSize = 1;
         this.shadowDist = 11;
 
-        this.gravity = 6;
-        this.elasticity = 0.7;
-        // this.elasticity = 0;
+        this.gravity = 14;
+        this.elasticity = 0.6;
+        this.speed = _Bomb_PRX.MAX_VEL;
+        this.airFric = 20;
+        this.grndFricCof = 0.8;
 
         this.state = 0;
         this.height = 1;
@@ -58,9 +59,10 @@ class _Bomb_PRX {
         this.topHeight = this.height;
 
         this.prevVel;
+        this.damage = 0;
 
         this.updateCollider();
-        this.DEBUG = true;
+        this.DEBUG = false;
     }
 
     updateCollider() {
@@ -88,7 +90,7 @@ class _Bomb_PRX {
         this.bomb_x = this.x - SCALE * Math.abs(1 - this.bombSize * this.dim.x) / 2
         this.bomb_y = this.y - this.height * this.bombHeightFactor * SCALE;
 
-        if (this.topHeight < 0.1 && this.tempo <= 0) {
+        if (this.topHeight < 0.01 && this.tempo <= 0) {
             this.bombSize = 1;
             this.dir = {x: 0, y:0}
             gameEngine.scene.addInteractable(new Bomb(this.bomb_x, this.bomb_y, this.ff));
@@ -103,6 +105,7 @@ class _Bomb_PRX {
         }
 
         if (this.state == 0 && this.height <= 0) {
+            this.speed *= this.grndFricCof;
             this.state = 1;
             this.tempo *= this.elasticity;
         }
@@ -121,8 +124,10 @@ class _Bomb_PRX {
         this.bombSize = 0.2 * Math.log(this.height + 1) + 1;
         this.shadowSize = 0.2 * Math.log(this.height + 1) + 1;
 
+        this.speed = this.speed > 0 ? this.speed - this.airFric * gameEngine.clockTick : 0;
+
         let dir_ball = normalizeVector(this.dir);
-        this.phys2d.velocity = scaleVect(dir_ball, _Bomb_PRX.VEL * gameEngine.clockTick);
+        this.phys2d.velocity = scaleVect(dir_ball, this.speed * gameEngine.clockTick);
         this.preVeloc = this.phys2d.velocity;
     }
 

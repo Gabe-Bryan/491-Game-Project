@@ -236,6 +236,11 @@ class GraphicsLoader {
         GRAPHICS.addSpriteRow('SET_death_effects', 'DEATHFX',7, 0,4,26,23,0);
         GRAPHICS.addAnimation('ANIMA_enemy_death_cloud', 'SET_death_effects', [3,4,5,6,7], 0.2).setLooping(false);
 
+        // death gas
+        GRAPHICS.addSpriteRow('SET_death_gas', 'DEATHFX',7, 0,4,26,23,0).colorMod(null, 240, 50);
+        GRAPHICS.addAnimation('ANIMA_enemy_death_gas', 'SET_death_gas', [4,3,4,5,6,7], [0.3, 0.4, 0.3, 0.25, 0.2, 0]).setLooping(false);
+
+
         GRAPHICS.addSpriteSheet('OW_ITEMS', ASSET_MANAGER.getAsset('items.png'));
         GRAPHICS.addSpriteSet(
             "SET_ow_heart", 'OW_ITEMS',
