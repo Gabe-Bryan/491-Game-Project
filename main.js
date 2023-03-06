@@ -82,9 +82,9 @@ ASSET_MANAGER.downloadAll(() => {
 	testMap.addMapCellEntity(2, 4, new Skull(r3_Skull2XY.x, r3_Skull2XY.y));
 	
 	let chestXY = tileToScreenCoord(7, 5);
-	testMap.addMapCellEntity(1, 2, new SmallChest(chestXY.x, chestXY.y, 'heart'));
+	testMap.addMapCellEntity(1, 1, new SmallChest(chestXY.x, chestXY.y, 'heart'));
 	let chest = new SmallChest(chestXY.x, chestXY.y, 'heart');
-	// gameEngine.scene.addEnvEntity(chest);
+	//gameEngine.scene.addEnvEntity(chest);
 
 	// PORTAL TEST STUFF
 	let testPortal1XY = tileToScreenCoord(9, 2),
