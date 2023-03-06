@@ -5,6 +5,7 @@ class GraphicsLoader {
         GRAPHICS.addSpriteSheet('OW_TILES', ASSET_MANAGER.getAsset('overworld_tiles.png'));
         GRAPHICS.addSpriteSheet('DUNGEON_TILES', ASSET_MANAGER.getAsset('dungeon_tiles.png'));
         GRAPHICS.addSpriteSheet('CASTLE_TILES', ASSET_MANAGER.getAsset('castle_tiles.png'));
+        GRAPHICS.addSpriteSheet('CLIFF_WATER_TILES', ASSET_MANAGER.getAsset('cliff_water_tiles.png'));
 
         GRAPHICS.addSpriteSet(
             'environment', 'OW_TILES',
@@ -26,8 +27,17 @@ class GraphicsLoader {
             'environment', 'CASTLE_TILES',
             [238, 255, 272, 238, 255, 272],
             [0, 0, 0, 17, 17, 17],
-            16, 16, 0, 0, 
+            16, 16, 0, 0,
             ['wall_NW', 'wall_NE', 'wall_VERT', 'wall_SW', 'wall_SE', 'wall_HORIZ']
+        );
+
+        GRAPHICS.addSpriteSet(
+            'environment', 'CLIFF_WATER_TILES',
+            [0, 17, 34, 51, 0, 17],
+            [0, 0, 0, 0, 17, 17],
+            16, 16, 0, 0,
+            ['grass_mount_edge_S', 'grass_mount_edge_N','grass_mount_edge_W','grass_mount_edge_E','mountain',
+             'stairs']
         );
 
         GRAPHICS.addSpriteSet(
@@ -64,6 +74,8 @@ class GraphicsLoader {
         GRAPHICS.addTile('wall_SE', spt.gsl('wall_SE'));
         GRAPHICS.addTile('wall_HORIZ', spt.gsl('wall_HORIZ'));
         
+        
+
         // portal tiles
         let portalAnimSpeed = 0.7;
         GRAPHICS.addAnimation('ANIMA_portal_pink', 'portals', [0,1], portalAnimSpeed);

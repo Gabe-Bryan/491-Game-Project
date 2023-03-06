@@ -133,6 +133,14 @@ class GameMap {
                     tile = new WallGreyBlock(tileX, tileY);
                 else if (tileColor == 'wall_complex')
                     tile = new WallComplex(tileX, tileY);
+                else if (tileColor == 'mountain')
+                    tile = new CliffWall(tileX, tileY);
+                else if (tileColor == 'grass_mount_edge_S')
+                    tile = new CliffEdgeGrassS(tileX, tileY);
+                else if (tileColor == 'grass_mount_edge_S_Stone')
+                    tile = new CliffEdgeGrassS_Stone(tileX, tileY);
+                else if (tileColor == 'stairs')
+                    tile = new Stairs(tileX, tileY);
                 else
                     tile = new Grass(tileX, tileY);
 

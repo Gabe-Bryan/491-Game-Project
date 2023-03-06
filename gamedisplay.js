@@ -21,19 +21,24 @@ class GameDisplay {
         this.keyHeight = 50;
         this.timeGO = 0;
         this.timeV = 0;
-
         this.textLineX = this.heartX + 2 * this.spaceX;
         this.textLineY = this.heartY - 20;
         this.textX = this.heartX + 4 * this.spaceX;
         this.textY = this.heartY - 10;
         this.textLineX2 = this.heartX + 6 * this.spaceX + 10;
+        this.drawBuffer = 0;
     };
 
     init(ctx) {
         this.ctx = ctx;
+        this.drawBuffer = HUD_BUFFER + 10;
     };
 
     draw(ctx) {
+        this.ctx.fillStyle = '#282828';
+        this.ctx.fillRect(0, -HUD_BUFFER, gameEngine.currMap.cellWidthInPx, HUD_BUFFER);
+        this.ctx.fillStyle = '#000';
+        this.ctx.fillRect(0, -2, gameEngine.currMap.cellWidthInPx, 2);
         if(gameEngine.victory){
             this.drawVictory();
             this.timeV += gameEngine.clockTick;
@@ -128,11 +133,11 @@ class GameDisplay {
         this.ctx.beginPath();
         this.ctx.strokeStyle = "Black";
         this.ctx.lineWidth = 4;
-        this.drawLine(this.textLineX, this.textLineY, this.textLineX + 2 * this.spaceX - 10, this.textLineY, undefined, 10);
-        this.ctx.strokeText("LIFE", this.textX, this.textY);
-        this.ctx.fillText("LIFE", this.textX, this.textY);
+        this.drawLine(this.textLineX, this.textLineY - this.drawBuffer, this.textLineX + 2 * this.spaceX - 10, this.textLineY - this.drawBuffer, undefined, 10);
+        this.ctx.strokeText("LIFE", this.textX, this.textY - this.drawBuffer);
+        this.ctx.fillText("LIFE", this.textX, this.textY - this.drawBuffer);
         this.ctx.closePath();
-        this.drawLine(this.textLineX2, this.textLineY, this.textLineX2 + 2 * this.spaceX - 10, this.textLineY, undefined, 10);
+        this.drawLine(this.textLineX2, this.textLineY - this.drawBuffer, this.textLineX2 + 2 * this.spaceX - 10, this.textLineY - this.drawBuffer, undefined, 10);
     };
 
     drawText = () => {
@@ -179,7 +184,7 @@ class GameDisplay {
 
 
     drawHeart(x, y) {
-        this.ctx.drawImage(ASSET_MANAGER.getAsset("heart.png"), x, y, this.heartWidth * 1.2, this.heartHeight * 1.2);
+        this.ctx.drawImage(ASSET_MANAGER.getAsset("heart.png"), x, y - this.drawBuffer, this.heartWidth * 1.2, this.heartHeight * 1.2);
     };
 
     drawHearts(x, y) {
