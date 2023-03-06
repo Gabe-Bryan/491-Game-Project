@@ -15,8 +15,8 @@ class GameDisplay {
         this.heartHeight = 30;
         this.spaceX = this.heartWidth * 1.1;
         this.spaceY = this.heartHeight * 1.1;
-        this.bombWidth = 90;
-        this.bombHeight = 80;
+        this.bombWidth = 40;
+        this.bombHeight = 40;
         this.keyWidth = 30;
         this.keyHeight = 50;
         this.timeGO = 0;
@@ -44,11 +44,11 @@ class GameDisplay {
             // this.drawBorder(); // remove this
             // this.drawItemBorder(); // remove this
             this.ctx.fillStyle = "white";
-            //this.drawText();
-            //this.drawBomb(166, 0);
-            //  this.drawLifeText();
+            this.drawCount();
+            this.drawBomb(166, 14);
+            //this.drawLifeText();
             this.drawHearts(this.heartX, this.heartY);
-            //this.drawKey(274, 14);
+            this.drawKey(274, 10);
             this.drawLifeText();
         }
         
@@ -135,10 +135,10 @@ class GameDisplay {
         this.drawLine(this.textLineX2, this.textLineY, this.textLineX2 + 2 * this.spaceX - 10, this.textLineY, undefined, 10);
     };
 
-    drawText = () => {
-        this.ctx.font = "60px Zelda";
-        this.ctx.fillText((this.bombCount + "").padStart(2, "0"), 180, 105);
-        this.ctx.fillText((this.keyCount + "").padStart(2, "0"), 260, 105);
+    drawCount = () => {
+        this.ctx.font = "48px Zelda";
+        this.ctx.fillText((this.bombCount + "").padStart(2, "0"), 160, 90);
+        this.ctx.fillText((this.keyCount + "").padStart(2, "0"), 260, 90);
     };
 
     addBomb() {
