@@ -221,7 +221,7 @@ class _Arrow_Type_PRX {
 
     constructor(x, y, nesw, dir, type) {
         Object.assign(this, {x, y, nesw, dir, type});
-        this.speed = 100;
+        this.speed = 200;
         this.phys2d = {isSolid: false, static: false, velocity: {x: 0, y: 0}};
         
         // getting the dimensions, depends on direction
@@ -230,7 +230,7 @@ class _Arrow_Type_PRX {
 
         this.setupAnimations();
         this.updateCollider();
-        this.DEBUG = true;
+        this.DEBUG = false;
         this.hitCD = 0;
         this.targetCD = 0;
     }

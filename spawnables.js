@@ -104,7 +104,7 @@ class HeartDrop {
     }
 
     draw(ctx) {
-        GRAPHICS.get('SET_ow_heart').drawSprite(1, ctx, this.x+4, this.y+4, SCALE)
+        GRAPHICS.get('SET_ow_heart').drawSprite(1, ctx, this.x+4, this.y+4, SCALE);
     }
 }
 
@@ -128,7 +128,7 @@ class Triforce {
 }
 
 class DeathCloud {
-    constructor(x, y) {
+    constructor(x, y, spawnStuff = true) {
         Object.assign(this, {x, y});
         this.spawn = null;
         this.cloudDone = false;

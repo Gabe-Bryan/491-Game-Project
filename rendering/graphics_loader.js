@@ -255,6 +255,37 @@ class GraphicsLoader {
             [ 80,  41,  24,  21], [ 80,  61,  15,  21],
             [  0, -12,   0,   3], [  0, -38,  10,   3]
         );
+        
+        GRAPHICS.addSpriteSet(
+            'SET_pot', 'LINK',
+            [129], [180],
+            [12], [13],
+            [2.5], [2]
+        );
+
+        GRAPHICS.addSpriteSet(
+            'SET_door_south', 'DUNGEON_TILES',
+            343, [494, 511, 528],
+            32, 16
+        );
+
+        GRAPHICS.addSpriteSet(
+            'SET_door_north', 'DUNGEON_TILES',
+            343, [584, 567, 550],
+            32, 16
+        );
+
+        GRAPHICS.addSpriteSet(
+            'SET_door_east', 'DUNGEON_TILES',
+            [286, 304, 321], 548,
+            16, 32
+        );
+
+        GRAPHICS.addSpriteSet(
+            'SET_door_west', 'DUNGEON_TILES',
+            [447, 430, 413], 548,
+            16, 32
+        );
 
         ///// SHADOW ????
         GRAPHICS.addSpriteSet('SET_shadow', 'ENEMIES', 126, 859, 12, 6);
@@ -313,6 +344,43 @@ class GraphicsLoader {
         GRAPHICS.addSpriteSet('PRJX_blue_magic_beam', 'ENEMIES', 164, 510, 16, 8).projectileBuilder(2);
 
 
+        GRAPHICS.addSpriteSet(
+            'SET_wizard_neutral', 'ENEMIES',
+            [324, 244, 355, 284], 762,
+            16, 24
+        );
+
+        GRAPHICS.addSpriteSet(
+            'SET_wizard_casting', 'ENEMIES',
+            [324, 244, 355, 284], 802,
+            16, 24
+        );
+
+        GRAPHICS.addAnimation(
+            'ANIMA_wizard_neutral_north', 'SET_wizard_neutral', [0], [0.5]
+        ).addDamageSprites();
+        GRAPHICS.addAnimation(
+            'ANIMA_wizard_neutral_south', 'SET_wizard_neutral', [1], [0.5]
+        ).addDamageSprites();
+        GRAPHICS.addAnimation(
+            'ANIMA_wizard_neutral_east', 'SET_wizard_neutral', [2], [0.5]
+        ).addDamageSprites();
+        GRAPHICS.addAnimation(
+            'ANIMA_wizard_neutral_west', 'SET_wizard_neutral', [3], [0.5]
+        ).addDamageSprites();
+
+        GRAPHICS.addAnimation(
+            'ANIMA_wizard_casting_north', 'SET_wizard_casting', [0, 0], 0.25
+        ).addDamageSprites();
+        GRAPHICS.addAnimation(
+            'ANIMA_wizard_casting_south', 'SET_wizard_casting', [1, 1], 0.25
+        ).addDamageSprites();
+        GRAPHICS.addAnimation(
+            'ANIMA_wizard_casting_east', 'SET_wizard_casting', [2, 2], 0.25
+        ).addDamageSprites();
+        GRAPHICS.addAnimation(
+            'ANIMA_wizard_casting_west', 'SET_wizard_casting', [3, 3], 0.25
+        ).addDamageSprites();
     }
 
     // addSpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_ofs = 0, y_ofs = 0, labels)
