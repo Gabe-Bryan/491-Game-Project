@@ -4,6 +4,7 @@ const GRAPHICS = new GraphicsManager();
 const GAMEDISPLAY = new GameDisplay();
 const SCALE = 3;
 const TILE_SIZE = 16;
+const HUD_BUFFER = 100;
 ASSET_MANAGER.queueDownload(
 	"prototype_map.png", 
 	"link.png", 
@@ -22,6 +23,8 @@ ASSET_MANAGER.queueDownload(
 ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");
 	const ctx = canvas.getContext("2d");
+	canvas.height += HUD_BUFFER;
+	ctx.translate(0, HUD_BUFFER);
 	ctx.imageSmoothingEnabled = false;
 
 	new GraphicsLoader(); // <- just to build the sprites & animations into GRAPHICS
