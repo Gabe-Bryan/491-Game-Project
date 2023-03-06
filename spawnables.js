@@ -134,7 +134,7 @@ class DeathCloud {
         this.cloudDone = false;
         this.cloudAnimation = GRAPHICS.getInstance('ANIMA_enemy_death_cloud').setLooping(false);
         if(Math.random() < 0.334)    
-        gameEngine.scene.addInteractable(new HeartDrop(this.x+7.5*SCALE, this.y+7*SCALE));
+            gameEngine.scene.addInteractable(new HeartDrop(this.x+7.5*SCALE, this.y+7*SCALE));
     }
 
     update() {
