@@ -37,9 +37,8 @@ class Player {
         this.setHp(Player.MAX_HP);
         this.kbLeft = 0;
         this.swingCD = 0;
-        this.keys = 1;
 
-        this.keyCount = 0;
+        this.keyCount = 1;
 
         this.holding = false;
         this.throwing = false;
@@ -218,7 +217,7 @@ class Player {
              && entity.tag == "env_interact"){
                 this.interHit = boxBoxCol(this.getInteractHB(), entity.collider) || this.interHit;
                 if(this.interHit){
-                    if(entity.interact(this.keys > 0)) this.keys--;
+                    if(entity.interact(this.keyCount > 0)) this.keyCount--;
                 }
             }
         });

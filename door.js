@@ -37,6 +37,7 @@ class Door{
             this.state = 1;
             this.phys2d = {static: true, isSolid: false};
         }
+        return false;
     }
 
     draw(ctx){
