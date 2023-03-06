@@ -62,6 +62,124 @@ class Sand {
     };
 }
 
+class Stairs {
+    constructor(xLoc, yLoc) {
+        Object.assign(this, {xLoc, yLoc});
+        this.tag = 'environment';
+    };
+
+    update() {
+    
+    };
+
+    draw(ctx, scale) {
+        GRAPHICS.get('environment').getSprite_byLabel('stairs').draw(ctx, this.xLoc, this.yLoc, SCALE);
+    };
+}
+
+class CliffWall {
+    constructor(xLoc, yLoc) {
+        Object.assign(this, {xLoc, yLoc});
+        this.phys2d = {static: true};
+        this.collider = {type: "box", corner: {x: xLoc, y: yLoc}, height: 16 * SCALE, width: 16 * SCALE};
+        this.tag = 'environment';
+    };
+
+    update() {
+
+    };
+
+    draw(ctx, scale) {
+        GRAPHICS.get('environment').getSprite_byLabel('mountain').draw(ctx, this.xLoc, this.yLoc, SCALE);
+    };
+}
+
+class CliffEdgeGrassN {
+    constructor(xLoc, yLoc) {
+        Object.assign(this, {xLoc, yLoc});
+        // this.phys2d = {static: true};
+        // this.collider = {type: "box", corner: {x: xLoc, y: yLoc}, height: 16 * SCALE, width: 16 * SCALE};
+        this.tag = 'environment';
+    };
+
+    update() {
+
+    };
+
+    draw(ctx, scale) {
+        GRAPHICS.get('environment').getSprite_byLabel('grass_mount_edge_N').draw(ctx, this.xLoc, this.yLoc, SCALE);
+    };
+}
+
+class CliffEdgeGrassS {
+    constructor(xLoc, yLoc) {
+        Object.assign(this, {xLoc, yLoc});
+        // this.phys2d = {static: true};
+        // this.collider = {type: "box", corner: {x: xLoc, y: yLoc}, height: 16 * SCALE, width: 16 * SCALE};
+        this.tag = 'environment';
+    };
+
+    update() {
+
+    };
+
+    draw(ctx, scale) {
+        GRAPHICS.get('environment').getSprite_byLabel('grass_mount_edge_S').draw(ctx, this.xLoc, this.yLoc, SCALE);
+    };
+}
+
+class CliffEdgeGrassS_Stone {
+    constructor(xLoc, yLoc) {
+        Object.assign(this, {xLoc, yLoc});
+        this.phys2d = {static: true};
+        this.collider = {type: "box", corner: {x: xLoc, y: yLoc}, height: 16 * SCALE, width: 16 * SCALE};
+        this.tag = 'environment';
+    };
+
+    update() {
+
+    };
+
+    draw(ctx, scale) {
+        GRAPHICS.get('environment').getSprite_byLabel('grass_mount_edge_S').draw(ctx, this.xLoc, this.yLoc, SCALE);
+        GRAPHICS.get('environment').getSprite_byLabel('light8block').draw(ctx, this.xLoc, this.yLoc, SCALE)
+    };
+}
+
+class CliffEdgeGrassE {
+    constructor(xLoc, yLoc) {
+        Object.assign(this, {xLoc, yLoc});
+        // this.phys2d = {static: true};
+        // this.collider = {type: "box", corner: {x: xLoc, y: yLoc}, height: 16 * SCALE, width: 16 * SCALE};
+        this.tag = 'environment';
+    };
+
+    update() {
+
+    };
+
+    draw(ctx, scale) {
+        GRAPHICS.get('environment').getSprite_byLabel('grass_mount_edge_E').draw(ctx, this.xLoc, this.yLoc, SCALE);
+    };
+}
+
+class CliffEdgeGrassW {
+    constructor(xLoc, yLoc) {
+        Object.assign(this, {xLoc, yLoc});
+        // this.phys2d = {static: true};
+        // this.collider = {type: "box", corner: {x: xLoc, y: yLoc}, height: 16 * SCALE, width: 16 * SCALE};
+        this.tag = 'environment';
+    };
+
+    update() {
+
+    };
+
+    draw(ctx, scale) {
+        GRAPHICS.get('environment').getSprite_byLabel('grass_mount_edge_W').draw(ctx, this.xLoc, this.yLoc, SCALE);
+    };
+}
+
 class BlueStoneFloor {
     constructor(xLoc, yLoc) {
         Object.assign(this, {xLoc, yLoc});

@@ -11,6 +11,7 @@ ASSET_MANAGER.queueDownload(
 	"overworld_tiles.png", 
 	"castle_tiles.png",
 	"dungeon_tiles.png",
+	"cliff_water_tiles.png",
 	"enemies.png", 
 	"death_effects.png",
 	"characters.png",
@@ -49,7 +50,11 @@ ASSET_MANAGER.downloadAll(() => {
 		'#ffff00':'sand',
 		'#0000ff':'floor_blue_cobblestone',
 		'#008800':'blocker_yellow_stone',
-		'#444444':'wall_complex'
+		'#444444':'wall_complex',
+		'#483828':'mountain',
+		'#485b28':'grass_mount_edge_S',
+		'#480028':'grass_mount_edge_S_Stone',
+		'#584828':'stairs'
 	});
 
 	// TESTING SPAWNZ
@@ -115,55 +120,37 @@ ASSET_MANAGER.downloadAll(() => {
 	
 	let chestXY = tileToScreenCoord(7, 5);
 	testMap.addMapCellEntity(1, 1, new SmallChest(chestXY.x, chestXY.y, new HeartDrop(chestXY.x, chestXY.y - 8)));
-	//gameEngine.scene.addEnvEntity(chest);
 
-	// PORTAL TEST STUFF
-	let testPortal1XY = tileToScreenCoord(9, 2),
-		testPortal2XY = tileToScreenCoord(9, 13);
+	let dungeonPortalInXY = tileToScreenCoord(7, 8),
+		dungeonPortalOutXY = tileToScreenCoord(9, 2);
 	
-	testPortal2XY.x += 8*SCALE;
-	testPortal1XY.x += 8*SCALE;
+	dungeonPortalOutXY.x += 8*SCALE;
 	
-	let testPortal1 = new Portal(testPortal1XY.x, testPortal1XY.y, 'pink', 1, 2),
-		testPortal2 = new Portal(testPortal2XY.x, testPortal2XY.y, 'pink', 1, 1);
+	let dungeonPortalIn = new Portal(dungeonPortalInXY.x, dungeonPortalInXY.y, 'pink', 12, 1),
+		dungeonPortalOut = new Portal(dungeonPortalOutXY.x, dungeonPortalOutXY.y, 'pink', 1, 2);
 
-	testPortal1.setTwoWayLinkedEntity(testPortal2);
+	dungeonPortalIn.setTwoWayLinkedEntity(dungeonPortalOut);
 
-	testMap.addMapCellEntity(1, 2, testPortal1);
-	testMap.addMapCellEntity(1, 1, testPortal2);
+	testMap.addMapCellEntity(12, 1, dungeonPortalIn);
+	testMap.addMapCellEntity(1, 2, dungeonPortalOut);
 
-	let prtl_clrs = ['red', 'green', 'yellow', 'blue', 'orange'];
-	for (let i = 0; i < prtl_clrs.length; i++) {
-		let left_prtlXY = tileToScreenCoord(5, 1+i);
-		let right_prtlXY = tileToScreenCoord(14, 1+i);
-		left_prtlXY.y *= 2.3;
-		right_prtlXY.y *= 2.3;
-		let left_prtl = new Portal(left_prtlXY.x, left_prtlXY.y, prtl_clrs[i], 1, 1);
-		let right_prtl = new Portal(right_prtlXY.x, right_prtlXY.y, prtl_clrs[i], 1, 1);
-		left_prtl.setLinkedEntity(right_prtl);
-		right_prtl.setLinkedEntity(left_prtl);
-		testMap.addMapCellEntity(1, 1, left_prtl);
-		testMap.addMapCellEntity(1, 1, right_prtl);
-	}
-
+	// let prtl_clrs = ['red', 'green', 'yellow', 'blue', 'orange'];
+	// for (let i = 0; i < prtl_clrs.length; i++) {
+	// 	let left_prtlXY = tileToScreenCoord(5, 1+i);
+	// 	let right_prtlXY = tileToScreenCoord(14, 1+i);
+	// 	left_prtlXY.y *= 2.3;
+	// 	right_prtlXY.y *= 2.3;
+	// 	let left_prtl = new Portal(left_prtlXY.x, left_prtlXY.y, prtl_clrs[i], 1, 1);
+	// 	let right_prtl = new Portal(right_prtlXY.x, right_prtlXY.y, prtl_clrs[i], 1, 1);
+	// 	left_prtl.setLinkedEntity(right_prtl);
+	// 	right_prtl.setLinkedEntity(left_prtl);
+	// 	testMap.addMapCellEntity(1, 1, left_prtl);
+	// 	testMap.addMapCellEntity(1, 1, right_prtl);
+	// }
 	
-
-	// let test_portal1XY = tileToScreenCoord(4, 4);
-	// let test_portal1 = new Portal(test_portal1XY.x, test_portal1XY.y, 'red', 1, 2);
-	
-	
-	// let test_portal2XY = tileToScreenCoord(14, 4);
-	// let test_portal2 = new Portal(test_portal2XY.x, test_portal2XY.y, 'blue', 1, 2);
-	
-	// testMap.addMapCellEntity(1, 2, test_portal1);
-	// testMap.addMapCellEntity(1, 2, test_portal2);
-
-	// test_portal1.setLinkedEntity(test_portal2);
-	// test_portal2.setLinkedEntity(test_portal1);
-	
-	// actual starting room is (1, 2)
-	let startMapCellX = 1,
-		startMapCellY = 2;
+	// actual starting room is (11, 1)
+	let startMapCellX = 11,
+		startMapCellY = 1;
 
 	testMap.loadMapCell(startMapCellX, startMapCellY);
 	//setInterval(bun, bt)
