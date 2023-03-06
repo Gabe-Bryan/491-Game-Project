@@ -138,12 +138,13 @@ class WallComplex {
 }
 
 class Portal {
-    constructor(xLoc, yLoc, portalName, mapCellX=null, mapCellY=null, bgTile=null) {
-        Object.assign(this, {xLoc, yLoc, portalName, mapCellX, mapCellY, bgTile});
+    constructor(xLoc, yLoc, portalColor, mapCellX=null, mapCellY=null, bgTile=null) {
+        Object.assign(this, {xLoc, yLoc, portalColor, mapCellX, mapCellY, bgTile});
         this.DEBUG = false;
         this.linkedTo = null;
-        this.destOffset = {'x':0, 'y':0};
         this.collider = {type: "box", corner: {x:xLoc, y: yLoc}, height: 16 * SCALE, width: 16 * SCALE};
+
+        this.animation = GRAPHICS.getInstance('ANIMA_portal_'+portalColor);
     }
 
     update() {
@@ -181,10 +182,15 @@ class Portal {
     };
 
     draw(ctx, scale) {
-        GRAPHICS.get('ANIMA_portal').animate(gameEngine.clockTick, ctx, this.xLoc, this.yLoc, scale)
+        this.animation.animate(gameEngine.clockTick, ctx, this.xLoc, this.yLoc, scale);
     };
 
     setLinkedEntity(linkedEntity) {
         this.linkedTo = linkedEntity;
+    }
+
+    setTwoWayLinkedEntity(linkedEntity) {
+        this.linkedTo = linkedEntity;
+        linkedEntity.linkedTo = this;
     }
 }

@@ -32,10 +32,19 @@ class GraphicsLoader {
 
         GRAPHICS.addSpriteSet(
             'portals', 'CASTLE_TILES', 
-            [272, 289],
-            [51, 51],
+            [272, 289, 306, 323, 272, 289, 306, 323, 272, 289, 306, 323],
+            [51, 51, 51, 51, 68, 68, 68, 68, 85, 85, 85, 85],
             16, 16, 0, 0
-            ['portal', 'portal2']
+            ['portal_pink', 'portal_pink_2', 'portal_red', 'portal_red_2', 'portal_green', 'portal_green_2',
+             'portal_yellow', 'portal_yellow_2', 'portal_blue', 'portal_blue_2', 'portal_orange', 'portal_orange_2']
+        );
+
+        GRAPHICS.addSpriteSet(
+            'chests', 'DUNGEON_TILES',
+            [367, 384],
+            [89, 89],
+            16, 16, 0, 0
+            ['chest_small_closed', 'chest_small_open']
         );
 
         const spt = GRAPHICS.get('environment');
@@ -55,8 +64,14 @@ class GraphicsLoader {
         GRAPHICS.addTile('wall_SE', spt.gsl('wall_SE'));
         GRAPHICS.addTile('wall_HORIZ', spt.gsl('wall_HORIZ'));
         
-        //GRAPHICS.addTile('portal', spt.gsl('portal'));
-        GRAPHICS.addAnimation('ANIMA_portal', 'portals', 2, 0.7);
+        // portal tiles
+        let portalAnimSpeed = 0.7;
+        GRAPHICS.addAnimation('ANIMA_portal_pink', 'portals', [0,1], portalAnimSpeed);
+        GRAPHICS.addAnimation('ANIMA_portal_red', 'portals', [2,3], portalAnimSpeed);
+        GRAPHICS.addAnimation('ANIMA_portal_green', 'portals', [4,5], portalAnimSpeed);
+        GRAPHICS.addAnimation('ANIMA_portal_yellow', 'portals', [6,7], portalAnimSpeed);
+        GRAPHICS.addAnimation('ANIMA_portal_blue', 'portals', [8,9], portalAnimSpeed);
+        GRAPHICS.addAnimation('ANIMA_portal_orange', 'portals', [10,11], portalAnimSpeed);
 
         // const theSprites = GRAPHICS.get('environment');
         // theSprites.forEach(sprite => {
@@ -226,6 +241,12 @@ class GraphicsLoader {
             "SET_ow_heart", 'OW_ITEMS',
             [88, 104, 85, 100], 280,
             [ 8, 8, 11, 12], [7, 7, 26, 26]
+        );
+        // GRAPHICS.addAnimation('ANIMA_ow_heart', 'SET_ow_heart', 2, 0.3)
+        GRAPHICS.addSpriteSet(
+            "SET_ow_key", 'OW_ITEMS',
+            [232], [169],
+            [8], [15]
         );
 
         GRAPHICS.addSpriteSet(

@@ -213,9 +213,10 @@ class Knight {
         this.kbLeft = Knight.KB_DUR;
         this.hp -= amount;
         if(this.hp <= 0){
+            ASSET_MANAGER.playAsset("enemy_die.wav");
             this.removeFromWorld = true;
         }
-
+        ASSET_MANAGER.playAsset("enemy_hurt.wav");
         this.pain.hurting = true;
         this.pain.timer = this.pain.cooldown;
         this.hitstop.hitting = true;
