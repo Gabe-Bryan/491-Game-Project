@@ -5,7 +5,7 @@ class Skull{
     constructor(x, y){
         Object.assign(this, {x, y});
         this.updateCollider();
-        this.phys2d = this.phys2d = {static: false, velocity: {x: 0, y: 0}};
+        this.phys2d = {static: false, velocity: {x: 0, y: 0}};
         this.setupAnimations();
         this.DEBUG = false;
         this.attackCD = 0;

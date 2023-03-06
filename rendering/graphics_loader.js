@@ -30,6 +30,14 @@ class GraphicsLoader {
             ['wall_NW', 'wall_NE', 'wall_VERT', 'wall_SW', 'wall_SE', 'wall_HORIZ']
         );
 
+        GRAPHICS.addSpriteSet(
+            'portals', 'CASTLE_TILES', 
+            [272, 289],
+            [51, 51],
+            16, 16, 0, 0
+            ['portal', 'portal2']
+        );
+
         const spt = GRAPHICS.get('environment');
         GRAPHICS.addTile('grass', spt.gsl('grass_thick'));
         GRAPHICS.addTile('sand', spt.gsl('sand'));
@@ -46,6 +54,9 @@ class GraphicsLoader {
         GRAPHICS.addTile('wall_SW', spt.gsl('wall_SW'));
         GRAPHICS.addTile('wall_SE', spt.gsl('wall_SE'));
         GRAPHICS.addTile('wall_HORIZ', spt.gsl('wall_HORIZ'));
+        
+        //GRAPHICS.addTile('portal', spt.gsl('portal'));
+        GRAPHICS.addAnimation('ANIMA_portal', 'portals', 2, 0.7);
 
         // const theSprites = GRAPHICS.get('environment');
         // theSprites.forEach(sprite => {
@@ -107,6 +118,44 @@ class GraphicsLoader {
         GRAPHICS.addSpriteSheet('CHARS', ASSET_MANAGER.getAsset('characters.png'));
         GRAPHICS.addSpriteSet('link_dead', 'CHARS', 267, 388, 24, 15);
 
+        // LINK hold object above head
+        GRAPHICS.addSpriteSet( // final sprite is throwing
+            'SET_link_carry_throw_south', 'LINK',
+            [168, 189, 209, 231, 254], 137,
+            [ 16,  16,  16,  16,  17], 22, 0,
+            [  0,  -1,  -1,  -1,  -1]
+        );
+        GRAPHICS.addAnimation('ANIMA_link_carry_south', 'SET_link_carry_throw_south', 4, 0.15).addDamageSprites();
+        GRAPHICS.addAnimation('ANIMA_link_carry_idle_south', 'SET_link_carry_throw_south', [0], Infinity).addDamageSprites();
+        GRAPHICS.addAnimation('ANIMA_link_throw_south', 'SET_link_carry_throw_south', [4], Infinity).addDamageSprites();
+
+        GRAPHICS.addSpriteSet( // final sprite is throwing
+        'SET_link_carry_throw_north', 'LINK',
+        [10, 36, 60, 82, 104], 177, 16, 22, 0,
+        [  1,   0,   1,   0,   0]
+        );
+        GRAPHICS.addSpriteSet('SET_link_carry_throw_north', 'LINK', [232, 284], 97, 16, 22);
+        GRAPHICS.addAnimation('ANIMA_link_carry_north', 'SET_link_carry_throw_north', 4, 0.15).addDamageSprites();
+        GRAPHICS.addAnimation('ANIMA_link_carry_idle_north', 'SET_link_carry_throw_north', [0], Infinity).addDamageSprites();
+        GRAPHICS.addAnimation('ANIMA_link_throw_north', 'SET_link_carry_throw_north', [5], 0).addDamageSprites();
+
+        GRAPHICS.addSpriteSet( // final sprite is throwing
+        'SET_link_carry_throw_east', 'LINK',
+        [159, 181, 204, 227, 250], 168,
+        [ 16,  16,  17,  16,  16], 24,
+        [ 0,  0,  0,  0,  0], // x-offset
+        [ 0, -1, -2,  0,  1]  // y-offset
+        );
+        GRAPHICS.addAnimation('ANIMA_link_carry_east', 'SET_link_carry_throw_east', [3,1,2,1], 0.15, -2).addDamageSprites();
+        GRAPHICS.addAnimation('ANIMA_link_carry_idle_east', 'SET_link_carry_throw_east', [3], Infinity, -2).addDamageSprites();
+        GRAPHICS.addAnimation('ANIMA_link_throw_east', 'SET_link_carry_throw_east', [4], 0).addDamageSprites();
+
+        GRAPHICS.cloneAnimation('ANIMA_link_carry_west', 'ANIMA_link_carry_east').mirrorAnimation_Horz([0,0,-1,0], 2);
+        GRAPHICS.cloneAnimation('ANIMA_link_carry_idle_west', 'ANIMA_link_carry_idle_east').mirrorAnimation_Horz(null, 2);
+        GRAPHICS.cloneAnimation('ANIMA_link_throw_west', 'ANIMA_link_throw_east').mirrorAnimation_Horz(null, 2);
+
+
+
         /// /// E N E M I E S /// /// /// 
         GRAPHICS.addSpriteSheet('ENEMIES', ASSET_MANAGER.getAsset('enemies.png'));
         GRAPHICS.addSpriteSet('SET_blue_enemy_south', 'ENEMIES',  1, [156, 197, 235, 277], 22, 38);
@@ -131,7 +180,7 @@ class GraphicsLoader {
         GRAPHICS.addSpriteGrid('SET_green_goblin', 'ENEMIES', 1, 6, 449, 295, 22, 25, 11, 5);
         GRAPHICS.addSpriteSet('SET_green_goblin_east', 'ENEMIES', [402, 427], 293, 18, 25);
     
-        GRAPHICS.addSpriteGrid('SET_red_goblins', 'ENEMIES', 1, 6, 448, 331, 22, 25, 0, [3, 4, 7, 3, 4]);
+        GRAPHICS.addSpriteGrid('SET_red_goblin', 'ENEMIES', 1, 6, 448, 331, 22, 25, 0, [3, 4, 7, 3, 4]);
         GRAPHICS.addSpriteSet('SET_red_goblin_east', 'ENEMIES', [402, 424], 330, 18, 25);
 
         GRAPHICS.addAnimation('ANIMA_green_goblin_south', 'SET_green_goblin', [0,1,2], 0.5);
@@ -160,11 +209,13 @@ class GraphicsLoader {
         GRAPHICS.addAnimation('ANIMA_bunny_east', 'SET_bunny', [0,1], 0.2).addDamageSprites();
         GRAPHICS.cloneAnimation('ANIMA_bunny_west','ANIMA_bunny_east').mirrorAnimation_Horz();
 
+
         /// /// EFFECTS /// /// /// 
-        GRAPHICS.addSpriteGrid('SET_explode', 'ENEMIES', 1, 6, 441, 733, 32, 33, 0, [8, 6, 6, 5, 7])
-        GRAPHICS.addAnimation('ANIMA_explode', 'SET_explode', 
-            [   0,    1,    2,    3,    4,    1,    2,    3,    4,    5, 999],
-            [0.20, 0.15, 0.10, 0.15, 0.10, 0.15, 0.10, 0.10, 0.15,  0.3, 0]).setLooping(false);
+        GRAPHICS.addSpriteGrid('SET_big_explode', 'ENEMIES', 1, 6, 441, 733, 32, 33, 0, [8, 6, 6, 5, 7])
+        GRAPHICS.addAnimation('ANIMA_big_explode', 'SET_big_explode', [0,2,3,1,5,7,8,8,8,8,8,8,8], 0.2).setLooping(true);
+        // GRAPHICS.addAnimation('ANIMA_big_explode', 'SET_big_explode', 
+        //     [   0,    1,    2,    3,    4,    1,    2,    3,    4,    5, 999],
+        //     [0.20, 0.15, 0.10, 0.15, 0.10, 0.15, 0.10, 0.10, 0.15,  0.3, 0]).setLooping(true);
         
         GRAPHICS.addSpriteSheet('DEATHFX', ASSET_MANAGER.getAsset('death_effects.png'));
         GRAPHICS.addSpriteRow('SET_death_effects', 'DEATHFX',7, 0,4,26,23,0);
@@ -176,7 +227,6 @@ class GraphicsLoader {
             [88, 104, 85, 100], 280,
             [ 8, 8, 11, 12], [7, 7, 26, 26]
         );
-        // GRAPHICS.addAnimation('ANIMA_ow_heart', 'SET_ow_heart', 2, 0.3)
 
         GRAPHICS.addSpriteSet(
             'SET_end_game', 'LINK',
@@ -193,12 +243,126 @@ class GraphicsLoader {
         );
 
         GRAPHICS.addSpriteSet(
-            'SET_door', 'DUNGEON_TILES',
-            [343, 343, 343], [494, 511, 528],
+            'SET_door_south', 'DUNGEON_TILES',
+            343, [494, 511, 528],
             32, 16
         );
+
+        GRAPHICS.addSpriteSet(
+            'SET_door_north', 'DUNGEON_TILES',
+            343, [584, 567, 550],
+            32, 16
+        );
+
+        GRAPHICS.addSpriteSet(
+            'SET_door_east', 'DUNGEON_TILES',
+            [286, 304, 321], 548,
+            16, 32
+        );
+
+        GRAPHICS.addSpriteSet(
+            'SET_door_west', 'DUNGEON_TILES',
+            [447, 430, 413], 548,
+            16, 32
+        );
+
+        ///// SHADOW ????
+        GRAPHICS.addSpriteSet('SET_shadow', 'ENEMIES', 126, 859, 12, 6);
+        
+        // normal bombs spawn
+        GRAPHICS.addSpriteSheet('BOMBS', ASSET_MANAGER.getAsset('bombs.png'));
+
+        GRAPHICS.addSpriteSet('SET_bombs_burn', 'BOMBS', [ 3, 23, 43, 63, 83, 104, 124, 144], 18, 13, 16);
+        GRAPHICS.addSpriteSet('SET_bombs_burn', 'BOMBS',[23, 144], 35, 13, 16); // red & black
+
+        // ↓ top row bombs variety pack
+        GRAPHICS.addSpriteSet('SET_bombs_variety', 'BOMBS',
+            [ 3, 23, 43, 63, 83, 104, 124, 144], 2, 13, 16
+        );
+
+        GRAPHICS.addSpriteSet(
+            'SET_bombs_blow', 'BOMBS',
+            [161, 178, 211, 244, 291, 322, 364, 409],  // x orig
+            [ 22,  11,  10,   2,  12,   6,   4,  10],  // y org
+            [ 14,  30,  30,  44,  28,  40,  42,  44],  // width
+            [ 14,  30,  32,  46,  30,  40,  42,  38],  // height
+            [  0,  -8,  -8, -15,  -7, -11, -13, -15],  // x-offsets
+            [  0,  -8,  -9, -16,  -8, -12, -13, -12]   // y-offsets
+        );
+
+        GRAPHICS.addAnimation('ANIMA_normal_bombs_stable', 'SET_bombs_burn', 1, 0);
+
+        GRAPHICS.addAnimation(
+            'ANIMA_normal_bombs_burn', 'SET_bombs_burn',
+            [  0,   1,    2,   3,   4,   5,   6,   7,   8,    7,   8,    7,   8,    7,    8,    7,    8,    9],
+            [0.1, 0.1, 0.15, 0.1, 0.1, 0.1, 0.1, 0.5, 0.3, 0.25, 0.2, 0.15, 0.1, 0.05, 0.05, 0.03, 0.03, 0.05]
+        );
+
+        GRAPHICS.addAnimation(
+            'ANIMA_normal_bombs_blow', 'SET_bombs_blow',
+            [   0,    1,   2,    3,   4,   5,   6,   7],
+            [0.06, 0.08, 0.1, 0.15, 0.2, 0.2, 0.2, 0.2]
+        );
+
+            /////////////////////////////////////
+           //  ◈  P R O J E C T I L E S  ◈   //
+          //  Each set should have sprites   //
+         //  for North, East, South, West   //
+        /////////////////////////////////////
+
+        // Bombs & iron ball have same sprite in all 4 directions no need to rotate,
+        // sprites in set are simply cloned to keep calling parity with other projectile sets
+        GRAPHICS.addSpriteSet('PRJX_reg_bomb', 'BOMBS', 3, 18, 13, 16).cloneAndAppendSprite(0,3); 
+        GRAPHICS.addSpriteSet('PRJX_iron_ball', 'ENEMIES', 648, 338, 12, 12).cloneAndAppendSprite(0,3);
+
+                                       // 0 → north  |  1 → east  |  2 → south  |  3 → west  ↓
+        GRAPHICS.addSpriteSet('PRJX_arrow', 'ENEMIES', 249, 86, 5, 15).projectileBuilder(0);
+        GRAPHICS.addSpriteSet('PRJX_trident', 'ENEMIES', 249, 47, 5, 13).projectileBuilder(0);
+        GRAPHICS.addSpriteSet('PRJX_fire_ball', 'ENEMIES', 612, 342, 16, 7).projectileBuilder(1);
+        GRAPHICS.addSpriteSet('PRJX_red_magic_beam', 'ENEMIES', 164, 470, 16, 8).projectileBuilder(2);
+        GRAPHICS.addSpriteSet('PRJX_blue_magic_beam', 'ENEMIES', 164, 510, 16, 8).projectileBuilder(2);
+
+
+        GRAPHICS.addSpriteSet(
+            'SET_wizard_neutral', 'ENEMIES',
+            [324, 244, 355, 284], 762,
+            16, 24
+        );
+
+        GRAPHICS.addSpriteSet(
+            'SET_wizard_casting', 'ENEMIES',
+            [324, 244, 355, 284], 802,
+            16, 24
+        );
+
+        GRAPHICS.addAnimation(
+            'ANIMA_wizard_neutral_north', 'SET_wizard_neutral', [0], [0.5]
+        ).addDamageSprites();
+        GRAPHICS.addAnimation(
+            'ANIMA_wizard_neutral_south', 'SET_wizard_neutral', [1], [0.5]
+        ).addDamageSprites();
+        GRAPHICS.addAnimation(
+            'ANIMA_wizard_neutral_east', 'SET_wizard_neutral', [2], [0.5]
+        ).addDamageSprites();
+        GRAPHICS.addAnimation(
+            'ANIMA_wizard_neutral_west', 'SET_wizard_neutral', [3], [0.5]
+        ).addDamageSprites();
+
+        GRAPHICS.addAnimation(
+            'ANIMA_wizard_casting_north', 'SET_wizard_casting', [0, 0], 0.25
+        ).addDamageSprites();
+        GRAPHICS.addAnimation(
+            'ANIMA_wizard_casting_south', 'SET_wizard_casting', [1, 1], 0.25
+        ).addDamageSprites();
+        GRAPHICS.addAnimation(
+            'ANIMA_wizard_casting_east', 'SET_wizard_casting', [2, 2], 0.25
+        ).addDamageSprites();
+        GRAPHICS.addAnimation(
+            'ANIMA_wizard_casting_west', 'SET_wizard_casting', [3, 3], 0.25
+        ).addDamageSprites();
     }
 
     // addSpriteSet(id, spriteSheet, x_origs, y_origs, widths, heights, x_ofs = 0, y_ofs = 0, labels)
     // addSpriteRow(id, spriteSheet, sprite_count, x_orig, y_orig, widths, heights, gaps, x_ofs, y_ofs, labels)
+    // addAnimation(id, spriteSetName, fSequence, fTiming, x_offset = 0, y_offset = 0)
 }

@@ -22,6 +22,14 @@ class Sprite {
         );
     }
 
+    clone_ImageBitmap() {
+        let baby = new Sprite( this.src, this.sx, this.sy, 
+            this.sWidth, this.sHeight, this.x_ofs, this.y_ofs, this.label
+        );
+        baby.convertToImageBitmap();
+        return baby;
+    }
+
     fitBoundsToImageBitmap() {
         this.sx = 0; this.sy = 0;
         this.sWidth = this.src.width;
@@ -83,6 +91,25 @@ class Sprite {
         this.src = ofscn_canvas.transferToImageBitmap();
     }
 
+    rotateImg(number_Of_90_Deg_CW_rotations) {
+        const NUM_ROTATE = number_Of_90_Deg_CW_rotations % 4;
+        if (NUM_ROTATE == 0) return; // ← no need to do anything!
+
+        if (!(this.isImageBitmap)) this.convertToImageBitmap();
+
+        if (NUM_ROTATE == 1 ) this.src = rot90(this.src).transferToImageBitmap();
+        if (NUM_ROTATE == 2 ) this.src = rot180(this.src).transferToImageBitmap();
+        if (NUM_ROTATE == 3 ) this.src = rot270(this.src).transferToImageBitmap();
+
+        if (NUM_ROTATE == 1 || NUM_ROTATE == 3) {
+            // need to swap hight and width bc aspect ratio get inverted
+            // with a 90 or 270 deg rotation
+            let swap = this.sWidth;
+            this.sWidth = this.sHeight;
+            this.sHeight = swap;
+        }
+    }
+
     draw(ctx, dx, dy, x_scl = 1, y_scl = x_scl) {
         ctx.drawImage(this.src, this.sx, this.sy, this.sWidth, this.sHeight,
             dx + this.x_ofs * x_scl, dy + this.y_ofs * y_scl, this.sWidth * x_scl, this.sHeight * y_scl
@@ -107,4 +134,39 @@ class Sprite {
         ctx.fillText('w:' + _dWidth, _dx + (_dWidth / 2) - 12, _dy + _dHeight + 15); // width of sprite
         ctx.fillText('h:' + _dHeight, _dx + _dWidth + 5, _dy + (_dHeight / 2) + 5);  // height of sprite
     }
+}
+
+///// HELPER FUNCTIONS FOR ROTATION MONSTER ►▽◄ //////
+function rot90(og_image) {
+    let iWidth = og_image.width;
+    let iHeight = og_image.height;
+    
+    let canvas = new OffscreenCanvas(iHeight, iWidth);
+    let ctx = canvas.getContext('2d');
+    ctx.rotate(90 * Math.PI / 180);
+    ctx.drawImage(og_image, 0, -iHeight, iWidth, iHeight);
+    return canvas;
+}
+
+function rot180(og_image) {
+    let iWidth = og_image.width;
+    let iHeight = og_image.height;
+    
+    let canvas = new OffscreenCanvas(iWidth, iHeight);
+    let ctx = canvas.getContext('2d');
+    ctx.rotate(180 * Math.PI / 180);
+    ctx.drawImage(og_image, -iWidth, -iHeight, iWidth, iHeight);
+    return canvas;
+}
+
+
+function rot270(og_image) {
+    let iWidth = og_image.width;
+    let iHeight = og_image.height;
+    
+    let canvas = new OffscreenCanvas(iHeight, iWidth);
+    let ctx = canvas.getContext('2d');
+    ctx.rotate(270 * Math.PI / 180);
+    ctx.drawImage(og_image, -iWidth, 0, iWidth, iHeight);
+    return canvas;
 }

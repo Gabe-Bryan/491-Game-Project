@@ -6,13 +6,14 @@ class Player {
     static KB_STR = 300;
 
     static SWING_CD = 0.25;
+    static THROW_CD = 3;
 
     static CURR_PLAYER = undefined;
 
     constructor(x, y) {
         Object.assign(this, {x, y});
 
-        this.DEBUG = true;
+        this.DEBUG = false;
         this.state = 0;     // 0:idle, 1:walking, 2:attacking, 3: taking damage
         this.facing = 1;    
         this.attackHitbox = undefined;
@@ -29,20 +30,27 @@ class Player {
         this.tag = "player";
         this.updateCollider();
         this.alive = true;
-        this.pain = {hurting : false, timer: 0, cooldown: 0.5} // cooldown in sec
-        this.hitstop = {hitting: false, timer: 0, cooldown: 0.125}
+        this.pain = {hurting : false, timer: 0, cooldown: 0.5}; // cooldown in sec
+        this.hitstop = {hitting: false, timer: 0, cooldown: 0.125};
 
         this.setHp(Player.MAX_HP);
         this.kbLeft = 0;
         this.swingCD = 0;
         this.keys = 1;
+
+        this.holding = false;
+        this.throwing = false;
+        this.holdObj = 0; // only 1 so far, the bomb
+        // si = sprite index, xos = x offset, yos = y offset, spnX = spawn x offset
+        this.holdObjInfo = [{scl: 1.1, xos:1.5, yos: -9, spnX: 8, spnY: 10}];
+        this.throwTime = 0; this.butpad = 0; this.butpadLength = 0.6;
     };
 
     setupAnimations() {
         // Animation array: [state][facing]
-        this.animations = new Array(4)
+        this.animations = new Array(5)
 
-        // idle animations
+        // idle animations 
         this.animations[0] = [
             GRAPHICS.get('ANIMA_link_Idle_north'),
             GRAPHICS.get('ANIMA_link_Idle_south'),
@@ -63,17 +71,34 @@ class Player {
             GRAPHICS.get('ANIMA_link_attack_east'),
             GRAPHICS.get('ANIMA_link_attack_west')
         ]
-        // taking damage animations
+        // carrying object above head
         this.animations[3] = [
-            GRAPHICS.get('ANIMA_link_hurt_north'),
-            GRAPHICS.get('ANIMA_link_hurt_south'),
-            GRAPHICS.get('ANIMA_link_hurt_east'),
-            GRAPHICS.get('ANIMA_link_hurt_west')
+            GRAPHICS.get('ANIMA_link_carry_idle_north'),
+            GRAPHICS.get('ANIMA_link_carry_idle_south'),
+            GRAPHICS.get('ANIMA_link_carry_idle_east'),
+            GRAPHICS.get('ANIMA_link_carry_idle_west'),
         ]
+        this.animations[4] = [
+            GRAPHICS.get('ANIMA_link_carry_north'),
+            GRAPHICS.get('ANIMA_link_carry_south'),
+            GRAPHICS.get('ANIMA_link_carry_east'),
+            GRAPHICS.get('ANIMA_link_carry_west'),
+        ]
+        // this.animations[5] = [
+        //     GRAPHICS.get('ANIMA_link_throw_north'),
+        //     GRAPHICS.get('ANIMA_link_throw_south'),
+        //     GRAPHICS.get('ANIMA_link_throw_east'),
+        //     GRAPHICS.get('ANIMA_link_throw_west')
+        // ]
 
         // other animations / sprites
+        this.holdObjSprite = [
+            GRAPHICS.get('PRJX_reg_bomb'),
+        ]
+
         this.attackTime = GRAPHICS.getAnimation('ANIMA_link_attack_west').fTiming.reduce((a, b) => a+b);
         this.endSprites = GRAPHICS.getSpriteSet('SET_end_game');
+        
     };
 
     updateState(moveIn, attackIn) {
@@ -84,8 +109,10 @@ class Player {
             }
             this.state = 2;
         }
-        else if(moveIn.x != 0 || moveIn.y != 0) this.state = 1;
-        else this.state = 0;
+        else if(moveIn.x != 0 || moveIn.y != 0) {
+            this.state = this.holding? 4 : 1;
+        }
+        else this.state = this.holding? 3 : 0;;
 
         if (this.hitstop.hitting) {
             this.hitstop.timer -= gameEngine.clockTick;
@@ -94,9 +121,8 @@ class Player {
                 this.hitstop.timer = 0;
             }
         }
+
     }
-
-
 
     updateDirection(moveIn) {
         if(moveIn.x > 0) this.facing = 2;
@@ -126,18 +152,39 @@ class Player {
         if (gameEngine.keys["d"])      moveIn.x = 1;//[this.facing, this.state, this.phys2d.velocity.x] = [2, walkStateChange, Player.MAX_VEL];
         else if (gameEngine.keys["a"]) moveIn.x = -1;//[this.facing, this.state, this.phys2d.velocity.x] = [3, walkStateChange, -Player.MAX_VEL];
         
+        this.interHit = false;
         if (gameEngine.keys["e"] && !this.interacting)      this.processInteract();
-        else                                                this.interacting = false;
+        else if(!gameEngine.keys["e"])                      this.interacting = false;
+        /////// THROW STUFF //////////// . . . .
+        if (gameEngine.keys["b"]) {
+            if (!this.holding && !this.throwing && this.butpad <= 0) {
+                console.log("HOLD");
+                this.holding = true;
+                this.butpad = this.butpadLength
+            }
+            else if (this.holding && !this.throwing && this.butpad <= 0){
+                // console.log("THROW");
+                this.throwing = true;
+                this.butpad = this.butpadLength
+            }   
+        }
+        if (this.butpad > 0) this.butpad -= gameEngine.clockTick;
+        else this.butpad = 0; // slowdown key press change
+
+        if (this.throwing) this.processThrow();
+        ///////////// . . . . . . . . . . . . . 
 
         this.moveIn = normalizeVector(moveIn);
         this.swingCD -= gameEngine.clockTick;
-        this.attackIn = gameEngine.keys['j'] && this.swingCD <= 0;
+        this.attackIn = gameEngine.keys['j'] && this.swingCD <= 0 && !this.holding;
         this.updateState(this.moveIn, this.attackIn);
 
-        if (this.state != 2) this.updateDirection(this.moveIn);
-        else this.processAttack();
 
-        if(this.hitstop.hitting){
+        if (this.state != 2) this.updateDirection(this.moveIn);
+        else if (this.state == 2) this.processAttack();
+
+
+        if(this.hitstop.hitting) {
             this.phys2d.velocity = {x: 0, y: 0};
             return;
         }
@@ -151,7 +198,7 @@ class Player {
 
             this.kbLeft -= gameEngine.clockTick;
         } else {
-            let velocityMod = this.state == 2 ? 1/2 : 1;
+            let velocityMod = this.state == 2 || this.state == 4 ? 1/2 : 1;
             this.phys2d.velocity.x = this.moveIn.x * Player.MAX_VEL * gameEngine.clockTick * velocityMod;
             this.phys2d.velocity.y = this.moveIn.y * -1 * Player.MAX_VEL * gameEngine.clockTick * velocityMod;    
         }
@@ -160,15 +207,36 @@ class Player {
     };
 
     processInteract() {
+        this.interacting = true;
         gameEngine.scene.interact_entities.forEach((entity) =>{
             if(entity != this && entity.collider && entity.collider.type == "box"
              && entity.tag == "env_interact"){
-                this.hit = boxBoxCol(this.getInteractHB(), entity.collider);
-                if(this.hit){
+                this.interHit = boxBoxCol(this.getInteractHB(), entity.collider) || this.interHit;
+                if(this.interHit){
                     if(entity.interact(this.keys > 0)) this.keys--;
                 }
             }
         });
+    }
+
+    processThrow() {
+        if (this.holding && this.throwing) {
+            console.log("THROW");
+            let prjX = this.x + this.holdObjInfo[this.holdObj].spnX * SCALE;
+            let prjY = this.y + this.holdObjInfo[this.holdObj].spnY * SCALE;
+            // n s e w
+            let pf =  this.facing
+            let facDir = pf == 0 ? 0 : pf == 2 ? 1 : pf == 1 ? 2 : 3
+            gameEngine.scene.addInteractable(new Projectile('bomb', prjX, prjY, facDir));
+            this.holding = false;
+            this.throwTime = Player.THROW_CD;
+        }
+        else if (this.throwTime <= 0) {
+            console.log("THROW DONE");
+            this.throwing = false;
+            this.throwTime = 0;
+        }
+        else this.throwTime -= gameEngine.clockTick
     }
 
     processAttack() {
@@ -200,6 +268,7 @@ class Player {
             });
         }
     }
+
 
     dealDamage(entity, kb) {
         entity.takeDamage(1, kb, this.hitstop.cooldown);
@@ -301,16 +370,23 @@ class Player {
         else if(gameEngine.victory) this.endSprites.drawSprite(1, ctx, this.x, this.y, scale);
         // Game is still going 
         else this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale, this.pain.hurting, this.hitstop.hitting);
-
+        if (this.holding)
+            this.holdObjSprite[this.holdObj].drawSprite(
+                0, ctx,
+                this.x + this.holdObjInfo[this.holdObj].xos * scale,
+                this.y + this.holdObjInfo[this.holdObj].yos * scale,
+                scale * this.holdObjInfo[this.holdObj].scl
+        );
         // GRAPHICS.get('SET_end_game').drawSprite(0, ctx, this.x+100, this.y, scale);
         // GRAPHICS.get('ANIMA_link_dead').animate(gameEngine.clockTick, ctx, this.x +100, this.y, scale);
+        // GRAPHICS.get('ANIMA_link_carry_west').animate(gameEngine.clockTick, ctx, this.x +100, this.y, scale);
 
         
 
         if(this.DEBUG) {
             //this.drawCollider(ctx);
             if(this.state == 2) this.drawAttack(ctx, scale);
-            drawBoxCollider(ctx, this.getInteractHB(), this.hit);
+            drawBoxCollider(ctx, this.getInteractHB(), this.interHit);
             /*
             ctx.fillStyle = "#f0f";
             let cW = this.collider.width;
@@ -334,37 +410,4 @@ class Player {
         
         
     };
-
-    /**    
-        drawCollider(ctx) {
-        ctx.beginPath();
-        ctx.moveTo(this.collider.corner.x, this.collider.corner.y);
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = this.sidesAffected.down ? "green" : "red";
-        ctx.lineTo(this.collider.corner.x + this.collider.width, this.collider.corner.y);
-        ctx.stroke();
-        ctx.closePath();
-        
-        ctx.beginPath();
-        ctx.moveTo(this.collider.corner.x + this.collider.width, this.collider.corner.y);
-        ctx.strokeStyle = this.sidesAffected.left ? "green" : "red";
-        ctx.lineTo(this.collider.corner.x + this.collider.width, this.collider.corner.y + this.collider.height);
-        ctx.stroke();
-        ctx.closePath();
-
-        
-        ctx.beginPath();
-        ctx.moveTo(this.collider.corner.x + this.collider.width, this.collider.corner.y + this.collider.height);
-        ctx.strokeStyle = this.sidesAffected.up ? "green" : "red";
-        ctx.lineTo(this.collider.corner.x, this.collider.corner.y + this.collider.height);
-        ctx.stroke();
-        ctx.closePath();
-        
-        ctx.beginPath();
-        ctx.moveTo(this.collider.corner.x, this.collider.corner.y + this.collider.height);
-        ctx.strokeStyle = this.sidesAffected.right ? "green" : "red";
-        ctx.lineTo(this.collider.corner.x, this.collider.corner.y);
-        ctx.stroke();
-        ctx.closePath();
-    } */
 }

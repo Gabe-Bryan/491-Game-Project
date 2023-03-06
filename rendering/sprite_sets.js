@@ -57,6 +57,14 @@ class SpriteSet {
         return instanceClone_SpriteSet
     }
     
+    cloneAndAppendSprite(frameNum, quant = 1) {
+        while (quant > 0) {
+            let sprite_clone = this.sprites[frameNum].clone();
+            this.sprites.push(sprite_clone);
+            quant--;
+        }
+    }
+
     /**
      * Will mirror every sprite in this SpriteSet
      * @param {boolean} horz flip horizontally ?
@@ -78,7 +86,14 @@ class SpriteSet {
         return this;
     }
 
-    drawSprite(sKey, ctx, dx, dy, xScale, yScale) {
+    append_colorMod(frameNum, R, G, B, A) {
+        sprite_clone = this.sprites[frameNum].clone();
+        sprite_clone.pixelMorph_RGBA(R, G, B, A);
+        this.sprites.push(sprite_clone);
+        return this;
+    }
+
+    drawSprite(sKey, ctx, dx, dy, xScale = 1, yScale = xScale) {
         if (sKey >= this.getCount()) return;
         this.sprites[sKey].draw(ctx, dx, dy, xScale, yScale);
 
@@ -93,6 +108,31 @@ class SpriteSet {
                 let dy_t = dy + v * tileS.sHeight * yScale;
                 tileS.draw(ctx, dx_t, dy_t, xScale, yScale);
             }
+        }
+    }
+
+    projectileBuilder(origDir) { // 0 → north  |  1 → east  |  2 → south  |  3 → west
+        this.cloneAndAppendSprite(0, 3);
+
+        if (origDir == 0) {
+            this.sprites[1].rotateImg(1);
+            this.sprites[2].rotateImg(2);
+            this.sprites[3].rotateImg(3);
+        }
+        if (origDir == 1) {
+            this.sprites[0].rotateImg(3);
+            this.sprites[2].rotateImg(1);
+            this.sprites[3].rotateImg(2);
+        }
+        if (origDir == 2) {
+            this.sprites[0].rotateImg(2);
+            this.sprites[1].rotateImg(3);
+            this.sprites[3].rotateImg(1);
+        }
+        if (origDir == 3) {
+            this.sprites[0].rotateImg(1);
+            this.sprites[1].rotateImg(2);
+            this.sprites[2].rotateImg(3);
         }
     }
 
