@@ -33,7 +33,7 @@ ASSET_MANAGER.downloadAll(() => {
 
 	new GraphicsLoader(); // <- just to build the sprites & animations into GRAPHICS
 
-	Player.CURR_PLAYER = new Player(canvas.width/2 - 16, canvas.height/6 - 32);
+	Player.CURR_PLAYER = new Player(canvas.width/2 - 16, canvas.height/2 - 32);
 	gameEngine.addEntity(Player.CURR_PLAYER); 
 	//gameEngine.addEntity(new Knight(canvas.width/4, canvas.height/2));
 	
