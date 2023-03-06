@@ -10,7 +10,7 @@ class Bomb {
         this.state = 1 // 0: stable, 1: burning, 2 blowing
 
         this.phys2d  = {static: true};
-        this.bomb_collider = {type: "box", corner: {x: this.x + -1*SCALE, y: this.y + 3 * SCALE}, width: 14 * SCALE, height: 14 * SCALE};
+        this.bomb_collider = {type: "box", corner: {x: this.x + -1 * SCALE, y: this.y +  3 * SCALE}, width: 14 * SCALE, height: 14 * SCALE};
         this.blow_collider = {type: "box", corner: {x: this.x - 20 * SCALE, y: this.y - 18 * SCALE}, width: 52 * SCALE, height: 52 * SCALE};
         this.collider = this.bomb_collider;
         this.attackHits = [];
@@ -28,17 +28,6 @@ class Bomb {
         ];
     }
 
-    checkBlown(dir) {
-        if (this.alreadyGotBlown == false) {
-            let player = Player.CURR_PLAYER;
-            this.processAttack();
-            if (checkCollision(this, player)) {
-                player.takeDamage(this.damage, scaleVect(dir, Bomb.NORM_KB))
-                this.alreadyGotBlown = true;
-            }
-        }
-    }
-
     processBlown() {
         this.alreadyGotBlown = true;
 
@@ -52,15 +41,20 @@ class Bomb {
         
         if (this.friendFire) {
             gameEngine.scene.interact_entities.forEach((entity) =>{
-                    if(entity != this && entity.collider && entity.collider.type == "box" &&
-                        entity.tag == "enemy" && !this.attackHits.includes(entity)) {
-                        if (checkCollision(this, entity)) {
+                    if (entity != this && entity.collider && entity.collider.type == "box" &&
+                        entity.tag == "enemy" && !this.attackHits.includes(entity))
+                    {
+                        if (checkCollision(this, entity)){
+                        console.log("FASBI")
+
                             let kbDir = normalizeVector(distVect(this, entity));
                             entity.takeDamage(this.damage, scaleVect(kbDir, Bomb.NORM_KB));
                             this.attackHits.push(entity);
                         }
                     }
                 });
+            console.log(this.attackHits)
+            
         }
     }
 
@@ -128,7 +122,7 @@ class Triforce {
 
 class DeathCloud {
     constructor(x, y, spawnStuff = true) {
-        Object.assign(this, {x, y});
+        Object.assign(this, {x, y, spawnStuff});
         this.spawn = null;
         this.cloudDone = false;
         this.cloudAnimation = GRAPHICS.getInstance('ANIMA_enemy_death_cloud').setLooping(false);

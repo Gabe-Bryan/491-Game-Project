@@ -42,9 +42,16 @@ class Player {
 
         this.holding = false;
         this.throwing = false;
-        this.holdObj = 0; // only 1 so far, the bomb
+
+        // 0 = bomb, 1 = pot
+        this.currObjHeld = 0; 
+        this.holdObjs = ['bomb', 'pot']
+
         // si = sprite index, xos = x offset, yos = y offset, spnX = spawn x offset
-        this.holdObjInfo = [{scl: 1.1, xos:1.5, yos: -9, spnX: 8, spnY: 10}];
+        this.holdObjInfo = [
+            {scl: 1.1, xos:1.5, yos: -9, spnX: 8, spnY: 7}, // bomb
+            {scl: 1.12, xos:-1, yos: -9.4, spnX: 4.8, spnY: 8}  // pot
+        ];
         this.throwTime = 0; this.butpad = 0; this.butpadLength = 0.6;
     };
 
@@ -95,7 +102,8 @@ class Player {
 
         // other animations / sprites
         this.holdObjSprite = [
-            GRAPHICS.get('PRJX_reg_bomb'),
+            GRAPHICS.getInstance('PRJX_reg_bomb'),
+            GRAPHICS.getInstance('SET_pot'),
         ]
 
         this.attackTime = GRAPHICS.getAnimation('ANIMA_link_attack_west').fTiming.reduce((a, b) => a+b);
@@ -161,13 +169,23 @@ class Player {
         else if(!gameEngine.keys["e"])                      this.interacting = false;
         /////// THROW STUFF //////////// . . . .
         if (gameEngine.keys["f"]) {
+            this.currObjHeld = 0;
             if (!this.holding && !this.throwing && this.butpad <= 0) {
-                console.log("HOLD");
                 this.holding = true;
                 this.butpad = this.butpadLength
             }
             else if (this.holding && !this.throwing && this.butpad <= 0){
-                // console.log("THROW");
+                this.throwing = true;
+                this.butpad = this.butpadLength
+            }   
+        }
+        if (gameEngine.keys["q"]) {
+            this.currObjHeld = 1;
+            if (!this.holding && !this.throwing && this.butpad <= 0) {
+                this.holding = true;
+                this.butpad = this.butpadLength
+            }
+            else if (this.holding && !this.throwing && this.butpad <= 0){
                 this.throwing = true;
                 this.butpad = this.butpadLength
             }   
@@ -226,12 +244,13 @@ class Player {
     processThrow() {
         if (this.holding && this.throwing) {
             console.log("THROW");
-            let prjX = this.x + this.holdObjInfo[this.holdObj].spnX * SCALE;
-            let prjY = this.y + this.holdObjInfo[this.holdObj].spnY * SCALE;
+            let prjX = this.x + this.holdObjInfo[this.currObjHeld].spnX * SCALE;
+            let prjY = this.y + this.holdObjInfo[this.currObjHeld].spnY * SCALE;
             // n s e w
             let pf =  this.facing
             let facDir = pf == 0 ? 0 : pf == 2 ? 1 : pf == 1 ? 2 : 3
-            gameEngine.scene.addInteractable(new Projectile('bomb', prjX, prjY, facDir, true));
+
+            gameEngine.scene.addInteractable(new Projectile(this.holdObjs[this.currObjHeld], prjX, prjY, facDir, true));
             this.holding = false;
             this.throwTime = Player.THROW_CD;
         }
@@ -380,11 +399,11 @@ class Player {
         // Game is still going 
         else this.animations[this.state][this.facing].animate(gameEngine.clockTick, ctx, this.x, this.y, scale, this.pain.hurting, this.hitstop.hitting);
         if (this.holding)
-            this.holdObjSprite[this.holdObj].drawSprite(
+            this.holdObjSprite[this.currObjHeld].drawSprite(
                 0, ctx,
-                this.x + this.holdObjInfo[this.holdObj].xos * scale,
-                this.y + this.holdObjInfo[this.holdObj].yos * scale,
-                scale * this.holdObjInfo[this.holdObj].scl
+                this.x + this.holdObjInfo[this.currObjHeld].xos * scale,
+                this.y + this.holdObjInfo[this.currObjHeld].yos * scale,
+                scale * this.holdObjInfo[this.currObjHeld].scl
         );
         // GRAPHICS.get('SET_end_game').drawSprite(0, ctx, this.x+100, this.y, scale);
         // GRAPHICS.get('ANIMA_link_dead').animate(gameEngine.clockTick, ctx, this.x +100, this.y, scale);
