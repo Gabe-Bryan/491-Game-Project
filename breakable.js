@@ -2,7 +2,7 @@ class Pot {
     constructor(x, y){
         Object.assign(this, {x, y});
         this.updateCollider();
-        this.DEBUG = true;
+        this.DEBUG = false;
         this.tag = "environment";
         this.phys2d= {static: true}
     }

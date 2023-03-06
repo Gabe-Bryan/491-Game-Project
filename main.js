@@ -4,6 +4,7 @@ const GRAPHICS = new GraphicsManager();
 const GAMEDISPLAY = new GameDisplay();
 const SCALE = 3;
 const TILE_SIZE = 16;
+
 ASSET_MANAGER.queueDownload(
 	"prototype_map.png", 
 	"link.png", 
@@ -26,6 +27,7 @@ ASSET_MANAGER.queueDownload(
 	"bombs.png"
 );
 
+let START_POS 
 ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");
 	const ctx = canvas.getContext("2d");
@@ -33,8 +35,9 @@ ASSET_MANAGER.downloadAll(() => {
 
 	new GraphicsLoader(); // <- just to build the sprites & animations into GRAPHICS
 
-	Player.CURR_PLAYER = new Player(canvas.width/2 - 16, canvas.height/2 - 32);
-	gameEngine.addEntity(Player.CURR_PLAYER); 
+	Player.CURR_PLAYER = new Player();
+	START_POS = {x: canvas.width/2 - 16, y: canvas.height/2 - 32}
+	gameEngine.addEntity(Player.CURR_PLAYER = new Player(START_POS.x, START_POS.y)); 
 	//gameEngine.addEntity(new Knight(canvas.width/4, canvas.height/2));
 	
 	let roomWidth = 20;
@@ -70,7 +73,7 @@ ASSET_MANAGER.downloadAll(() => {
 	testMap.addMapCellEntity(3, 2, new Bunny(400,400));
 	//////////////////////////////////////////////////////////
 	testMap.addMapCellEntity(1, 2, new Bunny(400,400));
-	testMap.addMapCellEntity(1, 4, new Triforce(400,300));
+	testMap.addMapCellEntity(0, 4, new Triforce(400,300));
 
 	let r1_Pot1XY = tileToScreenCoord(1, 1);
 	let r1_Pot2XY = tileToScreenCoord(1, 14);
@@ -83,15 +86,15 @@ ASSET_MANAGER.downloadAll(() => {
 	testMap.addMapCellEntity(1, 2, new Pot(r1_Pot4XY.x, r1_Pot4XY.y));
 	testMap.addMapCellEntity(1, 2, new Door(r1_Door.x, r1_Door.y, 0, true));
 
-	let r1_Wizard = tileToScreenCoord(3,4);
-	testMap.addMapCellEntity(1, 2, new Wizard(r1_Wizard.x, r1_Wizard.y));
+	let r1_Wizard = tileToScreenCoord(2,13);
+	testMap.addMapCellEntity(1, 3, new Wizard(r1_Wizard.x, r1_Wizard.y));
 	//////////////////////////////////////////////////////////
 
 
 	let r1_KnightXY = tileToScreenCoord(14, 2);
 	let r1_SkullXY = tileToScreenCoord(1, 3);
 	testMap.addMapCellEntity(1, 3, new Knight(r1_KnightXY.x, r1_KnightXY.y));
-	testMap.addMapCellEntity(1, 3, new Skull(r1_SkullXY.x, r1_SkullXY.y));
+	//testMap.addMapCellEntity(1, 3, new Skull(r1_SkullXY.x, r1_SkullXY.y));
 
 	let r2_Knight1XY = tileToScreenCoord(6, 2);
 	let r2_Knight2XY = tileToScreenCoord(10, 13);
@@ -99,6 +102,10 @@ ASSET_MANAGER.downloadAll(() => {
 	testMap.addMapCellEntity(2, 3, new Knight(r2_Knight1XY.x, r2_Knight1XY.y));
 	testMap.addMapCellEntity(2, 3, new Knight(r2_Knight2XY.x, r2_Knight2XY.y));
 	testMap.addMapCellEntity(2, 3, new Skull(r2_SkullXY.x, r2_SkullXY.y));
+	testMap.addMapCellEntity(2, 4, new Pot(r1_Pot1XY.x, r1_Pot1XY.y));
+	testMap.addMapCellEntity(2, 4, new Pot(r1_Pot2XY.x, r1_Pot2XY.y));
+	testMap.addMapCellEntity(2, 4, new Pot(r1_Pot3XY.x, r1_Pot3XY.y));
+	testMap.addMapCellEntity(2, 4, new Pot(r1_Pot4XY.x, r1_Pot4XY.y));
 	
 	let r3_Knight1XY = tileToScreenCoord(6, 13),
 		r3_Knight2XY = tileToScreenCoord(13, 13),
@@ -110,6 +117,14 @@ ASSET_MANAGER.downloadAll(() => {
 	testMap.addMapCellEntity(2, 4, new Skull(r3_SkullXY.x, r3_SkullXY.y));
 	testMap.addMapCellEntity(2, 4, new Skull(r3_Skull2XY.x, r3_Skull2XY.y));
 	
+	//Room 4sd
+	let r4_Wizard1 = tileToScreenCoord(3, 2);
+	let r4_Wizard2 = tileToScreenCoord(9, 2);
+	testMap.addMapCellEntity(1, 4, new Knight(r3_Knight1XY.x, r3_Knight1XY.y));
+	testMap.addMapCellEntity(1, 4, new Knight(r3_Knight2XY.x, r3_Knight2XY.y));
+	testMap.addMapCellEntity(1, 4, new Wizard(r4_Wizard1.x, r4_Wizard1.y));
+	testMap.addMapCellEntity(1, 4, new Wizard(r4_Wizard2.x, r4_Wizard2.y));
+
 	let chestXY = tileToScreenCoord(7, 5);
 	testMap.addMapCellEntity(1, 1, new SmallChest(chestXY.x, chestXY.y, new HeartDrop(chestXY.x, chestXY.y - 8)));
 	//gameEngine.scene.addEnvEntity(chest);

@@ -4,7 +4,7 @@ class Wizard {
     static KB_DUR = 0.1;
     static MAX_VEL = 150;
 
-    static RUN_RAD = 300;
+    static RUN_RAD = 250;
     static APPROACH_RAD = 400;
     constructor(x, y) {
         Object.assign(this, {x, y});
