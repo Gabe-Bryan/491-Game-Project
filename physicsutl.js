@@ -36,13 +36,18 @@ const updatePhys = (entities) => {
      */
 correctMovement = (prevX, prevY, me) => {
     me.colliding = false;//.sort((e1, e2) => -(distance(e1, this) - distance(e2, this)))
-    gameEngine.scene.env_entities.forEach(entity => {
-        if(entity.collider != undefined && entity.collider.type === "box" && entity != me){
+    let scene = gameEngine.scene;
+    scene.env_entities.concat(scene.interact_entities).forEach(entity => {
+        if( entity.collider != undefined && entity.collider.type === "box" && entity != me
+            && entity.phys2d && entity.phys2d.static && entity.phys2d.isSolid !== false
+            && (entity.tag == "environment" || entity.tag == "env_interact")){
+            
             //Check to see if player is colliding with entity
             let colliding = checkCollision(me, entity);
-            me.colliding = colliding || me.colliding;//store for later purposes
             //check to see if the collision entity is solid and the type of entity we are looking for
-            if(colliding && entity.phys2d && entity.phys2d.static && entity.tag == "environment"){
+            if(colliding){
+                me.colliding = colliding || me.colliding;//store for later purposes
+                if(entity instanceof Knight && me instanceof Knight) console.log("two knights");
                 dynmStaticColHandler(me, entity, prevX, prevY);//Handle collision
                 me.updateCollider();
             }

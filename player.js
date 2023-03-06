@@ -21,6 +21,9 @@ class Player {
         this.attackHBDim = {width: 15 * SCALE, height: 30 * SCALE};
         this.attackHBOffset = {x: 0, y: -3 * SCALE};
 
+        this.interactHBDim = {width: 7 * SCALE, height: 15 * SCALE};
+        this.interacting = false;
+
         this.animations = [];
         this.setupAnimations();
 
@@ -35,7 +38,7 @@ class Player {
         this.kbLeft = 0;
         this.swingCD = 0;
 
-        this.keyCount = 0;
+        this.keyCount = 1;
 
         this.holding = false;
         this.throwing = false;
@@ -153,6 +156,9 @@ class Player {
         if (gameEngine.keys["d"])      moveIn.x = 1;//[this.facing, this.state, this.phys2d.velocity.x] = [2, walkStateChange, Player.MAX_VEL];
         else if (gameEngine.keys["a"]) moveIn.x = -1;//[this.facing, this.state, this.phys2d.velocity.x] = [3, walkStateChange, -Player.MAX_VEL];
         
+        this.interHit = false;
+        if (gameEngine.keys["e"] && !this.interacting)      this.processInteract();
+        else if(!gameEngine.keys["e"])                      this.interacting = false;
         /////// THROW STUFF //////////// . . . .
         if (gameEngine.keys["f"]) {
             if (!this.holding && !this.throwing && this.butpad <= 0) {
@@ -204,6 +210,19 @@ class Player {
         gameEngine.currMap.screenEdgeTransition(this);
     };
 
+    processInteract() {
+        this.interacting = true;
+        gameEngine.scene.interact_entities.forEach((entity) =>{
+            if(entity != this && entity.collider && entity.collider.type == "box"
+             && entity.tag == "env_interact"){
+                this.interHit = boxBoxCol(this.getInteractHB(), entity.collider) || this.interHit;
+                if(this.interHit){
+                    if(entity.interact(this.keyCount > 0)) this.keyCount--;
+                }
+            }
+        });
+    }
+
     processThrow() {
         if (this.holding && this.throwing) {
             console.log("THROW");
@@ -238,7 +257,8 @@ class Player {
             this.hitEnemy = false;
             gameEngine.scene.interact_entities.forEach((entity) =>{
                 if(entity != this && entity.collider && entity.collider.type == "box" 
-                    && entity.tag == "enemy" && !this.attackHits.includes(entity)){
+                    && (entity.tag == "enemy" || (entity.tag == "environment") && entity instanceof Pot) 
+                    && !this.attackHits.includes(entity)){
                     let hit = boxBoxCol(this.attackHitbox, entity.collider);
                     this.hitEnemy = hit || this.hitEnemy;//stored for debugging
                     if (hit) {
@@ -318,6 +338,25 @@ class Player {
         }
     }
 
+    getInteractHB(){
+        if (this.facing == 2 || this.facing == 3){
+            let hDist = this.interactHBDim.height - this.collider.height;
+            let yAdjust = hDist/2;
+    
+            let xAdjust = this.facing == 3 ? -this.interactHBDim.width : this.collider.width;
+    
+            let AHBcorner = {x: this.collider.corner.x + xAdjust, y: this.collider.corner.y - yAdjust};
+            return {type: "box", corner: AHBcorner, width: this.interactHBDim.width, height: this.interactHBDim.height};    
+        } else {
+            let wDist = this.interactHBDim.height - this.collider.width;
+            let xAdjust = wDist/2;
+
+            let yAdjust = this.facing == 1 ? -this.collider.height : this.interactHBDim.width;
+            let AHBcorner = {x: this.collider.corner.x - xAdjust, y: this.collider.corner.y - yAdjust};
+            return {type: "box", corner: AHBcorner, width: this.interactHBDim.height, height: this.interactHBDim.width}; 
+        }
+    }
+
     resetAnims() {
         for(let i = 0; i < this.animations.length; i++){
             for(let j = 0; j < this.animations[i].length; j++){
@@ -351,9 +390,12 @@ class Player {
         // GRAPHICS.get('ANIMA_link_dead').animate(gameEngine.clockTick, ctx, this.x +100, this.y, scale);
         // GRAPHICS.get('ANIMA_link_carry_west').animate(gameEngine.clockTick, ctx, this.x +100, this.y, scale);
 
+        
+
         if(this.DEBUG) {
             //this.drawCollider(ctx);
             if(this.state == 2) this.drawAttack(ctx, scale);
+            drawBoxCollider(ctx, this.getInteractHB(), this.interHit);
             /*
             ctx.fillStyle = "#f0f";
             let cW = this.collider.width;
@@ -377,37 +419,4 @@ class Player {
         
         
     };
-
-    /**    
-        drawCollider(ctx) {
-        ctx.beginPath();
-        ctx.moveTo(this.collider.corner.x, this.collider.corner.y);
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = this.sidesAffected.down ? "green" : "red";
-        ctx.lineTo(this.collider.corner.x + this.collider.width, this.collider.corner.y);
-        ctx.stroke();
-        ctx.closePath();
-        
-        ctx.beginPath();
-        ctx.moveTo(this.collider.corner.x + this.collider.width, this.collider.corner.y);
-        ctx.strokeStyle = this.sidesAffected.left ? "green" : "red";
-        ctx.lineTo(this.collider.corner.x + this.collider.width, this.collider.corner.y + this.collider.height);
-        ctx.stroke();
-        ctx.closePath();
-
-        
-        ctx.beginPath();
-        ctx.moveTo(this.collider.corner.x + this.collider.width, this.collider.corner.y + this.collider.height);
-        ctx.strokeStyle = this.sidesAffected.up ? "green" : "red";
-        ctx.lineTo(this.collider.corner.x, this.collider.corner.y + this.collider.height);
-        ctx.stroke();
-        ctx.closePath();
-        
-        ctx.beginPath();
-        ctx.moveTo(this.collider.corner.x, this.collider.corner.y + this.collider.height);
-        ctx.strokeStyle = this.sidesAffected.right ? "green" : "red";
-        ctx.lineTo(this.collider.corner.x, this.collider.corner.y);
-        ctx.stroke();
-        ctx.closePath();
-    } */
 }

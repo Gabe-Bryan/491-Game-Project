@@ -25,7 +25,6 @@ class Animation {
 
         this.tempo = 1;
         this.elapsedTime = 0;
-        // this.currFrame = this.fSequence_mod[0];
         this.currFrame = 0;
         this.nextFrameAt = this.fTiming_mod[0] * this.tempo;
 
