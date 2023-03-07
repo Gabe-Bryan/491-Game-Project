@@ -57,67 +57,8 @@ ASSET_MANAGER.downloadAll(() => {
 		'#584828':'stairs'
 	});
 
-	// TESTING SPAWNZ
-	// gameEngine.scene.addInteractable(new Bomb(240,200));
-	// gameEngine.scene.addInteractable(new Projectile('bomb', 400, 600, {x: -0.7, y:0.5}));
-	// gameEngine.scene.addEnvEntity(new Projectile('ironBall', 200, 600, {x:-0.5, y:1}));
-	// gameEngine.scene.addEnvEntity(new Projectile('arrow', 100, 280, 1));
-	// gameEngine.scene.addEnvEntity(new Projectile('trident', 100, 360, 1));
-	// gameEngine.scene.addEnvEntity(new Projectile('fireBall', 100, 440, 1));
-	// gameEngine.scene.addEnvEntity(new Projectile('redBeam', 100, 520, 1));
-	// gameEngine.scene.addEnvEntity(new Projectile('blueBeam', 100, 600, 1));
-	// gameEngine.scene.addEnvEntity(new BuringGasCloud(100, 300));
-	// testMap.addMapCellEntity(1, 2, new Bomb(200,370));
-
-
 	gameEngine.currMap = testMap;
-
-	////////////////////////////////////////////////////////////
-	testMap.addMapCellEntity(2, 2, new Knight(500, 600));
-	testMap.addMapCellEntity(2, 2, new Knight(600, 600)); 
-	testMap.addMapCellEntity(3, 2, new Knight(600, 600));
-	testMap.addMapCellEntity(3, 2, new Bunny(400,400));
-	//////////////////////////////////////////////////////////
-	testMap.addMapCellEntity(1, 2, new Bunny(400,400));
-	testMap.addMapCellEntity(1, 4, new Triforce(400,300));
-
-	let r1_Pot1XY = tileToScreenCoord(1, 1);
-	let r1_Pot2XY = tileToScreenCoord(1, 14);
-	let r1_Pot3XY = tileToScreenCoord(18, 1);
-	let r1_Pot4XY = tileToScreenCoord(18, 14);
-	let r1_Door = tileToScreenCoord(9, 15);
-	testMap.addMapCellEntity(1, 2, new Pot(r1_Pot1XY.x, r1_Pot1XY.y));
-	testMap.addMapCellEntity(1, 2, new Pot(r1_Pot2XY.x, r1_Pot2XY.y));
-	testMap.addMapCellEntity(1, 2, new Pot(r1_Pot3XY.x, r1_Pot3XY.y));
-	testMap.addMapCellEntity(1, 2, new Pot(r1_Pot4XY.x, r1_Pot4XY.y));
-	testMap.addMapCellEntity(1, 2, new Door(r1_Door.x, r1_Door.y, 0, true));
-
-	let r1_Wizard = tileToScreenCoord(3,4);
-	// testMap.addMapCellEntity(1, 2, new Wizard(r1_Wizard.x, r1_Wizard.y));
-	//////////////////////////////////////////////////////////
-
-
-	let r1_KnightXY = tileToScreenCoord(14, 2);
-	let r1_SkullXY = tileToScreenCoord(1, 3);
-	testMap.addMapCellEntity(1, 3, new Knight(r1_KnightXY.x, r1_KnightXY.y));
-	testMap.addMapCellEntity(1, 3, new Skull(r1_SkullXY.x, r1_SkullXY.y));
-
-	let r2_Knight1XY = tileToScreenCoord(6, 2);
-	let r2_Knight2XY = tileToScreenCoord(10, 13);
-	let r2_SkullXY = tileToScreenCoord(14, 1);
-	testMap.addMapCellEntity(2, 3, new Knight(r2_Knight1XY.x, r2_Knight1XY.y));
-	testMap.addMapCellEntity(2, 3, new Knight(r2_Knight2XY.x, r2_Knight2XY.y));
-	testMap.addMapCellEntity(2, 3, new Skull(r2_SkullXY.x, r2_SkullXY.y));
-	
-	let r3_Knight1XY = tileToScreenCoord(6, 13),
-		r3_Knight2XY = tileToScreenCoord(13, 13),
-		r3_SkullXY = tileToScreenCoord(17, 1),
-		r3_Skull2XY = tileToScreenCoord(2, 2);
-	
-	testMap.addMapCellEntity(2, 4, new Knight(r3_Knight1XY.x, r3_Knight1XY.y));
-	testMap.addMapCellEntity(2, 4, new Knight(r3_Knight2XY.x, r3_Knight2XY.y));
-	testMap.addMapCellEntity(2, 4, new Skull(r3_SkullXY.x, r3_SkullXY.y));
-	testMap.addMapCellEntity(2, 4, new Skull(r3_Skull2XY.x, r3_Skull2XY.y));
+	new _obj_Placer(testMap)
 	
 	let chestXY = tileToScreenCoord(7, 5);
 	testMap.addMapCellEntity(1, 1, new SmallChest(chestXY.x, chestXY.y, new HeartDrop(chestXY.x, chestXY.y - 8)));
@@ -135,20 +76,8 @@ ASSET_MANAGER.downloadAll(() => {
 	testMap.addMapCellEntity(12, 1, dungeonPortalIn);
 	testMap.addMapCellEntity(1, 2, dungeonPortalOut);
 
-	// let prtl_clrs = ['red', 'green', 'yellow', 'blue', 'orange'];
-	// for (let i = 0; i < prtl_clrs.length; i++) {
-	// 	let left_prtlXY = tileToScreenCoord(5, 1+i);
-	// 	let right_prtlXY = tileToScreenCoord(14, 1+i);
-	// 	left_prtlXY.y *= 2.3;
-	// 	right_prtlXY.y *= 2.3;
-	// 	let left_prtl = new Portal(left_prtlXY.x, left_prtlXY.y, prtl_clrs[i], 1, 1);
-	// 	let right_prtl = new Portal(right_prtlXY.x, right_prtlXY.y, prtl_clrs[i], 1, 1);
-	// 	left_prtl.setLinkedEntity(right_prtl);
-	// 	right_prtl.setLinkedEntity(left_prtl);
-	// 	testMap.addMapCellEntity(1, 1, left_prtl);
-	// 	testMap.addMapCellEntity(1, 1, right_prtl);
-	// }
-	
+
+
 	// actual starting room is (11, 1)
 	let startMapCellX = 11,
 		startMapCellY = 1;

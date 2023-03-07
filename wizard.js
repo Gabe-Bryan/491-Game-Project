@@ -6,8 +6,10 @@ class Wizard {
 
     static RUN_RAD = 300;
     static APPROACH_RAD = 400;
-    constructor(x, y) {
-        Object.assign(this, {x, y});
+    constructor(sX, sY) {
+        const tileCord = typeof sX == 'object'
+        this.x = tileCord ? sX.x : sX;
+        this.y = tileCord ? sX.y : sY;
 
         this.DEBUG = false;
         this.state = 0;  // 0:idle,  1:attacking

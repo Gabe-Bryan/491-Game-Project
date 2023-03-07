@@ -2,8 +2,11 @@ class Skull{
     static MAX_VEL = 125;
     static KB_STR = 100;
     static DMG_CD = 1.1;
-    constructor(x, y){
-        Object.assign(this, {x, y});
+    constructor(sX, sY){
+        const tileCord = typeof sX == 'object'
+        this.x = tileCord ? sX.x : sX;
+        this.y = tileCord ? sX.y : sY;
+        
         this.updateCollider();
         this.phys2d = {static: false, velocity: {x: 0, y: 0}};
         this.setupAnimations();

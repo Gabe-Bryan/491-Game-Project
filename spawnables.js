@@ -83,7 +83,7 @@ class Bomb {
 
 
 class HeartDrop {
-    constructor(x, y){
+    constructor(x, y) {
         Object.assign(this, {x, y});
         this.collider = {type: "box", corner: {x: this.x+4, y: this.y+4}, width: 8 * SCALE, height: 8 * SCALE}
         this.DEBUG = false;

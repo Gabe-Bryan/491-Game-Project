@@ -102,3 +102,157 @@ class SceneManager{
         }
     }
 }
+
+class _obj_Placer {
+    constructor(_map_) {
+        const MAP = _map_;
+        this.betaWorld(MAP);
+        this.betaDungeon(MAP);
+        this.demoWorld(MAP);
+
+    // note: gameEngine.currMap.teleportPlayerToMapCell(0,0)
+    }
+
+    portalsTest() {
+        let prtl_clrs = ['red', 'green', 'yellow', 'blue', 'orange'];
+        for (let i = 0; i < prtl_clrs.length; i++) {
+        	let left_prtlXY = tileToScreenCoord(5, 1+i);
+        	let right_prtlXY = tileToScreenCoord(14, 1+i);
+        	left_prtlXY.y *= 2.3;
+        	right_prtlXY.y *= 2.3;
+        	let left_prtl = new Portal(left_prtlXY.x, left_prtlXY.y, prtl_clrs[i], 1, 1);
+        	let right_prtl = new Portal(right_prtlXY.x, right_prtlXY.y, prtl_clrs[i], 1, 1);
+        	left_prtl.setLinkedEntity(right_prtl);
+        	right_prtl.setLinkedEntity(left_prtl);
+        	testMap.addMapCellEntity(1, 1, left_prtl);
+        	testMap.addMapCellEntity(1, 1, right_prtl);
+        }
+    }
+
+    testJunk() {
+        gameEngine.scene.addInteractable(new Bomb(240,200));
+        gameEngine.scene.addInteractable(new Projectile('bomb', 400, 600, {x: -0.7, y:0.5}));
+        gameEngine.scene.addEnvEntity(new Projectile('ironBall', 200, 600, {x:-0.5, y:1}));
+        gameEngine.scene.addEnvEntity(new Projectile('arrow', 100, 280, 1));
+        gameEngine.scene.addEnvEntity(new Projectile('trident', 100, 360, 1));
+        gameEngine.scene.addEnvEntity(new Projectile('fireBall', 100, 440, 1));
+        gameEngine.scene.addEnvEntity(new Projectile('redBeam', 100, 520, 1));
+        gameEngine.scene.addEnvEntity(new Projectile('blueBeam', 100, 600, 1));
+        gameEngine.scene.addEnvEntity(new BuringGasCloud(100, 300));
+    }
+
+
+    // cells: (col, row)
+
+    alpha(map) {
+        // map cell : column, row
+        let   mc   =  {c:-1,  r:-1}
+
+        // 0 - 0 //
+    }
+
+    /**cells (2,2) (3,1) (3,2) (3,3) (4,2) */
+    betaWorld(map) {
+        // map cell : column, row
+        let   mc   =  {c:-1,  r:-1}
+
+        // 2 - 2 //
+        mc = {c:2, r:2}
+
+        map.addMapCellEntity(mc.c, mc.r, new Knight(500, 600));
+        map.addMapCellEntity(mc.c, mc.r, new Knight(600, 600));
+        // 3 - 1 //
+
+        // 3 - 2 //
+        mc = {c:3, r:2}
+
+        map.addMapCellEntity(mc.c, mc.r, new Knight(600, 600));
+        map.addMapCellEntity(mc.c, mc.r, new Bunny(400,400));
+        // 3 - 3 //
+        mc = {c:3, r:3}
+
+        
+        // 4 - 2 //
+        mc = {c:4, r:2}
+
+
+    }
+    /**cells (1,1) (1,2) (1,3) (1,4) (2,3) (2,4) */
+    betaDungeon(map) {
+        // map cell : column, row
+        let   mc   =  {c:-1,  r:-1}
+
+        // 1 - 1 //
+
+        // 1 - 2 // * dungeon enter
+        mc = {c:1, r:2}
+
+        map.addMapCellEntity(mc.c, mc.r, new Bunny(400,400));
+        map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(1, 1)));
+        map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(1, 14)));
+        map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 1)));
+        map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 14)));
+        map.addMapCellEntity(mc.c, mc.r, new Door(tileToScreenCoord(9, 15)));
+	    map.addMapCellEntity(mc.c, mc.r, new Wizard(tileToScreenCoord(3,4)));
+
+
+        // 1 - 3 //
+        mc = {c:1, r:3}
+
+        map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(14, 2)));
+        map.addMapCellEntity(mc.c, mc.r, new Skull(tileToScreenCoord(1, 3)));
+
+
+        // 1 - 4 // * dungeon exit
+        mc = {c:1, r:4}
+
+        map.addMapCellEntity(mc.c, mc.r, new Triforce(400,300));
+
+        // 2 - 3 //
+        mc = {c:2, r:3}
+
+        map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(6, 2)));
+        map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(10, 13)));
+        map.addMapCellEntity(mc.c, mc.r, new Skull(tileToScreenCoord(14, 1)));
+
+        // 2 - 4 //
+        mc = {c:2, r:4}
+        map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(6, 13)));
+        map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(13, 13)));
+        map.addMapCellEntity(mc.c, mc.r, new Skull(tileToScreenCoord(17, 1)));
+        map.addMapCellEntity(mc.c, mc.r, new Skull(tileToScreenCoord(2, 2)));
+    }
+
+    /** cells (10,1) (10,2) (11,1) (11,2) (12,1) (12,2)*/
+    demoWorld(map) {
+        // map cell : column, row
+        let   mc   =  {c:-1,  r:-1}
+
+        // 10 - 1 //
+        mc = {c:10, r:1}
+        map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(14, 5)));
+        map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(4, 8)));
+
+        // 10 - 2 //
+        mc = {c:10, r:2}
+        map.addMapCellEntity(mc.c, mc.r, new Wizard(tileToScreenCoord(3,4)));
+
+        // 11 - 1 //
+        mc = {c:11, r:1}
+        map.addMapCellEntity(mc.c, mc.r, new Bunny(tileToScreenCoord(10, 10)));
+
+        // 11 - 2 //
+        mc = {c:11, r:2}
+        map.addMapCellEntity(mc.c, mc.r, new Wizard(tileToScreenCoord(10, 10)));
+
+        // 12 - 1 //
+        mc = {c:12, r:1}
+        map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(4, 8)));
+
+
+        // 12 - 2 //
+        mc = {c:12, r:2}
+        map.addMapCellEntity(mc.c, mc.r, new Bunny(tileToScreenCoord(10, 10)));
+
+    }
+}

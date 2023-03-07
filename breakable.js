@@ -1,6 +1,9 @@
 class Pot {
     constructor(x, y){
-        Object.assign(this, {x, y});
+        if (typeof this.x === 'object')
+            {this.x = x.x; this.y = x.y}
+        else {this.x = x; this.y = y;}
+
         this.updateCollider();
         this.DEBUG = true;
         this.tag = "environment";
