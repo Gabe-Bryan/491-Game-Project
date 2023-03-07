@@ -51,8 +51,8 @@ class _Bomb_PRX {
     static DMG = 0;
     static KB = 500;
     // doesnt deal damage directly, spawns a 'Bomb' bomb in its place when movement is done
-    constructor(x, y, dir, ff) {
-        Object.assign(this, {x, y, dir, ff});
+    constructor(x, y, dir, ff, type) {
+        Object.assign(this, {x, y, dir, ff, type});
         this.phys2d = {isSolid: true, static: false, velocity: {x: 0, y: 0}};
         this.dim = {x: 13, y: 16}
         this.preVeloc = {x:1, y:1};

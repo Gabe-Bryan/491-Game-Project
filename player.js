@@ -7,7 +7,8 @@ class Player {
     static MAX_KC = 10;
 
     static SWING_CD = 0.25;
-    static THROW_CD = 3;
+    static THROW_CD = 0.5; // 3
+    static BUTTON_CD = 0.01; // 0.5
 
     static CURR_PLAYER = undefined;
 
@@ -55,7 +56,7 @@ class Player {
             {scl: 1.1, xos:1.5, yos: -9, spnX: 8, spnY: 7}, // bomb
             {scl: 1.12, xos:-1, yos: -9.4, spnX: 4.8, spnY: 8}  // pot
         ];
-        this.throwTime = 0; this.butpad = 0; this.butpadLength = 0.6;
+        this.throwTime = 0; this.buttonCD = 0;
     };
 
     setupAnimations() {
@@ -96,12 +97,12 @@ class Player {
             GRAPHICS.get('ANIMA_link_carry_east'),
             GRAPHICS.get('ANIMA_link_carry_west'),
         ]
-        // this.animations[5] = [
-        //     GRAPHICS.get('ANIMA_link_throw_north'),
-        //     GRAPHICS.get('ANIMA_link_throw_south'),
-        //     GRAPHICS.get('ANIMA_link_throw_east'),
-        //     GRAPHICS.get('ANIMA_link_throw_west')
-        // ]
+        this.animations[5] = [
+            GRAPHICS.get('ANIMA_link_throw_north'),
+            GRAPHICS.get('ANIMA_link_throw_south'),
+            GRAPHICS.get('ANIMA_link_throw_east'),
+            GRAPHICS.get('ANIMA_link_throw_west')
+        ]
 
         // other animations / sprites
         this.holdObjSprite = [
@@ -167,69 +168,82 @@ class Player {
         if (gameEngine.keys["d"])      moveIn.x = 1;//[this.facing, this.state, this.phys2d.velocity.x] = [2, walkStateChange, Player.MAX_VEL];
         else if (gameEngine.keys["a"]) moveIn.x = -1;//[this.facing, this.state, this.phys2d.velocity.x] = [3, walkStateChange, -Player.MAX_VEL];
         
+          /***********************************/
+         /////// INTERACTIONS ////////////////
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
         this.interHit = false;
-        if (gameEngine.keys["e"] && !this.interacting)      this.processInteract();
-        else if(!gameEngine.keys["e"])                      this.interacting = false;
-        /////// THROW STUFF //////////// . . . .
-        if (gameEngine.keys["f"]) {
-            this.currObjHeld = 0;
-            if (!this.holding && !this.throwing && this.butpad <= 0) {
-                this.holding = true;
-                this.butpad = this.butpadLength
-            }
-            else if (this.holding && !this.throwing && this.butpad <= 0){
-                this.throwing = true;
-                this.butpad = this.butpadLength
-            }   
-        }
-        if (gameEngine.keys["q"]) {
-            this.currObjHeld = 1;
-            if (!this.holding && !this.throwing && this.butpad <= 0) {
-                this.holding = true;
-                this.butpad = this.butpadLength
-            }
-            else if (this.holding && !this.throwing && this.butpad <= 0){
-                this.throwing = true;
-                this.butpad = this.butpadLength
-            }   
-        }
-        if (this.butpad > 0) this.butpad -= gameEngine.clockTick;
-        else this.butpad = 0; // slowdown key press change
+        // if (gameEngine.keys["i"] && !this.interacting && !this.holding && this.buttonCD <= 0) { 
+        //     this.processInteract();
+        //     this.buttonCD = Player.BUTTON_CD;
+        // }
+        // else if (!gameEngine.keys["i"]) this.interacting = false;
+
+        // if (gameEngine.keys["i"] && this.holding && !this.throwing && this.buttonCD <= 0) {
+        //     this.processThrow();
+        // }
+        if (gameEngine.keys["i"]) {
+            if (this.buttonCD <= 0 && !this.throwing) {
+                if (!this.interacting && !this.holding) this.processInteract();
+                else if (this.holding) this.processThrow();
+            } this.buttonCD = Player.BUTTON_CD;
+        } else this.interacting = false;
+
+        /////// THROW STUFF EASY ////////////
+        if (gameEngine.keys["n"] || gameEngine.keys["m"]) { // <- cheat buttons
+            if (gameEngine.keys["n"] && !this.holding) this.currObjHeld = 0; // 0 = bomb 
+            if (gameEngine.keys["m"] && !this.holding) this.currObjHeld = 1; // 1 = pot
+            if (this.buttonCD <= 0 && !this.throwing) {
+                if (!this.holding)       this.holding = true;
+                else if (this.holding)   this.processThrow();
+            } this.buttonCD = Player.BUTTON_CD;
+        } // .........
 
         if (this.throwing) this.processThrow();
-        ///////////// . . . . . . . . . . . . . 
+             // slowdown action button with  //  buffer => buttonCD
+        if (this.buttonCD > 0)        this.buttonCD -= gameEngine.clockTick;
+        else if (this.buttonCD < 0 )  this.buttonCD  = 0; 
+          //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+         ////// INTERACTION DONE //////////
+        // .............................//
+
+        // console.log("interacxt: " + this.interacting)
+        // console.log("buttcd: " + this.buttonCD)
 
         this.moveIn = normalizeVector(moveIn);
         this.swingCD -= gameEngine.clockTick;
         this.attackIn = gameEngine.keys['j'] && this.swingCD <= 0 && !this.holding;
         this.updateState(this.moveIn, this.attackIn);
+        if (this.throwing) this.state = 5
 
-
-        if (this.state != 2) this.updateDirection(this.moveIn);
+        if (this.state != 2 && this.state != 5) this.updateDirection(this.moveIn);
         else if (this.state == 2) this.processAttack();
 
-
-        if(this.hitstop.hitting) {
+        if (this.hitstop.hitting) {
             this.phys2d.velocity = {x: 0, y: 0};
             return;
         }
 
         if (this.kbLeft > 0){
             this.phys2d.velocity = {x: this.kbVect.x, y: this.kbVect.y};
-            //console.log(this.phys2d.velocity);
-            //console.log(this.kbVect);
             this.phys2d.velocity.x *= gameEngine.clockTick;
             this.phys2d.velocity.y *= gameEngine.clockTick;
 
             this.kbLeft -= gameEngine.clockTick;
         } else {
             let velocityMod = this.state == 2 || this.state == 4 ? 1/2 : 1;
+            if (this.state === 5) velocityMod = 0;
             this.phys2d.velocity.x = this.moveIn.x * Player.MAX_VEL * gameEngine.clockTick * velocityMod;
             this.phys2d.velocity.y = this.moveIn.y * -1 * Player.MAX_VEL * gameEngine.clockTick * velocityMod;    
         }
+
         
         gameEngine.currMap.screenEdgeTransition(this);
     };
+
+    pickUpObj(obj) {
+        this.currObjHeld = obj;
+        this.holding = true;
+    }
 
     processInteract() {
         this.interacting = true;
@@ -245,20 +259,19 @@ class Player {
     }
 
     processThrow() {
-        if (this.holding && this.throwing) {
-            console.log("THROW");
+        if (this.holding && !this.throwing) {
+            this.throwing = true; this.holding = false;
+
             let prjX = this.x + this.holdObjInfo[this.currObjHeld].spnX * SCALE;
             let prjY = this.y + this.holdObjInfo[this.currObjHeld].spnY * SCALE;
             // n s e w
             let pf =  this.facing
             let facDir = pf == 0 ? 0 : pf == 2 ? 1 : pf == 1 ? 2 : 3
-
             gameEngine.scene.addInteractable(new Projectile(this.holdObjs[this.currObjHeld], prjX, prjY, facDir, true));
-            this.holding = false;
             this.throwTime = Player.THROW_CD;
+            this.state = 5;
         }
         else if (this.throwTime <= 0) {
-            console.log("THROW DONE");
             this.throwing = false;
             this.throwTime = 0;
         }
