@@ -155,9 +155,10 @@ class _obj_Placer {
         mc = {c:0, r:0}
         // map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(4,2)));
         // map.addMapCellEntity(mc.c, mc.r, new Bunny(tileToScreenCoord(4, 6)));
-        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(7, 5), 'heart'));
+        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(7, 5), 'bomb'));
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(1, 1)));
 	    // map.addMapCellEntity(mc.c, mc.r, new Wizard(tileToScreenCoord(3,4)));
+        map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(3, 3), 2));
 
     
 

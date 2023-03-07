@@ -33,7 +33,7 @@ class Bomb {
         this.setupAnimations();
 
         
-        if (this.type = 'chest') this.anima[1].skipToFrame(7);
+        if (this.type == 'chest') this.anima[1].skipToFrame(7);
         
         this.DEBUG = false;
     }

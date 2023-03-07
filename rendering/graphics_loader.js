@@ -304,6 +304,7 @@ class GraphicsLoader {
             16, 32
         );
 
+
         ///// SHADOW ????
         GRAPHICS.addSpriteSet('SET_shadow', 'ENEMIES', 126, 859, 12, 6);
         
@@ -341,6 +342,13 @@ class GraphicsLoader {
             [   0,    1,   2,    3,   4,   5,   6,   7],
             [0.06, 0.08, 0.1, 0.15, 0.2, 0.2, 0.2, 0.2]
         );
+
+        // bomb flowers
+        GRAPHICS.addSpriteSet('SET_bomb_flowers', 'BOMBS',
+            [2, 22, 42, 62, 82, 102, 122, 142], 58, 16, 17
+        );
+
+
 
             /////////////////////////////////////
            //  ◈  P R O J E C T I L E S  ◈   //
