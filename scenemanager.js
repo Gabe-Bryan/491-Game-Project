@@ -109,11 +109,14 @@ class _obj_Placer {
         this.betaWorld(MAP);
         this.betaDungeon(MAP);
         this.demoWorld(MAP);
+        this.portalsTest(MAP);
+        this.alpha(MAP);
+        // this.testJunk()
 
     // note: gameEngine.currMap.teleportPlayerToMapCell(0,0)
     }
 
-    portalsTest() {
+    portalsTest(testMap) {
         let prtl_clrs = ['red', 'green', 'yellow', 'blue', 'orange'];
         for (let i = 0; i < prtl_clrs.length; i++) {
         	let left_prtlXY = tileToScreenCoord(5, 1+i);
@@ -138,7 +141,7 @@ class _obj_Placer {
         gameEngine.scene.addEnvEntity(new Projectile('fireBall', 100, 440, 1));
         gameEngine.scene.addEnvEntity(new Projectile('redBeam', 100, 520, 1));
         gameEngine.scene.addEnvEntity(new Projectile('blueBeam', 100, 600, 1));
-        gameEngine.scene.addEnvEntity(new BuringGasCloud(100, 300));
+        gameEngine.scene.addEnvEntity(new BadGas(100, 300));
     }
 
 
@@ -150,6 +153,15 @@ class _obj_Placer {
 
         // 0 - 0 //
         mc = {c:0, r:0}
+        map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(4,2)));
+        map.addMapCellEntity(mc.c, mc.r, new Bunny(tileToScreenCoord(4, 6)));
+        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(7, 5), 'heart'));
+        map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(1, 1)));
+	    map.addMapCellEntity(mc.c, mc.r, new Wizard(tileToScreenCoord(3,4)));
+
+    
+
+
 
     }
 
@@ -192,7 +204,7 @@ class _obj_Placer {
         // 1 - 2 // * dungeon enter
         mc = {c:1, r:2}
 
-        map.addMapCellEntity(mc.c, mc.r, new Bunny(400,400));
+        map.addMapCellEntity(mc.c, mc.r, new Bunny(tileToScreenCoord(3, 3)));
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(1, 1)));
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(1, 14)));
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 1)));

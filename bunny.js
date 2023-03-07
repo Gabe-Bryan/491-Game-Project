@@ -3,9 +3,10 @@ class Bunny {
     static SPAWN_RATE = 3;
     static KB_DUR = 0.1;
     static MAX_VEL = 100
-    constructor(_start_pos) {
-        this.x = _start_pos.x;
-        this.y = _start_pos.y;
+    constructor(sX, sY) {
+        const tileCord = typeof sX == 'object'
+        this.x = tileCord ? sX.x : sX;
+        this.y = tileCord ? sX.y : sY;
 
         this.DEBUG = false;
         this.state = 0;  // 0:idle,  1:walking, 2:attacking

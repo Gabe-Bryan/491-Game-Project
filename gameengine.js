@@ -98,6 +98,7 @@ class GameEngine {
         // Draw the scene first
         drawList(this.scene.env_entities, this.ctx);
         drawList(this.entities.concat(this.scene.interact_entities).sort((a, b) => b.y - a.y), this.ctx);
+        drawList(new Triforce(500,500))
 
         GAMEDISPLAY.draw();
     };

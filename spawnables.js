@@ -1,6 +1,8 @@
 class Bomb {
     static NORM_KB = 2500;
     static NORM_DMG = 3;
+    static WIDTH = 13;
+    static HEIGHT = 16;
 
     constructor(_x, _y, _friendFire = false, _type = null) {
 
@@ -29,6 +31,9 @@ class Bomb {
         this.attackHits = [];
 
         this.setupAnimations();
+
+        
+        if (this.type = 'chest') this.anima[1].skipToFrame(7);
         
         this.DEBUG = false;
     }
@@ -94,6 +99,9 @@ class Bomb {
 
 
 class HeartDrop {
+    static WIDTH = 13;
+    static HEIGHT = 16;
+
     constructor(_x, _y) {
         let ob = typeof _x == 'object'
         this.x = ob ? _x.x : _x;
@@ -159,7 +167,9 @@ class DeathCloud {
     }
 }
 
-class BuringGasCloud {
+class BadGas {
+    static WIDTH = 26
+    static HEIGHT = 23
     constructor(_x, _y) {
         let ob = typeof _x == 'object'
         this.x = ob ? _x.x : _x;
@@ -167,12 +177,12 @@ class BuringGasCloud {
 
         this.cloudDone = false;
         this.cloudAnimation = GRAPHICS.getInstance('ANIMA_enemy_death_gas').setLooping(false);
-        this.collider = {type: "box", corner: {x: this.x + 15, y: this.y + 12}, width: 16 * SCALE, height: 16 * SCALE};
+        this.updateCollider();
         this.phys2d  = {static: true};
         this.cd = 0; this.cdLen = 0.66
         this.hit = false; this.kicBack = 1;
         this.damage = 1;
-
+        this.DEBUG = false;
     }
 
     update() {
@@ -190,12 +200,14 @@ class BuringGasCloud {
             }
         } else this.cd -+ gameEngine.clockTick;
     }
-    updateCollider(){
-        this.collider = {type: "box", corner: {x: this.x, y: this.y}, width: 12 * SCALE, height: 12 * SCALE};
+
+    updateCollider() {
+        this.collider = {type: "box", corner: {x: this.x+15, y: this.y+8}, width: 16 * SCALE * 2, height: 16 * SCALE * 2} ;
     }
 
-    draw(ctx) {
-        this.cloudDone = this.cloudAnimation.animate(gameEngine.clockTick, ctx, this.x, this.y, 3);
+    draw(ctx, scale) {
+        this.cloudDone = this.cloudAnimation.animate(gameEngine.clockTick, ctx, this.x, this.y, scale * 1.6);
+        if (this.DEBUG) drawBoxCollider(ctx, this.collider, true);
     }
 }
 

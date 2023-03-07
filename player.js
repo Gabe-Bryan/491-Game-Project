@@ -1,6 +1,6 @@
 class Player {
     
-    static MAX_HP = 10;
+    static MAX_HP = 100;
     static MAX_VEL = 250; //Pixels per second (I think -Gabe)
     static KB_DUR = 0.1;
     static KB_STR = 300;
@@ -11,8 +11,11 @@ class Player {
 
     static CURR_PLAYER = undefined;
 
-    constructor(x, y) {
-        Object.assign(this, {x, y});
+    constructor(_x, _y) {
+        // Object.assign(this, {x, y});
+        let ob = typeof _x == 'object'
+        this.x = ob ? _x.x : _x;
+        this.y = ob ? _x.y : _y;
 
         this.DEBUG = false;
         this.state = 0;     // 0:idle, 1:walking, 2:attacking, 3: taking damage

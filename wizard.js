@@ -90,7 +90,7 @@ class Wizard {
             this.processAttack();
             this.velocity = {x: 0, y: 0};
         } else {
-            console.log("hiya");
+            // console.log("hiya");
             if(this.facingTime > this.nextDirChange) {
                 this.setCurrButton();
                 this.facingTime = 0;
@@ -130,7 +130,7 @@ class Wizard {
         let xDist = p.x - this.x;
         let yDist = p.y - this.y;
         let dist = distance(this, p)
-        console.log("dist x: " + xDist + " dist y: " + yDist);
+        // console.log("dist x: " + xDist + " dist y: " + yDist);
         if(dist < Wizard.RUN_RAD){
             if(Math.abs(xDist) > Math.abs(yDist)){
                 this.currButton = xDist > 0 ? 3 : 2;

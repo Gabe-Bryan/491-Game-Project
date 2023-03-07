@@ -104,6 +104,10 @@ class Animation {
         return spriteSet.getSpriteDimensions(this.currFrame, log);
     }
 
+    skipToFrame(frameNum) {
+        this.currFrame = frameNum;
+    }
+
     setLooping(the_looping) {
         this.looping = the_looping;
         return this;

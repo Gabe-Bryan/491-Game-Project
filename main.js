@@ -37,7 +37,8 @@ ASSET_MANAGER.downloadAll(() => {
 
 	new GraphicsLoader(); // <- just to build the sprites & animations into GRAPHICS
 
-	Player.CURR_PLAYER = new Player(canvas.width/2 - 16, canvas.height/2 - 32);
+	// Player.CURR_PLAYER = new Player(canvas.width/2 - 16, canvas.height/2 - 32);
+	Player.CURR_PLAYER = new Player(tileToScreenCoord(7, 6));
 	gameEngine.addEntity(Player.CURR_PLAYER); 
 	//gameEngine.addEntity(new Knight(canvas.width/4, canvas.height/2));
 	
@@ -75,9 +76,8 @@ ASSET_MANAGER.downloadAll(() => {
 	testMap.addMapCellEntity(1, 2, dungeonPortalOut);
 
 
-
 	// actual starting room is (11, 1)
-	let startMapCellX = 3, // 11
+	let startMapCellX = 1, // 11
 		startMapCellY = 2;  // 1
 
 	testMap.loadMapCell(startMapCellX, startMapCellY);
