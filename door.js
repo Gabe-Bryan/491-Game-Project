@@ -1,16 +1,19 @@
-class Door{
-    constructor(x, y, facing = 0, locked = false){
-        Object.assign(this, {x, y, facing});
+class Door {
+    constructor(_start_pos, _facing = 0, _locked = false) {
+        this.x = _start_pos.x;
+        this.y = _start_pos.y;
+        this.facing = _facing;
+
         this.updateCollider();
         this.phys2d = {static: true};
         this.DEBUG = false;
         this.tag = 'env_interact';
-        this.state = locked ? 2 : 0;
+        this.state = _locked ? 2 : 0;
 
         this.spritesSetup();
     }
 
-    updateCollider(){
+    updateCollider() {
         let width = this.facing <= 1 ? 32 * SCALE : 16 * SCALE;
         let height = this.facing <= 1 ? 16 * SCALE : 32 * SCALE;
         this.collider = {type: 'box', corner: {x: this.x, y: this.y}, height: height, width: width};

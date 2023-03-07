@@ -60,8 +60,6 @@ ASSET_MANAGER.downloadAll(() => {
 	gameEngine.currMap = testMap;
 	new _obj_Placer(testMap)
 	
-	let chestXY = tileToScreenCoord(7, 5);
-	testMap.addMapCellEntity(1, 1, new SmallChest(chestXY.x, chestXY.y, new HeartDrop(chestXY.x, chestXY.y - 8)));
 
 	let dungeonPortalInXY = tileToScreenCoord(7, 8),
 		dungeonPortalOutXY = tileToScreenCoord(9, 2);
@@ -79,8 +77,8 @@ ASSET_MANAGER.downloadAll(() => {
 
 
 	// actual starting room is (11, 1)
-	let startMapCellX = 11,
-		startMapCellY = 1;
+	let startMapCellX = 3, // 11
+		startMapCellY = 2;  // 1
 
 	testMap.loadMapCell(startMapCellX, startMapCellY);
 	//setInterval(bun, bt)

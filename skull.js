@@ -2,10 +2,10 @@ class Skull{
     static MAX_VEL = 125;
     static KB_STR = 100;
     static DMG_CD = 1.1;
-    constructor(sX, sY){
-        const tileCord = typeof sX == 'object'
-        this.x = tileCord ? sX.x : sX;
-        this.y = tileCord ? sX.y : sY;
+    constructor(_x, _y){
+        let ob = typeof _x == 'object'
+        this.x = ob ? _x.x : _x;
+        this.y = ob ? _x.y : _y;
         
         this.updateCollider();
         this.phys2d = {static: false, velocity: {x: 0, y: 0}};

@@ -1,9 +1,14 @@
 class SmallChest {
-    constructor(xLoc, yLoc, contents, state="closed") {
-        Object.assign(this, {xLoc, yLoc, contents, state});
+    constructor(_start_pos, _contents, _state="closed") {
+        // Object.assign(this, {xLoc, yLoc, contents, state});
+        this.xLoc = _start_pos.x;
+        this.yLoc = _start_pos.y;
+        this.contents = _contents;
+        this.state = _state
+
         this.DEBUG = true;
         this.phys2d = {static: true};
-        this.collider = {type: "box", corner: {x: xLoc+1*SCALE, y: yLoc+1 *SCALE}, height: 14 * SCALE, width: 14 * SCALE};
+        this.collider = {type: "box", corner: {x: this.xLoc+1*SCALE, y: this.yLoc+1 *SCALE}, height: 14 * SCALE, width: 14 * SCALE};
         this.tag = 'env_interact';
     };
 

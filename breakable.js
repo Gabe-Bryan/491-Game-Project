@@ -1,8 +1,8 @@
 class Pot {
-    constructor(x, y){
-        if (typeof this.x === 'object')
-            {this.x = x.x; this.y = x.y}
-        else {this.x = x; this.y = y;}
+    constructor(_x, _y){
+        let ob = typeof _x == 'object'
+        this.x = ob ? _x.x : _x;
+        this.y = ob ? _x.y : _y;
 
         this.updateCollider();
         this.DEBUG = true;

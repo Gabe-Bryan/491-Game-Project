@@ -1,10 +1,23 @@
 class Projectile {
     static TYPES = ['bomb', 'pot', 'ironBall', 'arrow', 'trident','fireBall', 'redBeam', 'blueBeam'];
-    constructor(type, x, y, nesw, ff) {
+    constructor(type, _x, _y, _nesw, _ff) {
         if (!Projectile.TYPES.includes(type))
             throw new Error(`${this.type} is NOT a valid type of projectile`);
         
-        let dir;
+        let dir,x,y,ff,nesw;
+
+        if (typeof x == 'object') {
+            x = _x.x
+            y = _x.y
+            ff = nesw
+            nesw = _y
+        }
+        else {
+            x = _x
+            y = _y
+            nesw = _nesw
+            ff = _ff
+        }
         
         if (typeof nesw == 'object') {
             dir = normalizeVector(nesw);
@@ -142,7 +155,7 @@ class _Bomb_PRX {
         if (this.topHeight < 0.01 && this.momentum <= 0) {
             this.bombSize = 1;
             this.dir = {x: 0, y:0}
-            gameEngine.scene.addInteractable(new Bomb(this.bomb_x, this.bomb_y, this.ff));
+            gameEngine.scene.addInteractable(new Bomb({x:this.bomb_x, y:this.bomb_y}, this.ff));
             this.removeFromWorld = true;
             return;
         }

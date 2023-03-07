@@ -2,8 +2,21 @@ class Bomb {
     static NORM_KB = 2500;
     static NORM_DMG = 3;
 
-    constructor(x, y, friendFire = false, type = null) {
-        Object.assign(this, {x, y, friendFire, type}); // more types coming soon ...                                                                                                                     as far as you know Wahahahahahaaaaa!
+    constructor(_x, _y, _friendFire = false, _type = null) {
+
+        if (typeof _x == 'object'){
+            this.x = _x.x;
+            this.y = _x.y;
+            this.friendFire = _y;
+            this.type = _friendFire;
+        }
+        else {
+            this.x = _x;
+            this.y = _y;
+            this.friendFire = _friendFire;
+            this.type = _type;
+        }
+
         this.kickBack = Bomb.NORM_KB;
         this.damage = Bomb.NORM_DMG;
         this.alreadyGotBlown = false;
@@ -52,9 +65,7 @@ class Bomb {
                             this.attackHits.push(entity);
                         }
                     }
-                });
-            console.log(this.attackHits)
-            
+                });       
         }
     }
 
@@ -83,8 +94,10 @@ class Bomb {
 
 
 class HeartDrop {
-    constructor(x, y) {
-        Object.assign(this, {x, y});
+    constructor(_x, _y) {
+        let ob = typeof _x == 'object'
+        this.x = ob ? _x.x : _x;
+        this.y = ob ? _x.y : _y;
         this.collider = {type: "box", corner: {x: this.x+4, y: this.y+4}, width: 8 * SCALE, height: 8 * SCALE}
         this.DEBUG = false;
     }
@@ -102,8 +115,10 @@ class HeartDrop {
 }
 
 class Triforce {
-    constructor(x, y) {
-        Object.assign(this, {x,y});
+    constructor(_x, _y) {
+        let ob = typeof _x == 'object'
+        this.x = ob ? _x.x : _x;
+        this.y = ob ? _x.y : _y;
         this.collider = {type: "box", corner: {x: this.x, y: this.y}, width: 79 * (SCALE - 1), height: 79 * (SCALE - 1)};
         this.DEBUG = false;
     }
@@ -121,8 +136,11 @@ class Triforce {
 }
 
 class DeathCloud {
-    constructor(x, y, spawnStuff = true) {
-        Object.assign(this, {x, y, spawnStuff});
+    constructor(_x, _y = true, _spawnStuff = true) {
+        let ob = typeof _x == 'object'
+        this.x = ob ? _x.x : _x;
+        this.y = ob ? _x.y : _y;
+        this.spawnStuff = ob ? _y : _spawnStuff
         this.spawn = null;
         this.cloudDone = false;
         this.cloudAnimation = GRAPHICS.getInstance('ANIMA_enemy_death_cloud').setLooping(false);
@@ -142,8 +160,11 @@ class DeathCloud {
 }
 
 class BuringGasCloud {
-    constructor(x, y) {
-        Object.assign(this, {x, y});
+    constructor(_x, _y) {
+        let ob = typeof _x == 'object'
+        this.x = ob ? _x.x : _x;
+        this.y = ob ? _x.y : _y;
+
         this.cloudDone = false;
         this.cloudAnimation = GRAPHICS.getInstance('ANIMA_enemy_death_gas').setLooping(false);
         this.collider = {type: "box", corner: {x: this.x + 15, y: this.y + 12}, width: 16 * SCALE, height: 16 * SCALE};
@@ -179,8 +200,11 @@ class BuringGasCloud {
 }
 
 class KeyDrop {
-    constructor(x, y){
-        Object.assign(this, {x, y});
+    constructor(_x, _y){
+        let ob = typeof _x == 'object'
+        this.x = ob ? _x.x : _x;
+        this.y = ob ? _x.y : _y;
+
         this.collider = {type: "box", corner: {x: this.x+4, y: this.y+4}, width: 8 * SCALE, height: 15 * SCALE}
         this.DEBUG = false;
     }

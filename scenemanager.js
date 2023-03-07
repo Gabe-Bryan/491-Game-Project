@@ -149,6 +149,8 @@ class _obj_Placer {
         let   mc   =  {c:-1,  r:-1}
 
         // 0 - 0 //
+        mc = {c:0, r:0}
+
     }
 
     /**cells (2,2) (3,1) (3,2) (3,3) (4,2) */
@@ -159,15 +161,15 @@ class _obj_Placer {
         // 2 - 2 //
         mc = {c:2, r:2}
 
-        map.addMapCellEntity(mc.c, mc.r, new Knight(500, 600));
-        map.addMapCellEntity(mc.c, mc.r, new Knight(600, 600));
+        map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(12, 12)));
+        map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(2, 2)));
         // 3 - 1 //
 
         // 3 - 2 //
         mc = {c:3, r:2}
 
-        map.addMapCellEntity(mc.c, mc.r, new Knight(600, 600));
-        map.addMapCellEntity(mc.c, mc.r, new Bunny(400,400));
+        map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(12, 12)));
+        map.addMapCellEntity(mc.c, mc.r, new Bunny(tileToScreenCoord(5, 5)));
         // 3 - 3 //
         mc = {c:3, r:3}
 
@@ -183,7 +185,10 @@ class _obj_Placer {
         let   mc   =  {c:-1,  r:-1}
 
         // 1 - 1 //
-
+        mc = {c:1, r:1}
+        let chestXY = tileToScreenCoord(7, 5);
+        map.addMapCellEntity(mc.c, mc.r, new SmallChest(chestXY, new HeartDrop(chestXY.x, chestXY.y - 8)));
+    
         // 1 - 2 // * dungeon enter
         mc = {c:1, r:2}
 

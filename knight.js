@@ -10,10 +10,9 @@ class Knight {
     static MAX_VEL = 125;
     static SPRINT_VEL = 310;
 
-    constructor(sX, sY) {
-        const tileCord = typeof sX == 'object'
-        this.x = tileCord ? sX.x : sX;
-        this.y = tileCord ? sX.y : sY;
+    constructor(_start_pos) {
+        this.x = _start_pos.x;
+        this.y = _start_pos.y;
 
         this.DEBUG = false;
         this.target = undefined;
