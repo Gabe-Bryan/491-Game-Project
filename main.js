@@ -5,7 +5,7 @@ const GAMEDISPLAY = new GameDisplay();
 const SCALE = 3;
 const TILE_SIZE = 16;
 const HUD_BUFFER = 100;
-ASSET_MANAGER.queueDownload(
+ASSET_MANAGER.queueDownload (
 	"prototype_map.png", 
 	"link.png", 
 	"overworld_tiles.png", 
@@ -36,6 +36,7 @@ ASSET_MANAGER.downloadAll(() => {
 	ctx.translate(0, HUD_BUFFER);
 	ctx.imageSmoothingEnabled = false;
 	new GraphicsLoader();
+	
 
 	Player.CURR_PLAYER = new Player(tileToScreenCoord(9.5, 2));
 	gameEngine.addEntity(Player.CURR_PLAYER); 

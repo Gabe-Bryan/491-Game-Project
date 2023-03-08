@@ -8,7 +8,7 @@ class Player {
 
     static SWING_CD = 0.25;
     static THROW_CD = 0.4; // 3
-    static BUTTON_CD = 0.01; // 0.5
+    static BUTTON_CD = 0.1; // 0.5
 
     static CURR_PLAYER = undefined;
 
