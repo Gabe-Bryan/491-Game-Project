@@ -263,7 +263,7 @@ class _obj_Placer {
         map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(2, 14), 2));
 
 
-        // 11 - 1 //
+        // 11 - 1 // START
         mc = {c:11, r:1}
         map.addMapCellEntity(mc.c, mc.r, new Bunny(tileToScreenCoord(10, 10)));
         map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(2, 3), 2));
@@ -278,8 +278,8 @@ class _obj_Placer {
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 10)));
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 10)));
         
-        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(8, 1)), 'heart');
-        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(11, 1), 'fart'));
+        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(8, 1), 'random'));
+        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(11, 1), 'random'));
         // map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(8, 9)), true);
 
         // 11 - 2 //s
@@ -326,7 +326,7 @@ class _obj_Placer {
 
         map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(2, 2), 2));
         map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(17, 2), 2));
-        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(2, 12), 'fart'));
+        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(2, 12), 'random'));
 
         // 12 - 2 //
         mc = {c:12, r:2}
