@@ -61,7 +61,7 @@ ASSET_MANAGER.downloadAll(() => {
 	
 	////// P O R T A L S //////
 
-	let portalIn = {mapx:11, mapy:1, coord:tileToScreenCoord(7, 8)},
+	let portalIn = {mapx:12, mapy:1, coord:tileToScreenCoord(7, 8)},
 		portalOut = {mapx:1, mapy:2, coord:tileToScreenCoord(9.5, 7.5)};
 	
 	let dungeonPortalIn = new Portal(portalIn.coord.x, portalIn.coord.y, 'pink', portalIn.mapx, portalIn.mapy),
