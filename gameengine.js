@@ -62,8 +62,8 @@ class GameEngine {
                 console.log("CLICK", getXandY(e));
             }
             this.click = getXandY(e);
-           // ASSET_MANAGER.playAsset("aboda_village.mp3");
-           // ASSET_MANAGER.adjustVolume(0.2);
+           ASSET_MANAGER.playAsset("aboda_village.mp3");
+           ASSET_MANAGER.adjustVolume(0.2);
         });
 
 
