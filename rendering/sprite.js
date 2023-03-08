@@ -64,7 +64,7 @@ class Sprite {
             if(typeof R === 'number') imageData.data[i+0] = R
             if(typeof G === 'number') imageData.data[i+1] = G
             if(typeof B === 'number') imageData.data[i+2] = B
-            if(typeof A === 'number') imageData.data[i+3] = A
+            if(typeof A === 'number') imageData.data[i+3] *= A
         }
         
         ctx.putImageData(imageData, 0, 0);

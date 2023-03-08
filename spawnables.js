@@ -23,6 +23,8 @@ class Bomb {
         this.damage = Bomb.NORM_DMG;
         this.alreadyGotBlown = false;
         this.state = 1 // 0: stable, 1: burning, 2 blowing
+        this.tag = "env_interact_breakable";
+
 
         this.phys2d  = {static: true};
         this.bomb_collider = {type: "box", corner: {x: this.x + -1 * SCALE, y: this.y +  3 * SCALE}, width: 14 * SCALE, height: 14 * SCALE};
@@ -32,7 +34,7 @@ class Bomb {
 
         this.setupAnimations();
 
-        
+        if (this.type == 'stable') this.state = 0
         if (this.type == 'chest') this.anima[1].skipToFrame(7);
         
         this.DEBUG = false;
@@ -71,6 +73,12 @@ class Bomb {
                         }
                     }
                 });       
+        }
+    }
+
+    takeDamage() {
+        if (this.state == 0) {
+            this.state = 1;
         }
     }
 
@@ -144,23 +152,31 @@ class Triforce {
 }
 
 class DeathCloud {
-    constructor(_x, _y = true, _spawnStuff = true) {
-        let ob = typeof _x == 'object'
-        this.x = ob ? _x.x : _x;
-        this.y = ob ? _x.y : _y;
-        this.spawnStuff = ob ? _y : _spawnStuff
-        this.spawn = null;
+    constructor(x, y, spawnType = 'nice', probability = 0.333) {
+        Object.assign(this, {x, y})
         this.cloudDone = false;
         this.cloudAnimation = GRAPHICS.getInstance('ANIMA_enemy_death_cloud').setLooping(false);
-        if(Math.random() < 0.334)    
-            gameEngine.scene.addInteractable(new HeartDrop(this.x+7.5*SCALE, this.y+7*SCALE));
-    }
+        this.badGas = false
+        let dp;
+        if (typeof probability == 'number')
+            dp = new Array(3).fill(probability)
+        else dp = probability
 
-    update() {
-        if (this.cloudDone && this.spawn === null) {
-            this.removeFromWorld = true;
+        console.log(dp)
+
+        if ((spawnType == 'all' || spawnType == 'nice' || spawnType == 'mix') && Math.random() <= dp[0])
+            gameEngine.scene.addInteractable(new HeartDrop(this.x + 7.75 *SCALE, this.y + 6 *SCALE));
+
+        else if ((spawnType == 'all' || spawnType == 'mean' || spawnType == 'mix') && Math.random() <= dp[1])
+            gameEngine.scene.addInteractable(new Bomb(this.x + 7 *SCALE, this.y + 1.3 *SCALE));
+
+        else if ((spawnType == 'all' || spawnType == 'mean') && Math.random() <= dp[2]) {
+            gameEngine.scene.addInteractable(new BadGas(this.x - 8 *SCALE, this.y - 7 *SCALE));
+            this.badGas = true;
         }
     }
+
+    update() {if (this.cloudDone || this.badGas) this.removeFromWorld = true;}
 
     draw(ctx) {
         this.cloudDone = this.cloudAnimation.animate(gameEngine.clockTick, ctx, this.x, this.y, 3);
@@ -174,6 +190,7 @@ class BadGas {
         let ob = typeof _x == 'object'
         this.x = ob ? _x.x : _x;
         this.y = ob ? _x.y : _y;
+        this.scale = 8;
 
         this.cloudDone = false;
         this.cloudAnimation = GRAPHICS.getInstance('ANIMA_enemy_death_gas').setLooping(false);
@@ -187,7 +204,7 @@ class BadGas {
 
     update() {
         if (this.cloudDone) {
-            this.removeFromWorld = true;
+            // this.removeFromWorld = true;
         } 
         else if (this.cd <= 0) {
             if (Player.CURR_PLAYER.alive) {
@@ -202,12 +219,13 @@ class BadGas {
     }
 
     updateCollider() {
-        this.collider = {type: "box", corner: {x: this.x+15, y: this.y+8}, width: 16 * SCALE * 2, height: 16 * SCALE * 2} ;
+        this.collider = {type: "box", corner: {x: this.x - (4 * this.scale), y: this.y - (5 * this.scale)}, width: 24 * this.scale, height: 24 * this.scale} ;
     }
 
-    draw(ctx, scale) {
-        this.cloudDone = this.cloudAnimation.animate(gameEngine.clockTick, ctx, this.x, this.y, scale * 1.6);
-        if (this.DEBUG) drawBoxCollider(ctx, this.collider, true);
+    draw(ctx) {
+        this.cloudDone = this.cloudAnimation.animate(gameEngine.clockTick, ctx, this.x - (5 * this.scale), this.y - (4 * this.scale), this.scale);
+        // if (this.DEBUG) drawBoxCollider(ctx, this.collider, true);
+        // drawBoxCollider(ctx, this.collider, true);
     }
 }
 

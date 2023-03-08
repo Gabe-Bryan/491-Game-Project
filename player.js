@@ -7,7 +7,7 @@ class Player {
     static MAX_KC = 10;
 
     static SWING_CD = 0.25;
-    static THROW_CD = 0.5; // 3
+    static THROW_CD = 0.4; // 3
     static BUTTON_CD = 0.01; // 0.5
 
     static CURR_PLAYER = undefined;
@@ -215,6 +215,7 @@ class Player {
         this.updateState(this.moveIn, this.attackIn);
         if (this.throwing) this.state = 5
 
+
         if (this.state != 2 && this.state != 5) this.updateDirection(this.moveIn);
         else if (this.state == 2) this.processAttack();
 
@@ -247,14 +248,15 @@ class Player {
 
     processInteract() {
         this.interacting = true;
-        gameEngine.scene.interact_entities.forEach((entity) =>{
-            if(entity != this && entity.collider && entity.collider.type == "box"
-             && entity.tag == "env_interact"){
-                this.interHit = boxBoxCol(this.getInteractHB(), entity.collider) || this.interHit;
-                if(this.interHit){
-                    if(entity.interact(this.keyCount > 0)) this.keyCount--;
+        gameEngine.scene.interact_entities.forEach((entity) => {
+            if (entity != this &&
+                entity.collider &&
+                entity.collider.type == "box"
+                && (entity.tag == "env_interact" || entity.tag == "env_interact_breakable")
+                && boxBoxCol(this.getInteractHB(), entity.collider))
+                {
+                    entity.interact();
                 }
-            }
         });
     }
 
@@ -291,11 +293,14 @@ class Player {
             //Attack collision det and handling
             this.hitEnemy = false;
             gameEngine.scene.interact_entities.forEach((entity) =>{
-                if(entity != this && entity.collider && entity.collider.type == "box" 
-                    && (entity.tag == "enemy" || (entity.tag == "environment") && entity instanceof Pot) 
-                    && !this.attackHits.includes(entity)){
+                if (entity != this &&
+                    entity.collider &&
+                    entity.collider.type == "box" &&
+                    (entity.tag == "enemy" || entity.tag == "env_interact_breakable") &&
+                    !this.attackHits.includes(entity))
+                    {
                     let hit = boxBoxCol(this.attackHitbox, entity.collider);
-                    this.hitEnemy = hit || this.hitEnemy;//stored for debugging
+                    // this.hitEnemy = hit || this.hitEnemy;//stored for debugging
                     if (hit) {
                         let kbDir = normalizeVector(distVect(this.collider.corner, entity.collider.corner));
                         let kb = scaleVect(kbDir, Player.KB_STR * SCALE);

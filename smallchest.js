@@ -5,8 +5,11 @@ class SmallChest {
         this.state = state;
         this.phys2d = {static: true};
         this.collider = {type: "box", corner: {x: this.xLoc+1*SCALE, y: this.yLoc+1 *SCALE}, height: 14 * SCALE, width: 14 * SCALE};
+        this.tag = 'env_interact';
+        this.randPool = ['heart', 'heart', 'bomb', 'fart'];
 
-        this.contents = false
+        if (contentsType === 'random') contentsType = this.randCont();
+
         switch (contentsType) {
             case null    : break
             case 'heart' : this.contents = new HeartDrop(this.xLoc +7.5, this.yLoc - 7)
@@ -19,21 +22,21 @@ class SmallChest {
                 break
         }
 
-        this.tag = 'env_interact';
         this.DEBUG = false;
-
     };
+    
+    randCont() {
+        return this.randPool[Math.floor(Math.random() * this.randPool.length)]
+    }
 
-    update() {
-    };
+    update() {};
 
     interact() {
-        if (this.state != 'closed')
-            return;
+        if (this.state != 'closed') return;
+        // else ...
         this.state = 'open';
-        console.log(this.contents);
-        if (this.contents){
-            // this.contents.x += this.collider.width/2 - this.contents.collider.width/2;
+        // console.log(this.contents);
+        if (this.contents) {
             let pos = gameEngine.scene.interact_entities.findIndex((element) => this == element)
             gameEngine.scene.interact_entities.splice(pos, 0, this.contents);
         }

@@ -1,38 +1,35 @@
 class Pot {
-    constructor(_x, _y){
-        let ob = typeof _x == 'object'
-        this.x = ob ? _x.x : _x;
-        this.y = ob ? _x.y : _y;
+    constructor(pos, spawnType, spawnChances){
+        Object.assign(this, {spawnType, spawnChances})
+        this.x = pos.x; this.y = pos.y;
 
         this.updateCollider();
         this.sprite = GRAPHICS.getInstance('SET_pot');
-        this.tag = "env_interact";
+        this.tag = "env_interact_breakable";
         this.phys2d= {static: true}
         // this.DEBUG = true;
 
     }
 
     updateCollider(){
-        this.collider = {type: "box", corner: {x: this.x + 2.5 * SCALE, y: this.y + 2 * SCALE}, width: 12*SCALE, height: 13*SCALE};
+        this.collider = {type: "box", corner: {x: this.x + 2 * SCALE, y: this.y + 1 * SCALE}, width: 12*SCALE, height: 13*SCALE};
     }
 
     takeDamage() {
         this.removeFromWorld = true;
-        gameEngine.scene.addInteractable(new DeathCloud(this.x-2.5 * SCALE, this.y - 2 * SCALE, false));
-        if(Math.random() < 0.5)    gameEngine.scene.addInteractable(new HeartDrop(this.x+7.5*SCALE, this.y+7*SCALE));
+        gameEngine.scene.addInteractable(new DeathCloud(this.x - 5.5 *SCALE, this.y - 4 *SCALE, this.spawnType, this.spawnChances));
     }
 
     interact() {
         Player.CURR_PLAYER.pickUpObj(1);
         this.removeFromWorld = true;
     }
-    update() {
 
-    }
+    update() {}
 
     draw(ctx) {
         this.sprite.drawSprite(0, ctx, this.x, this.y, SCALE);
-        // drawBoxCollider(ctx, this.collider, true);
+        drawBoxCollider(ctx, this.collider, true);
     }
 
 }
@@ -45,34 +42,49 @@ class BombFlower {
         this.y = pos.y;
         this.type = _type
         this.picked = false;
+        this.y += 3;
 
         this.spriteSet = GRAPHICS.getInstance("SET_bomb_flowers");
+        this.tag = "env_interact_breakable";
 
         this.updateCollider();
         this.DEBUG = false;
-        this.tag = "env_interact";
-        this.phys2d= {static: true}
+        this.phys2d = {static: true, isSolid: true};
     }
 
-    updateCollider(){
-        this.collider = {type: "box", corner: {x: this.x+3, y: this.y+5}, width: BombFlower.WIDTH*SCALE-6, height: BombFlower.HEIGHT*SCALE-10};
+    updateCollider() {
+        this.collider = {
+            type: "box",
+            corner: {x: this.x + 6, y: this.y + 5},
+            width:  BombFlower.WIDTH  * SCALE * 0.75,
+            height: BombFlower.HEIGHT * SCALE * 0.75
+        };
     }
 
     takeDamage() {
-        this.removeFromWorld = true;
-        gameEngine.scene.addInteractable(new Bomb(this.x-2.5 * SCALE, this.y - 2 * SCALE, false));
+        const detB = new Bomb(this.x +6, this.y, false)
+        gameEngine.scene.addInteractable(detB);
+        this.detach();
+
+        let pos = gameEngine.scene.interact_entities.findIndex((element) => this == element)
+        gameEngine.scene.interact_entities.splice(pos, 0, detB);
     }
 
     interact() {
         Player.CURR_PLAYER.pickUpObj(0);
-        this.removeFromWorld = true;
+        this.detach();
     }
-    update() {
 
+    detach() {
+        this.picked = true;
+        this.phys2d = {static: true, isSolid: false};
+        this.tag = 'environment';
     }
+    
+    update() {}
 
     draw(ctx) {
-        this.spriteSet.drawSprite(this.type, ctx, this.x, this.y, SCALE);
+        this.spriteSet.drawSprite(this.picked ? this.type+4 : this.type, ctx, this.x, this.y+3, SCALE);
         // drawBoxCollider(ctx, this.collider, true);
     }
 }

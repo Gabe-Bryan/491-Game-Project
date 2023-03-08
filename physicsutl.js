@@ -40,7 +40,7 @@ correctMovement = (prevX, prevY, me) => {
     scene.env_entities.concat(scene.interact_entities).forEach(entity => {
         if( entity.collider != undefined && entity.collider.type === "box" && entity != me
             && entity.phys2d && entity.phys2d.static && entity.phys2d.isSolid !== false
-            && (entity.tag == "environment" || entity.tag == "env_interact")){
+            && (entity.tag == "environment" || entity.tag == "env_interact" || entity.tag == "env_interact_breakable")){
             
             //Check to see if player is colliding with entity
             let colliding = checkCollision(me, entity);

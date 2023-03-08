@@ -170,12 +170,14 @@ class GraphicsLoader {
         'SET_link_carry_throw_east', 'LINK',
         [159, 181, 204, 227, 250], 168,
         [ 16,  16,  17,  16,  16], 24,
-        [ 0,  0,  0,  0,  0], // x-offset
-        [ 0, -1, -2,  0,  1]  // y-offset
+        [  0,   0,   0,   0,   0], // x-offset
+        [  0,  -1,  -2,   0,   1]  // y-offset
         );
+        GRAPHICS.addSpriteSet('SET_link_carry_throw_east', 'LINK', 109, 136, 16, 23); // throwing
+
         GRAPHICS.addAnimation('ANIMA_link_carry_east', 'SET_link_carry_throw_east', [3,1,2,1], 0.15, -2).addDamageSprites();
         GRAPHICS.addAnimation('ANIMA_link_carry_idle_east', 'SET_link_carry_throw_east', [3], Infinity, -2).addDamageSprites();
-        GRAPHICS.addAnimation('ANIMA_link_throw_east', 'SET_link_carry_throw_east', [4], 0).addDamageSprites();
+        GRAPHICS.addAnimation('ANIMA_link_throw_east', 'SET_link_carry_throw_east', [5], 0).addDamageSprites();
 
         GRAPHICS.cloneAnimation('ANIMA_link_carry_west', 'ANIMA_link_carry_east').mirrorAnimation_Horz([0,0,-1,0], 2);
         GRAPHICS.cloneAnimation('ANIMA_link_carry_idle_west', 'ANIMA_link_carry_idle_east').mirrorAnimation_Horz(null, 2);
@@ -245,12 +247,12 @@ class GraphicsLoader {
         //     [0.20, 0.15, 0.10, 0.15, 0.10, 0.15, 0.10, 0.10, 0.15,  0.3, 0]).setLooping(true);
         
         GRAPHICS.addSpriteSheet('DEATHFX', ASSET_MANAGER.getAsset('death_effects.png'));
-        GRAPHICS.addSpriteRow('SET_death_effects', 'DEATHFX',7, 0,4,26,23,0);
+        GRAPHICS.addSpriteRow('SET_death_effects', 'DEATHFX',7, 0,4,26,23,0).colorMod(null, null, null, 0.8);;
         GRAPHICS.addAnimation('ANIMA_enemy_death_cloud', 'SET_death_effects', [3,4,5,6,7], 0.2).setLooping(false);
 
         // death gas
-        GRAPHICS.addSpriteRow('SET_death_gas', 'DEATHFX',7, 0,4,26,23,0).colorMod(null, 240, 50);
-        GRAPHICS.addAnimation('ANIMA_enemy_death_gas', 'SET_death_gas', [4,3,4,5,6,7], [0.3, 0.4, 0.3, 0.25, 0.2, 0]).setLooping(false);
+        GRAPHICS.addSpriteRow('SET_death_gas', 'DEATHFX',7, 0,4,26,23,0).colorMod(null, 240, 50, 0.66);
+        GRAPHICS.addAnimation('ANIMA_enemy_death_gas', 'SET_death_gas', [4,3,4,5,6,7], [0.1, 0.1, 0.2, 0.25, 0.2, 0]).setLooping(false);
 
 
         GRAPHICS.addSpriteSheet('OW_ITEMS', ASSET_MANAGER.getAsset('items.png'));
@@ -277,7 +279,7 @@ class GraphicsLoader {
             'SET_pot', 'LINK',
             [129], [180],
             [12], [13],
-            [2.5], [2]
+            [2], [1]
         );
 
         GRAPHICS.addSpriteSet(
@@ -347,8 +349,6 @@ class GraphicsLoader {
         GRAPHICS.addSpriteSet('SET_bomb_flowers', 'BOMBS',
             [2, 22, 42, 62, 82, 102, 122, 142], 58, 16, 17
         );
-
-
 
             /////////////////////////////////////
            //  ◈  P R O J E C T I L E S  ◈   //
