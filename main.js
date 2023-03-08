@@ -37,7 +37,7 @@ ASSET_MANAGER.downloadAll(() => {
 	ctx.imageSmoothingEnabled = false;
 	new GraphicsLoader();
 
-	Player.CURR_PLAYER = new Player(tileToScreenCoord(9, 14));
+	Player.CURR_PLAYER = new Player(tileToScreenCoord(9, 10));
 	gameEngine.addEntity(Player.CURR_PLAYER); 
 	
 	let roomWidth = 20;
@@ -76,7 +76,7 @@ ASSET_MANAGER.downloadAll(() => {
 
 	// setInterval(bun, bt) <- bunny generator
 	// actual starting room is (11, 1)
-	let startMapCellX = 11, // 11
+	let startMapCellX = 12, // 11
 		startMapCellY = 1;  // 1
 
 	testMap.loadMapCell(startMapCellX, startMapCellY);
