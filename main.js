@@ -37,7 +37,7 @@ ASSET_MANAGER.downloadAll(() => {
 	ctx.imageSmoothingEnabled = false;
 	new GraphicsLoader();
 
-	Player.CURR_PLAYER = new Player(tileToScreenCoord(9.5, 3));
+	Player.CURR_PLAYER = new Player(tileToScreenCoord(9.5, 2));
 	gameEngine.addEntity(Player.CURR_PLAYER); 
 	
 	let roomWidth = 20;
