@@ -169,9 +169,8 @@ class _obj_Placer {
 
     /**cells (2,2) (3,1) (3,2) (3,3) (4,2) */
     betaWorld(map) {
-        // map cell : column, row
-        let   mc   =  {c:-1,  r:-1}
-
+        // map cell =  column,  row
+        let   mc    =  { c:-1,  r:-1}
         // 2 - 2 //
         mc = {c:2, r:2}
 
@@ -186,6 +185,7 @@ class _obj_Placer {
         map.addMapCellEntity(mc.c, mc.r, new Bunny(tileToScreenCoord(5, 5)));
         // 3 - 3 //
         mc = {c:3, r:3}
+        map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(12, 2)));
 
         
         // 4 - 2 //
@@ -195,8 +195,8 @@ class _obj_Placer {
     }
     /**cells (1,1) (1,2) (1,3) (1,4) (2,3) (2,4) */
     betaDungeon(map) {
-        // map cell : column, row
-        let   mc   =  {c:-1,  r:-1}
+        // map cell =  column,  row
+        let   mc    =  { c:-1,  r:-1}
 
         // 1 - 1 //
         mc = {c:1, r:1}
@@ -244,8 +244,8 @@ class _obj_Placer {
 
     /** cells (10,1) (10,2) (11,1) (11,2) (12,1) (12,2)*/
     demoWorld(map) {
-        // map cell : column, row
-        let   mc   =  {c:-1,  r:-1}
+        // map cell =  column,  row
+        let   mc    =  { c:-1,  r:-1}
 
         // 10 - 1 //
         mc = {c:10, r:1}
@@ -259,6 +259,15 @@ class _obj_Placer {
         // 11 - 1 //
         mc = {c:11, r:1}
         map.addMapCellEntity(mc.c, mc.r, new Bunny(tileToScreenCoord(10, 10)));
+        map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(2, 3), 2));
+
+        map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 3)));
+        map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 4)));
+        map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 5)));
+        map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 6)));
+        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(8, 3)), 'bomb');
+        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(11, 1), 'fart'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(8, 9)), true);
 
         // 11 - 2 //
         mc = {c:11, r:2}

@@ -16,9 +16,9 @@ class SmallChest {
                 break
             case 'key'   : this.contents = new KeyDrop(this.xLoc+7.5, this.yLoc - 28)
                 break
-            case 'bomb'  : this.contents = new Bomb(this.xLoc+6, this.yLoc-9)
+            case 'bomb'  : this.contents = new Bomb(this.xLoc+6, this.yLoc-9, false, 'chest')
                 break
-            case 'fart' : this.contents = new BadGas(this.xLoc-42, this.yLoc-20)
+            case 'fart'  : this.contents = new BadGas(this.xLoc-42, this.yLoc-20)
                 break
         }
 

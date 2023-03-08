@@ -34,13 +34,10 @@ ASSET_MANAGER.downloadAll(() => {
 	canvas.height += HUD_BUFFER;
 	ctx.translate(0, HUD_BUFFER);
 	ctx.imageSmoothingEnabled = false;
+	new GraphicsLoader();
 
-	new GraphicsLoader(); // <- just to build the sprites & animations into GRAPHICS
-
-	// Player.CURR_PLAYER = new Player(canvas.width/2 - 16, canvas.height/2 - 32);
 	Player.CURR_PLAYER = new Player(tileToScreenCoord(7, 6));
 	gameEngine.addEntity(Player.CURR_PLAYER); 
-	//gameEngine.addEntity(new Knight(canvas.width/4, canvas.height/2));
 	
 	let roomWidth = 20;
 	let roomHeight = 16;
@@ -61,10 +58,10 @@ ASSET_MANAGER.downloadAll(() => {
 	gameEngine.currMap = testMap;
 	new _obj_Placer(testMap)
 	
-
+	////// P O R T A L S //////
 	let dungeonPortalInXY = tileToScreenCoord(7, 8),
 		dungeonPortalOutXY = tileToScreenCoord(9, 2);
-	
+
 	dungeonPortalOutXY.x += 8*SCALE;
 	
 	let dungeonPortalIn = new Portal(dungeonPortalInXY.x, dungeonPortalInXY.y, 'pink', 12, 1),
@@ -74,26 +71,23 @@ ASSET_MANAGER.downloadAll(() => {
 
 	testMap.addMapCellEntity(12, 1, dungeonPortalIn);
 	testMap.addMapCellEntity(1, 2, dungeonPortalOut);
+	////// . . . . . . . . . . 
 
-
+	// setInterval(bun, bt) <- bunny generator
 	// actual starting room is (11, 1)
-	let startMapCellX = 0, // 11
-		startMapCellY = 0;  // 1
+	let startMapCellX = 11, // 11
+		startMapCellY = 1;  // 1
 
 	testMap.loadMapCell(startMapCellX, startMapCellY);
-	//setInterval(bun, bt)
-	
 	testMap.addMapEntitiesToEngine(gameEngine);
 	testMap.addInteractableToEngine(gameEngine);
 
 	gameEngine.init(ctx);
-
 	gameEngine.start();   
 	
-
-	console.log(`   Sprites loaded ${Sprite.SPRITE_COUNT}`);
-	console.log(`SpriteSets loaded ${SpriteSet.SPRITE_SET_COUNT}`);
-	console.log(`Animations loaded ${Animation.ANIMATION_COUNT}`);
+	// console.log(`   Sprites loaded ${Sprite.SPRITE_COUNT}`);
+	// console.log(`SpriteSets loaded ${SpriteSet.SPRITE_SET_COUNT}`);
+	// console.log(`Animations loaded ${Animation.ANIMATION_COUNT}`);
 
 });
 
