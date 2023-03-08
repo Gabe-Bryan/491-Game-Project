@@ -28,6 +28,7 @@ ASSET_MANAGER.queueDownload(
 	"bombs.png"
 );
 
+let START_POS 
 ASSET_MANAGER.downloadAll(() => {
 	const canvas = document.getElementById("gameWorld");
 	const ctx = canvas.getContext("2d");
