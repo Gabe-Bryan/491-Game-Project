@@ -200,8 +200,7 @@ class _obj_Placer {
 
         // 1 - 1 //
         mc = {c:1, r:1}
-        let chestXY = tileToScreenCoord(7, 5);
-        map.addMapCellEntity(mc.c, mc.r, new SmallChest(chestXY, new HeartDrop(chestXY.x, chestXY.y - 8)));
+
     
         // 1 - 2 // * dungeon enter
         mc = {c:1, r:2}
@@ -211,8 +210,8 @@ class _obj_Placer {
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(1, 14)));
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 1)));
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 14)));
-        map.addMapCellEntity(mc.c, mc.r, new Door(tileToScreenCoord(9, 15)));
-	    map.addMapCellEntity(mc.c, mc.r, new Wizard(tileToScreenCoord(3,4)));
+        // map.addMapCellEntity(mc.c, mc.r, new Door(tileToScreenCoord(9, 15)));
+	    // map.addMapCellEntity(mc.c, mc.r, new Wizard(tileToScreenCoord(3,4)));
 
 
         // 1 - 3 //
@@ -220,6 +219,10 @@ class _obj_Placer {
 
         map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(14, 2)));
         map.addMapCellEntity(mc.c, mc.r, new Skull(tileToScreenCoord(1, 3)));
+        map.addMapCellEntity(mc.c, mc.r, new Wizard(tileToScreenCoord(1,14)));
+        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(13, 1), 'heart'));
+        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(18, 1), 'heart'));
+        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(1, 1), 'fart'));
 
 
         // 1 - 4 // * dungeon exit
@@ -251,27 +254,72 @@ class _obj_Placer {
         mc = {c:10, r:1}
         map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(14, 5)));
         map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(4, 8)));
+        map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(2, 3), 2));
+
 
         // 10 - 2 //
         mc = {c:10, r:2}
-        map.addMapCellEntity(mc.c, mc.r, new Wizard(tileToScreenCoord(3,4)));
+        map.addMapCellEntity(mc.c, mc.r, new Wizard(tileToScreenCoord(8,11)));
+        map.addMapCellEntity(mc.c, mc.r, new Wizard(tileToScreenCoord(13,4)));
+        map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(12, 4), 2));
+        map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(2, 14), 2));
+
 
         // 11 - 1 //
         mc = {c:11, r:1}
         map.addMapCellEntity(mc.c, mc.r, new Bunny(tileToScreenCoord(10, 10)));
         map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(2, 3), 2));
+        map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(3, 14), 2));
+        map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(15, 14), 2));
 
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 3)));
-        map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 4)));
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 5)));
-        map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 6)));
-        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(8, 3)), 'bomb');
+        map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(16, 3)));
+
+        map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 10)));
+        map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 10)));
+        map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 10)));
+        
+        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(8, 1)), 'heart');
         map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(11, 1), 'fart'));
         // map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(8, 9)), true);
 
-        // 11 - 2 //
+        // 11 - 2 //s
         mc = {c:11, r:2}
         map.addMapCellEntity(mc.c, mc.r, new Wizard(tileToScreenCoord(10, 10)));
+        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(8, 1)), 'random');
+        map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(11, 1), 'random'));
+
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(0, 8), false, 'chest'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(0, 9), false, 'chest'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(0, 10), false, 'chest'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(0, 11), false, 'chest'));
+
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(1, 6), false, 'chest'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(2, 6), false, 'airRaid'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(3, 6), false, 'chest'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(3, 5), false, 'airRaid'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(4, 5), false, 'chest'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(5, 5), false, 'airRaid'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(6, 5), false, 'chest'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(7, 5), false, 'airRaid'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(7, 4), false, 'chest'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(8, 4), false, 'airRaid'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(9, 4), false, 'chest'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(10, 4), false, 'airRaid'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(11, 4), false, 'chest'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(12, 4), false, 'airRaid'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(12, 4), false, 'chest'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(12, 5), false, 'airRaid'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(13, 5), false, 'chest'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(14, 5), false, 'airRaid'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(15, 5), false, 'chest'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(16, 5), false, 'airRaid'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(16, 6), false, 'chest'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(17, 6), false, 'airRaid'));
+        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(17, 6), false, 'chest'));
+
+
 
         // 12 - 1 //
         mc = {c:12, r:1}

@@ -189,9 +189,9 @@ class Player {
         } else this.interacting = false;
 
         /////// THROW STUFF EASY ////////////
-        if (gameEngine.keys["n"] || gameEngine.keys["m"]) { // <- cheat buttons
+        if (gameEngine.keys["n"] || gameEngine.keys["h"]) { // <- cheat buttons
             if (gameEngine.keys["n"] && !this.holding) this.currObjHeld = 0; // 0 = bomb 
-            if (gameEngine.keys["m"] && !this.holding) this.currObjHeld = 1; // 1 = pot
+            if (gameEngine.keys["h"] && !this.holding) this.currObjHeld = 1; // 1 = pot
             if (this.buttonCD <= 0 && !this.throwing) {
                 if (!this.holding)       this.holding = true;
                 else if (this.holding)   this.processThrow();

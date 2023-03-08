@@ -25,7 +25,6 @@ class Bomb {
         this.state = 1 // 0: stable, 1: burning, 2 blowing
         this.tag = "env_interact_breakable";
 
-        console.log("GFIUES")
 
         this.phys2d  = {static: true};
         this.bomb_collider = {type: "box", corner: {x: this.x + -1 * SCALE, y: this.y +  3 * SCALE}, width: 14 * SCALE, height: 14 * SCALE};
@@ -37,6 +36,8 @@ class Bomb {
 
         if (this.type == 'stable') this.state = 0
         if (this.type == 'chest') this.anima[1].skipToFrame(7);
+        if (this.type == 'airRaid') this.state = 2;
+        
         
         this.DEBUG = false;
     }
