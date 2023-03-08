@@ -267,7 +267,7 @@ class _obj_Placer {
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 6)));
         map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(8, 3)), 'bomb');
         map.addMapCellEntity(mc.c, mc.r, new SmallChest(tileToScreenCoord(11, 1), 'fart'));
-        map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(8, 9)), true);
+        // map.addMapCellEntity(mc.c, mc.r, new Bomb(tileToScreenCoord(8, 9)), true);
 
         // 11 - 2 //
         mc = {c:11, r:2}
