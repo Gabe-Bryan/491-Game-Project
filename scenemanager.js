@@ -208,8 +208,8 @@ class _obj_Placer {
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(1, 14)));
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 1)));
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 14)));
-        map.addMapCellEntity(mc.c, mc.r, new Door(tileToScreenCoord(9, 15)));
-	    map.addMapCellEntity(mc.c, mc.r, new Wizard(tileToScreenCoord(3,4)));
+        // map.addMapCellEntity(mc.c, mc.r, new Door(tileToScreenCoord(9, 15)));
+	    // map.addMapCellEntity(mc.c, mc.r, new Wizard(tileToScreenCoord(3,4)));
 
 
         // 1 - 3 //
@@ -252,7 +252,13 @@ class _obj_Placer {
         mc = {c:10, r:1}
         map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(14, 5)));
         map.addMapCellEntity(mc.c, mc.r, new Knight(tileToScreenCoord(4, 8)));
-        map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(2, 3), 2));
+        map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(1, 1), 3));
+        map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(3, 2), 3));
+        map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(5, 1), 3));
+        map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(7, 2), 3));
+        map.addMapCellEntity(mc.c, mc.r, new BombFlower(tileToScreenCoord(9, 1), 3));
+
+        map.addMapCellEntity(mc.c, mc.r, new Wizard(tileToScreenCoord(8,9)));
 
 
         // 10 - 2 //
