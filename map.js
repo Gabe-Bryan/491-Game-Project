@@ -91,7 +91,7 @@ class GameMap {
         const mapImageCanvas = document.createElement("canvas");
         mapImageCanvas.width = this.cellWidthInTiles;
         mapImageCanvas.height = this.cellHeightInTiles;
-        const mapImageCtx = mapImageCanvas.getContext("2d");
+        const mapImageCtx = mapImageCanvas.getContext("2d", {willReadFrequently: true});
 
         let paddingOffset = 1;
         let cellX = paddingOffset + (paddingOffset + this.cellWidthInTiles) * mapCellX;

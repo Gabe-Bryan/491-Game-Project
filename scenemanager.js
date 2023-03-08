@@ -119,10 +119,8 @@ class _obj_Placer {
     portalsTest(testMap) {
         let prtl_clrs = ['red', 'green', 'yellow', 'blue', 'orange'];
         for (let i = 0; i < prtl_clrs.length; i++) {
-        	let left_prtlXY = tileToScreenCoord(5, 1+i);
-        	let right_prtlXY = tileToScreenCoord(14, 1+i);
-        	left_prtlXY.y *= 2.3;
-        	right_prtlXY.y *= 2.3;
+        	let left_prtlXY = tileToScreenCoord(5, 2.5+i*2.5);
+        	let right_prtlXY = tileToScreenCoord(14, 2.5+i*2.5);
         	let left_prtl = new Portal(left_prtlXY.x, left_prtlXY.y, prtl_clrs[i], 1, 1);
         	let right_prtl = new Portal(right_prtlXY.x, right_prtlXY.y, prtl_clrs[i], 1, 1);
         	left_prtl.setLinkedEntity(right_prtl);
@@ -210,8 +208,8 @@ class _obj_Placer {
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(1, 14)));
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 1)));
         map.addMapCellEntity(mc.c, mc.r, new Pot(tileToScreenCoord(18, 14)));
-        // map.addMapCellEntity(mc.c, mc.r, new Door(tileToScreenCoord(9, 15)));
-	    // map.addMapCellEntity(mc.c, mc.r, new Wizard(tileToScreenCoord(3,4)));
+        map.addMapCellEntity(mc.c, mc.r, new Door(tileToScreenCoord(9, 15)));
+	    map.addMapCellEntity(mc.c, mc.r, new Wizard(tileToScreenCoord(3,4)));
 
 
         // 1 - 3 //

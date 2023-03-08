@@ -60,18 +60,29 @@ ASSET_MANAGER.downloadAll(() => {
 	new _obj_Placer(testMap)
 	
 	////// P O R T A L S //////
-	let dungeonPortalInXY = tileToScreenCoord(7, 8),
-		dungeonPortalOutXY = tileToScreenCoord(9, 2);
 
-	dungeonPortalOutXY.x += 8*SCALE;
+	let portalIn = {mapx:12, mapy:1, coord:tileToScreenCoord(7, 8)},
+		portalOut = {mapx:1, mapy:2, coord:tileToScreenCoord(9.5, 7.5)};
 	
-	let dungeonPortalIn = new Portal(dungeonPortalInXY.x, dungeonPortalInXY.y, 'pink', 12, 1),
-		dungeonPortalOut = new Portal(dungeonPortalOutXY.x, dungeonPortalOutXY.y, 'pink', 1, 2);
+	let dungeonPortalIn = new Portal(portalIn.coord.x, portalIn.coord.y, 'pink', portalIn.mapx, portalIn.mapy),
+		dungeonPortalOut = new Portal(portalOut.coord.x, portalOut.coord.y, 'pink', portalOut.mapx, portalOut.mapy);
 
 	dungeonPortalIn.setTwoWayLinkedEntity(dungeonPortalOut);
 
-	testMap.addMapCellEntity(12, 1, dungeonPortalIn);
-	testMap.addMapCellEntity(1, 2, dungeonPortalOut);
+	let portalRoomInLoc = {mapx:1, mapy:4, coord:tileToScreenCoord(3, 7.5)},
+		portalRoomOutLoc = {mapx:1, mapy:1, coord:tileToScreenCoord(9.5, 7.5)};
+
+	let portalRoomIn = new Portal(portalRoomInLoc.coord.x, portalRoomInLoc.coord.y, 'pink', portalRoomInLoc.mapx, portalRoomInLoc.mapy),
+		portalRoomOut = new Portal(portalRoomOutLoc.coord.x, portalRoomOutLoc.coord.y, 'pink', portalRoomOutLoc.mapx, portalRoomOutLoc.mapy);
+
+	portalRoomIn.setTwoWayLinkedEntity(portalRoomOut);
+
+	testMap.addMapCellEntity(portalIn.mapx, portalIn.mapy, dungeonPortalIn);
+	testMap.addMapCellEntity(portalOut.mapx, portalOut.mapy, dungeonPortalOut);
+
+	testMap.addMapCellEntity(portalRoomInLoc.mapx, portalRoomInLoc.mapy, portalRoomIn);
+	testMap.addMapCellEntity(portalRoomOutLoc.mapx, portalRoomOutLoc.mapy,  portalRoomOut);
+
 	////// . . . . . . . . . . 
 
 	// setInterval(bun, bt) <- bunny generator

@@ -1,6 +1,6 @@
 class Player {
     
-    static MAX_HP = 100;
+    static MAX_HP = 10;
     static MAX_VEL = 250; //Pixels per second (I think -Gabe)
     static KB_DUR = 0.1;
     static KB_STR = 300;
@@ -327,6 +327,7 @@ class Player {
         this.setHp(this.hp - amount);
         if(this.hp <= 0){
             //console.log("Game over!!!!!!!!!");
+            ASSET_MANAGER.pauseBackgroundMusic();
             ASSET_MANAGER.playAsset("link_die.wav");
             gameEngine.gameOver = true;
             this.alive = false
